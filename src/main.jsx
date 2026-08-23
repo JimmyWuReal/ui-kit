@@ -122,7 +122,7 @@ function PreferenceToggle() {
     <div className="preference-row">
       <div className="mini-icon cyan"><Bell size={17} /></div>
       <div className="preference-copy"><strong>Smart alerts</strong><span>Only what matters</span></div>
-      <button className={`toggle ${on ? 'on' : ''}`} onClick={() => setOn(!on)} aria-pressed={on}><span /></button>
+      <button className={`toggle ${on ? 'on' : ''}`} onClick={() => setOn(!on)} aria-label="Smart alerts" aria-pressed={on}><span /></button>
     </div>
   )
 }
@@ -167,7 +167,7 @@ function SegmentedControl() {
   return (
     <div className="segmented">
       {choices.map(({ name, icon: Icon }) => (
-        <button key={name} className={selected === name ? 'selected' : ''} onClick={() => setSelected(name)}>
+        <button key={name} className={selected === name ? 'selected' : ''} onClick={() => setSelected(name)} aria-label={name} aria-pressed={selected === name}>
           <Icon size={16} /><span>{name}</span>
         </button>
       ))}
