@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { createRoot } from 'react-dom/client'
-import { ArrowUpRight, Check, ChevronDown, Info, Sparkles, X } from 'lucide-react'
+import { ArrowUpRight, Check, ChevronDown, Info, Plus, Sparkles, X } from 'lucide-react'
 import './styles.css'
 
 const chartPoints = '0,76 25,67 50,72 75,45 100,53 125,24 150,31 175,15 200,22 225,5'
@@ -14,26 +14,22 @@ function Cell({ className = '', children }) {
 }
 
 function DepthButton() {
-  function animateClick(event) {
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
-
-    const button = event.currentTarget
-    button.getAnimations().forEach((animation) => animation.cancel())
-    button.animate(
-      [
-        { transform: 'scale(1)' },
-        { transform: 'scale(.965)', offset: .42 },
-        { transform: 'scale(1)' },
-      ],
-      { duration: 240, easing: 'cubic-bezier(.22, 1, .36, 1)' },
-    )
-  }
-
   return (
-    <button className="depth-button" type="button" onClick={animateClick}>
+    <button className="depth-button" type="button">
       <span className="button-content">
         <span className="button-icon"><Sparkles size={17} strokeWidth={2.15} /></span>
         <span>Create with AI</span>
+      </span>
+    </button>
+  )
+}
+
+function PrimaryButton() {
+  return (
+    <button className="primary-button" type="button">
+      <span className="button-content">
+        <span className="button-icon"><Plus size={17} strokeWidth={2.15} /></span>
+        <span>Create project</span>
       </span>
     </button>
   )
@@ -55,7 +51,10 @@ function App() {
 
       <div className="component-grid" id="top">
         <Cell className="cell-button">
-          <DepthButton />
+          <div className="button-group">
+            <PrimaryButton />
+            <DepthButton />
+          </div>
         </Cell>
 
         <Cell className="cell-toggle">
