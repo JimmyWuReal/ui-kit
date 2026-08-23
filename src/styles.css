@@ -4,7 +4,7 @@
   color-scheme: dark;
   font-family: Inter, ui-sans-serif, system-ui, sans-serif;
   color: #fff;
-  background: #090909;
+  background: #000;
   font-synthesis: none;
 }
 
@@ -14,7 +14,7 @@ body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
-  background: #090909;
+  background: #000;
 }
 
 button, input { font: inherit; }
@@ -24,7 +24,7 @@ button { color: inherit; }
   width: min(1060px, calc(100% - 48px));
   margin: 24px auto;
   border: 1px solid #303030;
-  background: #0d0d0d;
+  background: #000;
   animation: shell-enter 600ms cubic-bezier(.22, 1, .36, 1) both;
 }
 
@@ -34,10 +34,7 @@ button { color: inherit; }
   align-items: flex-end;
   padding: 28px 30px;
   border-bottom: 1px solid #303030;
-  background-image:
-    linear-gradient(rgba(255,255,255,.018) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,.018) 1px, transparent 1px);
-  background-size: 24px 24px;
+  background: #000;
 }
 
 .page-title h1 {
@@ -59,10 +56,7 @@ button { color: inherit; }
   min-height: 220px;
   border-right: 1px solid #303030;
   border-bottom: 1px solid #303030;
-  background-image:
-    linear-gradient(rgba(255,255,255,.014) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,.014) 1px, transparent 1px);
-  background-size: 24px 24px;
+  background: #000;
 }
 
 .grid-cell:nth-child(even) { border-right: 0; }
