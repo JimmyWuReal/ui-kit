@@ -176,13 +176,19 @@ function SegmentedControl() {
 }
 
 function ToastMessage() {
-  const [visible, setVisible] = useState(true)
-  if (!visible) return <button className="restore-toast" onClick={() => setVisible(true)}>Show toast</button>
+  const [state, setState] = useState('visible')
+
+  function dismiss() {
+    setState('leaving')
+    window.setTimeout(() => setState('hidden'), 220)
+  }
+
+  if (state === 'hidden') return <button className="restore-toast" onClick={() => setState('visible')}>Show toast</button>
   return (
-    <div className="toast-demo">
+    <div className={`toast-demo ${state === 'leaving' ? 'leaving' : ''}`}>
       <div className="success-icon"><Check size={15} /></div>
       <div><strong>Changes saved</strong><span>Your workspace is up to date.</span></div>
-      <button onClick={() => setVisible(false)} aria-label="Dismiss"><X size={15} /></button>
+      <button onClick={dismiss} aria-label="Dismiss"><X size={15} /></button>
     </div>
   )
 }
@@ -298,7 +304,7 @@ function App() {
             </div>
             <div className="count"><span>{String(filtered.length).padStart(2, '0')}</span> elements</div>
           </div>
-          <div className="gallery">
+          <div className="gallery" key={category}>
             {filtered.map((item) => <div id={item.id} key={item.id} className={item.wide ? 'wide-slot' : ''}><ElementCard item={item}><Preview id={item.id} /></ElementCard></div>)}
           </div>
           {filtered.length === 0 && <div className="empty">No elements in this collection yet.</div>}
