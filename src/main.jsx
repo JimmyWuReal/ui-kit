@@ -1,16 +1,41 @@
 import React, { useState } from 'react'
 import { createRoot } from 'react-dom/client'
-import { ArrowUpRight, Check, ChevronDown, Info, Layers3, Sparkles, X } from 'lucide-react'
+import { ArrowUpRight, Check, ChevronDown, Info, Sparkles, X } from 'lucide-react'
 import './styles.css'
 
 const chartPoints = '0,76 25,67 50,72 75,45 100,53 125,24 150,31 175,15 200,22 225,5'
 
-function Cell({ number, label, className = '', children }) {
+function Cell({ className = '', children }) {
   return (
     <section className={`grid-cell ${className}`}>
-      <div className="cell-meta"><span>{number}</span><span>{label}</span></div>
       <div className="cell-content">{children}</div>
     </section>
+  )
+}
+
+function DepthButton() {
+  function animateClick(event) {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+
+    const button = event.currentTarget
+    button.getAnimations().forEach((animation) => animation.cancel())
+    button.animate(
+      [
+        { transform: 'scale(1)' },
+        { transform: 'scale(.965)', offset: .42 },
+        { transform: 'scale(1)' },
+      ],
+      { duration: 240, easing: 'cubic-bezier(.22, 1, .36, 1)' },
+    )
+  }
+
+  return (
+    <button className="depth-button" type="button" onClick={animateClick}>
+      <span className="button-content">
+        <span className="button-icon"><Sparkles size={17} strokeWidth={2.15} /></span>
+        <span>Create with AI</span>
+      </span>
+    </button>
   )
 }
 
@@ -24,23 +49,16 @@ function App() {
 
   return (
     <main className="showcase-shell">
-      <header className="topbar">
-        <a className="brand" href="#top" aria-label="Form home">
-          <span className="brand-mark"><Layers3 size={15} strokeWidth={1.8} /></span>
-          <span>FORM/01</span>
-        </a>
-        <div className="topbar-note">INTERFACE COMPONENTS — 2026</div>
-        <div className="coordinates">25.03° N&nbsp;&nbsp;121.56° E</div>
+      <header className="page-title">
+        <h1>ELEMENT STUDY</h1>
       </header>
 
       <div className="component-grid" id="top">
-        <Cell number="01" label="PRIMARY ACTION" className="cell-button">
-          <button className="primary-button" type="button">
-            <span className="primary-button-label"><Sparkles size={17} strokeWidth={2.15} />Create with AI</span>
-          </button>
+        <Cell className="cell-button">
+          <DepthButton />
         </Cell>
 
-        <Cell number="02" label="BOOLEAN" className="cell-toggle">
+        <Cell className="cell-toggle">
           <div className="control-row">
             <div><strong>Notifications</strong><span>Product updates</span></div>
             <button className={`toggle ${enabled ? 'is-on' : ''}`} type="button" role="switch"
@@ -50,7 +68,7 @@ function App() {
           </div>
         </Cell>
 
-        <Cell number="03" label="INPUT" className="cell-input">
+        <Cell className="cell-input">
           <label className="field-label" htmlFor="email">EMAIL ADDRESS</label>
           <div className="text-field-wrap">
             <input id="email" type="email" defaultValue="studio@form.co" />
@@ -58,7 +76,7 @@ function App() {
           </div>
         </Cell>
 
-        <Cell number="04" label="SELECTION" className="cell-checkbox">
+        <Cell className="cell-checkbox">
           <label className="checkbox-row">
             <input type="checkbox" checked={checked} onChange={(event) => setChecked(event.target.checked)} />
             <span className="checkbox-box"><Check size={14} strokeWidth={2.2} /></span>
@@ -66,7 +84,7 @@ function App() {
           </label>
         </Cell>
 
-        <Cell number="05" label="DATA VISUALIZATION" className="cell-chart">
+        <Cell className="cell-chart">
           <div className="chart-heading">
             <div><span>ACTIVE USERS</span><strong>24,892</strong></div>
             <span className="positive">+18.4%</span>
@@ -88,7 +106,7 @@ function App() {
           </div>
         </Cell>
 
-        <Cell number="06" label="CONTENT CARD" className="cell-card">
+        <Cell className="cell-card">
           <article className="project-card">
             <div className="card-visual">
               <div className="orb orb-one" /><div className="orb orb-two" /><div className="card-index">A—08</div>
@@ -100,7 +118,7 @@ function App() {
           </article>
         </Cell>
 
-        <Cell number="07" label="PROGRESS" className="cell-progress">
+        <Cell className="cell-progress">
           <div className="progress-header">
             <div><span>UPLOAD STATUS</span><strong>{progress}%</strong></div><span>3.4 / 5 GB</span>
           </div>
@@ -111,7 +129,7 @@ function App() {
           </div>
         </Cell>
 
-        <Cell number="08" label="DROPDOWN" className="cell-dropdown">
+        <Cell className="cell-dropdown">
           <div className="dropdown-wrap">
             <label>SELECT PLAN</label>
             <button className="dropdown-trigger" type="button" aria-haspopup="listbox" aria-expanded={menuOpen}
@@ -131,7 +149,7 @@ function App() {
           </div>
         </Cell>
 
-        <Cell number="09" label="SYSTEM ALERT" className="cell-alert">
+        <Cell className="cell-alert">
           {alertVisible ? (
             <div className="alert" role="status">
               <div className="alert-icon"><Info size={16} /></div>
@@ -143,10 +161,6 @@ function App() {
           )}
         </Cell>
 
-        <footer className="title-cell">
-          <div className="title-kicker"><span>V.01</span><span>DIGITAL OBJECTS</span></div>
-          <h1>ELEMENT<br />STUDY</h1>
-        </footer>
       </div>
     </main>
   )
