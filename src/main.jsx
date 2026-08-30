@@ -3,7 +3,32 @@ import { createRoot } from 'react-dom/client'
 import { ArrowUpRight, Check, ChevronDown, Info, Plus, Sparkles, X } from 'lucide-react'
 import './styles.css'
 
-const chartPoints = '0,76 25,67 50,72 75,45 100,53 125,24 150,31 175,15 200,22 225,5'
+const SERIES = [10.0, 11.9, 10.9, 16.6, 14.9, 21.0, 19.5, 22.9, 21.4, 24.9]
+const AXIS = [25, 20, 15, 10]
+const VIEW = { w: 240, h: 84, min: 8, max: 26 }
+
+const round = (n) => Math.round(n * 100) / 100
+const yAt = (value) => ((VIEW.max - value) / (VIEW.max - VIEW.min)) * VIEW.h
+const samples = SERIES.map((value, i) => [(i / (SERIES.length - 1)) * VIEW.w, yAt(value)])
+
+/* Cardinal spline through the samples — the raw polyline read as a sawtooth. */
+function smooth(points, tension = 0.2) {
+  let d = `M ${round(points[0][0])} ${round(points[0][1])}`
+  for (let i = 0; i < points.length - 1; i += 1) {
+    const p0 = points[i - 1] || points[i]
+    const p1 = points[i]
+    const p2 = points[i + 1]
+    const p3 = points[i + 2] || p2
+    d += ` C ${round(p1[0] + (p2[0] - p0[0]) * tension)} ${round(p1[1] + (p2[1] - p0[1]) * tension)}`
+    d += `, ${round(p2[0] - (p3[0] - p1[0]) * tension)} ${round(p2[1] - (p3[1] - p1[1]) * tension)}`
+    d += `, ${round(p2[0])} ${round(p2[1])}`
+  }
+  return d
+}
+
+const linePath = smooth(samples)
+const areaPath = `${linePath} L ${VIEW.w} ${VIEW.h} L 0 ${VIEW.h} Z`
+const lastPoint = samples[samples.length - 1]
 
 function Cell({ className = '', children }) {
   return (
@@ -47,6 +72,10 @@ function App() {
     <main className="showcase-shell">
       <header className="page-title">
         <h1>ELEMENT STUDY</h1>
+        <div className="title-meta">
+          <span className="mono-label">MONOCHROME</span>
+          <span className="mono-label">09 ELEMENTS</span>
+        </div>
       </header>
 
       <div className="component-grid" id="top">
@@ -68,79 +97,108 @@ function App() {
         </Cell>
 
         <Cell className="cell-input">
-          <label className="field-label" htmlFor="email">EMAIL ADDRESS</label>
+          <label className="mono-label" htmlFor="email">EMAIL ADDRESS</label>
           <div className="text-field-wrap">
             <input id="email" type="email" defaultValue="studio@form.co" />
-            <span>↵</span>
+            <kbd>&#8629;</kbd>
           </div>
         </Cell>
 
         <Cell className="cell-checkbox">
           <label className="checkbox-row">
             <input type="checkbox" checked={checked} onChange={(event) => setChecked(event.target.checked)} />
-            <span className="checkbox-box"><Check size={14} strokeWidth={2.2} /></span>
+            <span className="checkbox-box"><Check size={14} strokeWidth={2.6} /></span>
             <span><strong>Remember me</strong><small>Keep this device signed in</small></span>
           </label>
         </Cell>
 
         <Cell className="cell-chart">
           <div className="chart-heading">
-            <div><span>ACTIVE USERS</span><strong>24,892</strong></div>
-            <span className="positive">+18.4%</span>
+            <div><span className="mono-label">ACTIVE USERS</span><strong>24,892</strong></div>
+            <span className="trend"><ArrowUpRight size={12} strokeWidth={2.6} />18.4%</span>
           </div>
-          <div className="chart-plot" aria-label="Active users rising line chart">
-            <div className="y-labels"><span>25K</span><span>20K</span><span>15K</span><span>10K</span></div>
-            <svg viewBox="0 0 225 82" preserveAspectRatio="none" role="img">
-              <defs>
-                <linearGradient id="chartFill" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0" stopColor="#ffffff" stopOpacity=".22" />
-                  <stop offset="1" stopColor="#ffffff" stopOpacity="0" />
-                </linearGradient>
-              </defs>
-              <polygon points={`${chartPoints} 225,82 0,82`} fill="url(#chartFill)" />
-              <polyline points={chartPoints} fill="none" stroke="#ffffff" strokeWidth="2" vectorEffect="non-scaling-stroke" />
-              <circle cx="225" cy="5" r="3.5" fill="#ffffff" />
-            </svg>
-            <div className="x-labels"><span>MAR</span><span>APR</span><span>MAY</span><span>JUN</span></div>
+          <div className="chart-plot">
+            <div className="y-labels" aria-hidden="true">
+              {AXIS.map((value) => (
+                <span className="mono-label" key={value} style={{ top: `${(yAt(value) / VIEW.h) * 100}%` }}>{value}K</span>
+              ))}
+            </div>
+            <div className="plot-area">
+              <svg viewBox={`0 0 ${VIEW.w} ${VIEW.h}`} preserveAspectRatio="none" role="img"
+                aria-label="Active users from March to June, rising from 10K to 24,892">
+                <defs>
+                  <linearGradient id="chartFill" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0" stopColor="#ffffff" stopOpacity=".26" />
+                    <stop offset=".55" stopColor="#ffffff" stopOpacity=".06" />
+                    <stop offset="1" stopColor="#ffffff" stopOpacity="0" />
+                  </linearGradient>
+                  {/* Closing the area on the last sample leaves a hard wall; fade it out instead. */}
+                  <linearGradient id="chartEdge" x1="0" y1="0" x2="1" y2="0">
+                    <stop offset=".88" stopColor="#ffffff" stopOpacity="1" />
+                    <stop offset="1" stopColor="#ffffff" stopOpacity="0" />
+                  </linearGradient>
+                  <mask id="chartEdgeMask" maskUnits="userSpaceOnUse" x="0" y="0" width={VIEW.w} height={VIEW.h}>
+                    <rect width={VIEW.w} height={VIEW.h} fill="url(#chartEdge)" />
+                  </mask>
+                </defs>
+                {/* Ruled at the label values, so the grid and the axis agree. */}
+                {AXIS.map((value) => (
+                  <line className="gridline" key={value} x1="0" x2={VIEW.w} y1={yAt(value)} y2={yAt(value)}
+                    vectorEffect="non-scaling-stroke" />
+                ))}
+                <path className="area" d={areaPath} fill="url(#chartFill)" mask="url(#chartEdgeMask)" />
+                <path className="line" d={linePath} pathLength="1" vectorEffect="non-scaling-stroke" />
+              </svg>
+              <span className="chart-marker"
+                style={{ left: `${(lastPoint[0] / VIEW.w) * 100}%`, top: `${(lastPoint[1] / VIEW.h) * 100}%` }} />
+            </div>
+            <div className="x-labels" aria-hidden="true">
+              {['MAR', 'APR', 'MAY', 'JUN'].map((month) => <span className="mono-label" key={month}>{month}</span>)}
+            </div>
           </div>
         </Cell>
 
         <Cell className="cell-card">
           <article className="project-card">
             <div className="card-visual">
-              <div className="orb orb-one" /><div className="orb orb-two" /><div className="card-index">A—08</div>
+              <span className="sphere" />
+              <span className="mono-label card-index">A&#8212;08</span>
             </div>
             <div className="card-copy">
-              <div><span>SELECTED WORK</span><h2>Signal / Noise</h2></div>
-              <ArrowUpRight size={19} />
+              <div><span className="mono-label">SELECTED WORK</span><h2>Signal / Noise</h2></div>
+              <span className="card-go"><ArrowUpRight size={17} strokeWidth={2.1} /></span>
             </div>
           </article>
         </Cell>
 
         <Cell className="cell-progress">
           <div className="progress-header">
-            <div><span>UPLOAD STATUS</span><strong>{progress}%</strong></div><span>3.4 / 5 GB</span>
+            <div><span className="mono-label">UPLOAD STATUS</span><strong>{progress}%</strong></div>
+            <span className="mono-label">3.4 / 5 GB</span>
           </div>
-          <input className="progress-control" aria-label="Upload progress" type="range" min="0" max="100"
-            value={progress} onChange={(event) => setProgress(event.target.value)} style={{ '--progress': `${progress}%` }} />
+          <div className="progress-track" style={{ '--progress': `${progress}%` }}>
+            <span className="progress-fill" />
+            <input className="progress-control" aria-label="Upload progress" type="range" min="0" max="100"
+              value={progress} onChange={(event) => setProgress(Number(event.target.value))} />
+          </div>
           <div className="progress-scale" aria-hidden="true">
-            {Array.from({ length: 21 }, (_, index) => <i key={index} />)}
+            {Array.from({ length: 21 }, (_, index) => <i className={index % 5 === 0 ? 'major' : ''} key={index} />)}
           </div>
         </Cell>
 
         <Cell className="cell-dropdown">
           <div className="dropdown-wrap">
-            <label>SELECT PLAN</label>
-            <button className="dropdown-trigger" type="button" aria-haspopup="listbox" aria-expanded={menuOpen}
-              onClick={() => setMenuOpen(!menuOpen)}>
-              <span>{plan}</span><ChevronDown size={16} className={menuOpen ? 'rotate' : ''} />
+            <label className="mono-label">SELECT PLAN</label>
+            <button className={`dropdown-trigger ${menuOpen ? 'is-open' : ''}`} type="button" aria-haspopup="listbox"
+              aria-expanded={menuOpen} onClick={() => setMenuOpen(!menuOpen)}>
+              <span>{plan}</span><ChevronDown size={15} strokeWidth={2.1} />
             </button>
             {menuOpen && (
               <div className="dropdown-menu" role="listbox">
                 {['Starter', 'Professional', 'Enterprise'].map((option) => (
                   <button type="button" role="option" aria-selected={plan === option} key={option}
                     onClick={() => { setPlan(option); setMenuOpen(false) }}>
-                    <span>{option}</span>{plan === option && <Check size={14} />}
+                    <span>{option}</span>{plan === option && <Check size={14} strokeWidth={2.4} />}
                   </button>
                 ))}
               </div>
@@ -151,9 +209,9 @@ function App() {
         <Cell className="cell-alert">
           {alertVisible ? (
             <div className="alert" role="status">
-              <div className="alert-icon"><Info size={16} /></div>
+              <span className="alert-icon"><Info size={15} strokeWidth={2.1} /></span>
               <div className="alert-copy"><strong>Workspace updated</strong><span>Your changes are now live.</span></div>
-              <button type="button" aria-label="Dismiss alert" onClick={() => setAlertVisible(false)}><X size={16} /></button>
+              <button type="button" aria-label="Dismiss alert" onClick={() => setAlertVisible(false)}><X size={15} strokeWidth={2.1} /></button>
             </div>
           ) : (
             <button className="restore-alert" type="button" onClick={() => setAlertVisible(true)}>Restore notification</button>
