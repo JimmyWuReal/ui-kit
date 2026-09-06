@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { createRoot } from 'react-dom/client'
 import { ArrowUpRight, Check, ChevronDown, Info, Plus, Sparkles, X } from 'lucide-react'
 import './styles.css'
@@ -60,7 +60,7 @@ function PrimaryButton() {
   )
 }
 
-function App() {
+function ElementsPage() {
   const [enabled, setEnabled] = useState(true)
   const [checked, setChecked] = useState(true)
   const [plan, setPlan] = useState('Professional')
@@ -69,15 +69,6 @@ function App() {
   const [progress, setProgress] = useState(68)
 
   return (
-    <main className="showcase-shell">
-      <header className="page-title">
-        <h1>ELEMENT STUDY</h1>
-        <div className="title-meta">
-          <span className="mono-label">MONOCHROME</span>
-          <span className="mono-label">09 ELEMENTS</span>
-        </div>
-      </header>
-
       <div className="component-grid" id="top">
         <Cell className="cell-button">
           <div className="button-group">
@@ -219,8 +210,69 @@ function App() {
         </Cell>
 
       </div>
-    </main>
   )
+}
+
+const backgrounds = [
+  ['Midnight', 'A quiet, soft-lit surface.', 'midnight'],
+  ['Aurora', 'A wash of violet and cool blue.', 'aurora'],
+  ['Dot matrix', 'A little structure, a lot of space.', 'dots'],
+  ['Warmth', 'An amber glow at the horizon.', 'warmth'],
+  ['Brushed metal', 'Light and shadow in fine layers.', 'metal'],
+  ['Eclipse', 'A halo emerging from the dark.', 'eclipse'],
+]
+
+function BackgroundPage() {
+  return <div className="sample-grid" aria-label="Background styles">
+    {backgrounds.map(([name, description, style], index) =>
+      <article className="sample-card background-card" key={style}>
+        <div className={`background-preview bg-${style}`}><span className="preview-mark">Aa</span></div>
+        <div className="sample-caption"><div><h2>{name}</h2><p>{description}</p></div><span className="mono-label">0{index + 1}</span></div>
+      </article>
+    )}
+  </div>
+}
+
+function TypeCard({ label, detail, className = '', children }) {
+  return <article className={`sample-card type-card ${className}`}>
+    <div className="type-meta"><span className="mono-label">{label}</span><span className="mono-label">{detail}</span></div>
+    <div className="type-preview">{children}</div>
+  </article>
+}
+
+function TextPage() {
+  return <div className="sample-grid typography-grid" aria-label="Typography samples">
+    <TypeCard label="Display" detail="64 / 1.05" className="type-wide"><p className="type-display">Less, but better.</p></TypeCard>
+    <TypeCard label="Title" detail="36 / 1.15"><h1 className="type-title">Make room<br />for good ideas.</h1></TypeCard>
+    <TypeCard label="Description" detail="18 / 1.6"><p className="type-description">Thoughtful interfaces start with the essentials. A little space, a clear purpose, and details that feel just right.</p></TypeCard>
+    <TypeCard label="Heading" detail="24 / 1.3"><h2 className="type-heading">Details make the difference.</h2><p className="type-body">Give every section a clear starting point.</p></TypeCard>
+    <TypeCard label="Body" detail="14 / 1.75"><p className="type-body">Good design makes the complex feel simple. Use comfortable line lengths and a steady rhythm to make your words easy to read, from the first sentence to the last.</p></TypeCard>
+    <TypeCard label="Label & caption" detail="10–12 / 1.5"><div><span className="type-label">THE SMALL DETAILS</span><p className="type-caption">A collection of things, made with care.</p></div></TypeCard>
+    <TypeCard label="Quote" detail="24 / 1.5"><blockquote>“Simplicity is the ultimate sophistication.”</blockquote></TypeCard>
+  </div>
+}
+
+const pages = ['elements', 'background', 'text']
+const currentPage = () => pages.includes(window.location.hash.slice(1)) ? window.location.hash.slice(1) : 'elements'
+
+function App() {
+  const [page, setPage] = useState(currentPage)
+  useEffect(() => {
+    const navigate = () => setPage(currentPage())
+    window.addEventListener('hashchange', navigate)
+    return () => window.removeEventListener('hashchange', navigate)
+  }, [])
+  useEffect(() => { document.title = `${page[0].toUpperCase() + page.slice(1)} · Jimmy Wu's UI Kit` }, [page])
+  return <div className="showcase-shell">
+    <header className="site-header">
+      <a className="brand" href="#elements"><span className="brand-icon" aria-hidden="true"><i /><i /><i /><i /></span>Jimmy Wu's UI Kit</a>
+      <nav aria-label="Main navigation">{pages.map(item => <a key={item} href={`#${item}`} aria-current={page === item ? 'page' : undefined}>{item[0].toUpperCase() + item.slice(1)}</a>)}</nav>
+    </header>
+    <main key={page}>
+      {page === 'elements' ? <ElementsPage /> : page === 'background' ? <BackgroundPage /> : <TextPage />}
+    </main>
+    <footer><span>A personal collection, made with care.</span><span>Jimmy Wu © {new Date().getFullYear()}</span></footer>
+  </div>
 }
 
 createRoot(document.getElementById('root')).render(<App />)
