@@ -1,34 +1,7 @@
 import React, { createContext, useContext, useEffect, useRef, useState } from 'react'
 import { createRoot } from 'react-dom/client'
-import { ArrowUpRight, Check, ChevronDown, Info, Maximize2, Plus, Sparkles, X } from 'lucide-react'
+import { Maximize2, Plus, Sparkles, X } from 'lucide-react'
 import './styles.css'
-
-const SERIES = [10.0, 11.9, 10.9, 16.6, 14.9, 21.0, 19.5, 22.9, 21.4, 24.9]
-const AXIS = [25, 20, 15, 10]
-const VIEW = { w: 240, h: 84, min: 8, max: 26 }
-
-const round = (n) => Math.round(n * 100) / 100
-const yAt = (value) => ((VIEW.max - value) / (VIEW.max - VIEW.min)) * VIEW.h
-const samples = SERIES.map((value, i) => [(i / (SERIES.length - 1)) * VIEW.w, yAt(value)])
-
-/* Cardinal spline through the samples — the raw polyline read as a sawtooth. */
-function smooth(points, tension = 0.2) {
-  let d = `M ${round(points[0][0])} ${round(points[0][1])}`
-  for (let i = 0; i < points.length - 1; i += 1) {
-    const p0 = points[i - 1] || points[i]
-    const p1 = points[i]
-    const p2 = points[i + 1]
-    const p3 = points[i + 2] || p2
-    d += ` C ${round(p1[0] + (p2[0] - p0[0]) * tension)} ${round(p1[1] + (p2[1] - p0[1]) * tension)}`
-    d += `, ${round(p2[0] - (p3[0] - p1[0]) * tension)} ${round(p2[1] - (p3[1] - p1[1]) * tension)}`
-    d += `, ${round(p2[0])} ${round(p2[1])}`
-  }
-  return d
-}
-
-const linePath = smooth(samples)
-const areaPath = `${linePath} L ${VIEW.w} ${VIEW.h} L 0 ${VIEW.h} Z`
-const lastPoint = samples[samples.length - 1]
 
 /* Every surface an element can be tested against. The first is the default. */
 const SURFACES = [
@@ -136,22 +109,38 @@ function PrimaryButton() {
   )
 }
 
+/* One continuous stroke, so the tick can be drawn on and wiped off with
+   dashoffset alone. pathLength normalises the dash maths to 0—1. */
+function CheckMark() {
+  return (
+    <svg className="check-mark" viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M5 12.5 10 17.5 19 7" pathLength="1" />
+    </svg>
+  )
+}
+
 function ElementsPage() {
-  const [enabled, setEnabled] = useState(true)
   const [checked, setChecked] = useState(true)
-  const [email, setEmail] = useState('studio@form.co')
-  const [plan, setPlan] = useState('Professional')
-  const [menuOpen, setMenuOpen] = useState(false)
-  const [alertVisible, setAlertVisible] = useState(true)
-  const [progress, setProgress] = useState(68)
+  const [enabled, setEnabled] = useState(true)
+  const [email, setEmail] = useState('')
   const [expanded, setExpanded] = useState(null)
 
   /* Each demo is described once and rendered twice — in its cell, and expanded.
      Both copies share this component's state, so they stay in step. */
   const demos = [
     {
-      id: 'buttons', title: 'Buttons', cell: 'cell-button',
+      id: 'buttons', title: 'Buttons', cell: 'cell-buttons',
       node: <div className="button-group"><PrimaryButton /><DepthButton /></div>,
+    },
+    {
+      id: 'checkbox', title: 'Checkbox', cell: 'cell-checkbox',
+      node: (
+        <label className="checkbox-row">
+          <input type="checkbox" checked={checked} onChange={(event) => setChecked(event.target.checked)} />
+          <span className="checkbox-box"><CheckMark /></span>
+          <span><strong>Remember me</strong><small>Keep this device signed in</small></span>
+        </label>
+      ),
     },
     {
       id: 'toggle', title: 'Toggle', cell: 'cell-toggle',
@@ -160,7 +149,7 @@ function ElementsPage() {
           <div><strong>Notifications</strong><span>Product updates</span></div>
           <button className={`toggle ${enabled ? 'is-on' : ''}`} type="button" role="switch"
             aria-checked={enabled} aria-label="Toggle product notifications" onClick={() => setEnabled(!enabled)}>
-            <span />
+            <span className="toggle-knob" />
           </button>
         </div>
       ),
@@ -168,141 +157,11 @@ function ElementsPage() {
     {
       id: 'input', title: 'Text field', cell: 'cell-input',
       node: (
-        <>
+        <label className="text-field">
           <span className="mono-label">EMAIL ADDRESS</span>
-          <div className="text-field-wrap">
-            <input type="email" aria-label="Email address" value={email} onChange={(event) => setEmail(event.target.value)} />
-            <kbd>&#8629;</kbd>
-          </div>
-        </>
-      ),
-    },
-    {
-      id: 'checkbox', title: 'Checkbox', cell: 'cell-checkbox',
-      node: (
-        <label className="checkbox-row">
-          <input type="checkbox" checked={checked} onChange={(event) => setChecked(event.target.checked)} />
-          <span className="checkbox-box"><Check size={14} strokeWidth={2.6} /></span>
-          <span><strong>Remember me</strong><small>Keep this device signed in</small></span>
+          <input type="email" placeholder="studio@form.co" value={email}
+            onChange={(event) => setEmail(event.target.value)} />
         </label>
-      ),
-    },
-    {
-      id: 'chart', title: 'Chart', cell: 'cell-chart', wide: true,
-      node: (
-        <>
-          <div className="chart-heading">
-            <div><span className="mono-label">ACTIVE USERS</span><strong>24,892</strong></div>
-            <span className="trend"><ArrowUpRight size={12} strokeWidth={2.6} />18.4%</span>
-          </div>
-          <div className="chart-plot">
-            <div className="y-labels" aria-hidden="true">
-              {AXIS.map((value) => (
-                <span className="mono-label" key={value} style={{ top: `${(yAt(value) / VIEW.h) * 100}%` }}>{value}K</span>
-              ))}
-            </div>
-            <div className="plot-area">
-              <svg viewBox={`0 0 ${VIEW.w} ${VIEW.h}`} preserveAspectRatio="none" role="img"
-                aria-label="Active users from March to June, rising from 10K to 24,892">
-                <defs>
-                  <linearGradient id="chartFill" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0" stopColor="#ffffff" stopOpacity=".26" />
-                    <stop offset=".55" stopColor="#ffffff" stopOpacity=".06" />
-                    <stop offset="1" stopColor="#ffffff" stopOpacity="0" />
-                  </linearGradient>
-                  {/* Closing the area on the last sample leaves a hard wall; fade it out instead. */}
-                  <linearGradient id="chartEdge" x1="0" y1="0" x2="1" y2="0">
-                    <stop offset=".88" stopColor="#ffffff" stopOpacity="1" />
-                    <stop offset="1" stopColor="#ffffff" stopOpacity="0" />
-                  </linearGradient>
-                  <mask id="chartEdgeMask" maskUnits="userSpaceOnUse" x="0" y="0" width={VIEW.w} height={VIEW.h}>
-                    <rect width={VIEW.w} height={VIEW.h} fill="url(#chartEdge)" />
-                  </mask>
-                </defs>
-                {/* Ruled at the label values, so the grid and the axis agree. */}
-                {AXIS.map((value) => (
-                  <line className="gridline" key={value} x1="0" x2={VIEW.w} y1={yAt(value)} y2={yAt(value)}
-                    vectorEffect="non-scaling-stroke" />
-                ))}
-                <path className="area" d={areaPath} fill="url(#chartFill)" mask="url(#chartEdgeMask)" />
-                <path className="line" d={linePath} pathLength="1" vectorEffect="non-scaling-stroke" />
-              </svg>
-              <span className="chart-marker"
-                style={{ left: `${(lastPoint[0] / VIEW.w) * 100}%`, top: `${(lastPoint[1] / VIEW.h) * 100}%` }} />
-            </div>
-            <div className="x-labels" aria-hidden="true">
-              {['MAR', 'APR', 'MAY', 'JUN'].map((month) => <span className="mono-label" key={month}>{month}</span>)}
-            </div>
-          </div>
-        </>
-      ),
-    },
-    {
-      id: 'card', title: 'Card', cell: 'cell-card', wide: true,
-      node: (
-        <article className="project-card">
-          <div className="card-visual">
-            <span className="sphere" />
-            <span className="mono-label card-index">A&#8212;08</span>
-          </div>
-          <div className="card-copy">
-            <div><span className="mono-label">SELECTED WORK</span><h2>Signal / Noise</h2></div>
-            <span className="card-go"><ArrowUpRight size={17} strokeWidth={2.1} /></span>
-          </div>
-        </article>
-      ),
-    },
-    {
-      id: 'progress', title: 'Progress', cell: 'cell-progress',
-      node: (
-        <>
-          <div className="progress-header">
-            <div><span className="mono-label">UPLOAD STATUS</span><strong>{progress}%</strong></div>
-            <span className="mono-label">3.4 / 5 GB</span>
-          </div>
-          <div className="progress-track" style={{ '--progress': `${progress}%` }}>
-            <span className="progress-fill" />
-            <input className="progress-control" aria-label="Upload progress" type="range" min="0" max="100"
-              value={progress} onChange={(event) => setProgress(Number(event.target.value))} />
-          </div>
-          <div className="progress-scale" aria-hidden="true">
-            {Array.from({ length: 21 }, (_, index) => <i className={index % 5 === 0 ? 'major' : ''} key={index} />)}
-          </div>
-        </>
-      ),
-    },
-    {
-      id: 'dropdown', title: 'Dropdown', cell: 'cell-dropdown',
-      node: (
-        <div className="dropdown-wrap">
-          <label className="mono-label">SELECT PLAN</label>
-          <button className={`dropdown-trigger ${menuOpen ? 'is-open' : ''}`} type="button" aria-haspopup="listbox"
-            aria-expanded={menuOpen} onClick={() => setMenuOpen(!menuOpen)}>
-            <span>{plan}</span><ChevronDown size={15} strokeWidth={2.1} />
-          </button>
-          {menuOpen && (
-            <div className="dropdown-menu" role="listbox">
-              {['Starter', 'Professional', 'Enterprise'].map((option) => (
-                <button type="button" role="option" aria-selected={plan === option} key={option}
-                  onClick={() => { setPlan(option); setMenuOpen(false) }}>
-                  <span>{option}</span>{plan === option && <Check size={14} strokeWidth={2.4} />}
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
-      ),
-    },
-    {
-      id: 'alert', title: 'Notification', cell: 'cell-alert',
-      node: alertVisible ? (
-        <div className="alert" role="status">
-          <span className="alert-icon"><Info size={15} strokeWidth={2.1} /></span>
-          <div className="alert-copy"><strong>Workspace updated</strong><span>Your changes are now live.</span></div>
-          <button type="button" aria-label="Dismiss alert" onClick={() => setAlertVisible(false)}><X size={15} strokeWidth={2.1} /></button>
-        </div>
-      ) : (
-        <button className="restore-alert" type="button" onClick={() => setAlertVisible(true)}>Restore notification</button>
       ),
     },
   ]
