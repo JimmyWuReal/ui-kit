@@ -322,13 +322,17 @@ footer { display: flex; justify-content: space-between; gap: 20px; padding: 30px
   height: 16px;
   border-radius: 50%;
   background: #6d6d6d;
+  /* Both knobs are 16px, but light-on-dark irradiates and reads larger
+     than dark-on-light. Take ~8% off the off state so the two match by
+     eye — the growth on the way across is the compensation, not a flourish. */
+  transform: scale(.92);
   transition:
     transform 320ms cubic-bezier(.22, 1, .36, 1),
     background-color 260ms ease;
 }
 /* Placed after :hover so an on toggle keeps its solid edge under the cursor. */
 .toggle.is-on { background: #fff; box-shadow: inset 0 0 0 1px #fff; }
-.toggle.is-on .toggle-knob { transform: translateX(20px); background: #0a0a0a; }
+.toggle.is-on .toggle-knob { transform: translateX(20px) scale(1); background: #0a0a0a; }
 
 button:focus-visible, input:focus-visible { outline: 2px solid rgba(255, 255, 255, .8); outline-offset: 3px; }
 .text-field input:focus-visible { outline: 0; }
