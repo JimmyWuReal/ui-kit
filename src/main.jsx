@@ -45,10 +45,17 @@ function ExpandedView({ title, wide = false, onClose, children }) {
   const [surface] = useSurface()
   const closeRef = useRef(null)
 
+  /* onClose is a fresh closure on every render, and the elements shown here
+     re-render the page as they are used — so it is held in a ref. Depending
+     on it directly would tear this effect down and move focus back to the
+     close button on every keystroke inside the expanded element. */
+  const closeHandler = useRef(onClose)
+  closeHandler.current = onClose
+
   useEffect(() => {
     const previous = document.activeElement
     const overflow = document.body.style.overflow
-    const onKey = (event) => { if (event.key === 'Escape') onClose() }
+    const onKey = (event) => { if (event.key === 'Escape') closeHandler.current() }
     document.body.style.overflow = 'hidden'
     document.addEventListener('keydown', onKey)
     closeRef.current?.focus()
@@ -57,7 +64,7 @@ function ExpandedView({ title, wide = false, onClose, children }) {
       document.removeEventListener('keydown', onKey)
       previous?.focus?.()
     }
-  }, [onClose])
+  }, [])
 
   const dismiss = (event) => { if (event.target.dataset.backdrop) onClose() }
 
