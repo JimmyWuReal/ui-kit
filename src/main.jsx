@@ -331,11 +331,11 @@ const style = (role, use, sample, font, size, weight, leading, tracking, color, 
 
 const typeScale = [
   ['Reading', [
-    style('Display', 'Page openers', 'Less, but better.', 'Inter', '64px', 500, '1.05', '-0.065em', '#FFFFFF'),
-    style('Title', 'Page and section titles', 'Make room for good ideas.', 'Inter', '36px', 500, '1.15', '-0.045em', '#FFFFFF'),
-    style('Heading', 'The start of a section', 'Details make the difference.', 'Inter', '24px', 500, '1.3', '-0.035em', '#FFFFFF'),
-    style('Quote', 'Pull quotes', '“Simplicity is the ultimate sophistication.”', 'Georgia', '24px', 400, '1.5', '0', '#CCCCCC', { italic: true }),
-    style('Description', 'An intro under a title', 'Thoughtful interfaces start with the essentials.', 'Inter', '18px', 400, '1.6', '-0.02em', '#AAAAAA'),
+    style('Display', 'Page openers', 'Better.', 'Inter', '64px', 500, '1.05', '-0.065em', '#FFFFFF'),
+    style('Title', 'Page and section titles', 'Make room.', 'Inter', '36px', 500, '1.15', '-0.045em', '#FFFFFF'),
+    style('Heading', 'The start of a section', 'Details matter.', 'Inter', '24px', 500, '1.3', '-0.035em', '#FFFFFF'),
+    style('Quote', 'Pull quotes', '“Simply put.”', 'Georgia', '24px', 400, '1.5', '0', '#CCCCCC', { italic: true }),
+    style('Description', 'An intro under a title', 'Start with the essentials.', 'Inter', '18px', 400, '1.6', '-0.02em', '#AAAAAA'),
     style('Body', 'Running text', 'Good design makes the complex feel simple.', 'Inter', '14px', 400, '1.75', '0', '#999999'),
     style('Caption', 'Notes, background card notes', 'A collection of things, made with care.', 'Inter', '12px', 400, '1.5', '0', '#888888'),
   ]],
