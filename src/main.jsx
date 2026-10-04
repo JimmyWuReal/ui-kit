@@ -1,6 +1,10 @@
 import React, { createContext, useContext, useEffect, useRef, useState } from 'react'
 import { createRoot } from 'react-dom/client'
 import { Maximize2, Plus, Sparkles, X } from 'lucide-react'
+import {
+  Accordion, Avatars, Badges, CheckMark, Chips, CodeInput, CopyLink, Pagination, Progress,
+  RadioGroup, Rating, SearchField, Segmented, Select, Slider, Spinner, Stepper, Tabs, TextArea,
+} from './controls.jsx'
 import './styles.css'
 
 /* Every surface an element can be tested against, as [key, name, use].
@@ -118,31 +122,34 @@ function PrimaryButton() {
   )
 }
 
-/* One continuous stroke, so the tick can be drawn on and wiped off with
-   dashoffset alone. pathLength normalises the dash maths to 0—1. */
-function CheckMark() {
-  return (
-    <svg className="check-mark" viewBox="0 0 24 24" aria-hidden="true">
-      <path d="M5 12.5 10 17.5 19 7" pathLength="1" />
-    </svg>
-  )
-}
-
 function ElementsPage() {
   const [checked, setChecked] = useState(true)
   const [enabled, setEnabled] = useState(true)
   const [email, setEmail] = useState('')
   const [expanded, setExpanded] = useState(null)
+  const [values, setValues] = useState({
+    plan: 'pro', view: 'Board', volume: 64, seats: 3, region: 'Taipei', query: '', message: '',
+    code: '', topics: ['Motion', 'Type'], tab: 'overview', faq: 'what', upload: 0, page: 2, rating: 4,
+  })
+  const set = (key) => (value) => setValues((current) => ({ ...current, [key]: value }))
+
+  /* The upload runs once on load, and again from its replay button. */
+  useEffect(() => {
+    if (values.upload >= 100) return
+    const timer = setTimeout(() => set('upload')(Math.min(100, values.upload + 4 + Math.round(Math.random() * 8))), 160)
+    return () => clearTimeout(timer)
+  }, [values.upload])
 
   /* Each demo is described once and rendered twice — in its cell, and expanded.
-     Both copies share this component's state, so they stay in step. */
+     Both copies share this component's state, so they stay in step. A demo
+     sits in the single-control measure unless it names its own cell. */
   const demos = [
     {
       id: 'buttons', title: 'Buttons', cell: 'cell-buttons',
       node: <div className="button-group"><PrimaryButton /><DepthButton /></div>,
     },
     {
-      id: 'checkbox', title: 'Checkbox', cell: 'cell-checkbox',
+      id: 'checkbox', title: 'Checkbox',
       node: (
         <label className="checkbox-row">
           <input type="checkbox" checked={checked} onChange={(event) => setChecked(event.target.checked)} />
@@ -152,7 +159,7 @@ function ElementsPage() {
       ),
     },
     {
-      id: 'toggle', title: 'Toggle', cell: 'cell-toggle',
+      id: 'toggle', title: 'Toggle',
       node: (
         <div className="control-row">
           <div><strong>Notifications</strong><span>Product updates</span></div>
@@ -164,7 +171,7 @@ function ElementsPage() {
       ),
     },
     {
-      id: 'input', title: 'Text field', cell: 'cell-input',
+      id: 'input', title: 'Text field',
       node: (
         <label className="text-field">
           <span className="mono-label">EMAIL ADDRESS</span>
@@ -172,6 +179,98 @@ function ElementsPage() {
             onChange={(event) => setEmail(event.target.value)} />
         </label>
       ),
+    },
+    {
+      id: 'radio', title: 'Radio group',
+      node: (
+        <RadioGroup label="Plan" value={values.plan} onChange={set('plan')} options={[
+          ['solo', 'Solo', 'One seat, every element'],
+          ['pro', 'Pro', 'Shared libraries and history'],
+          ['team', 'Team', 'Roles, review and support'],
+        ]} />
+      ),
+    },
+    {
+      id: 'segmented', title: 'Segmented control',
+      node: <Segmented label="View" options={['List', 'Board', 'Calendar']} value={values.view} onChange={set('view')} />,
+    },
+    {
+      id: 'slider', title: 'Slider',
+      node: <Slider label="VOLUME" value={values.volume} onChange={set('volume')} />,
+    },
+    {
+      id: 'stepper', title: 'Stepper',
+      node: <Stepper label="Seats" note="Billed per member" value={values.seats} onChange={set('seats')} />,
+    },
+    {
+      id: 'select', title: 'Select',
+      node: <Select label="REGION" options={['Taipei', 'Tokyo', 'Singapore', 'Frankfurt', 'Oregon']}
+        value={values.region} onChange={set('region')} />,
+    },
+    {
+      id: 'search', title: 'Search',
+      node: <SearchField value={values.query} onChange={set('query')} />,
+    },
+    {
+      id: 'textarea', title: 'Text area',
+      node: <TextArea label="MESSAGE" value={values.message} onChange={set('message')} />,
+    },
+    {
+      id: 'code', title: 'Code input',
+      node: <CodeInput label="VERIFICATION CODE" value={values.code} onChange={set('code')} />,
+    },
+    {
+      id: 'chips', title: 'Chips',
+      node: <Chips label="INTERESTS" options={['Motion', 'Type', 'Colour', 'Layout', 'Sound']}
+        value={values.topics} onChange={set('topics')} />,
+    },
+    {
+      id: 'tabs', title: 'Tabs',
+      node: (
+        <Tabs label="Project" value={values.tab} onChange={set('tab')} tabs={[
+          ['overview', 'Overview', 'A small set of elements, drawn in two materials and nothing more.'],
+          ['activity', 'Activity', 'Three changes this week, all of them to the way things move.'],
+          ['settings', 'Settings', 'Private to you. Nothing here is shared until you say so.'],
+        ]} />
+      ),
+    },
+    {
+      id: 'accordion', title: 'Accordion',
+      node: (
+        <Accordion value={values.faq} onChange={set('faq')} items={[
+          ['what', 'What is in the kit?', 'Buttons, flat controls, surfaces and type — each one documented by the values it is drawn with.'],
+          ['why', 'Why only two materials?', 'One lit material for actions, one flat line for everything else. Fewer rules, fewer surprises.'],
+          ['use', 'Can I use it?', 'Take whatever helps. It was made to be borrowed.'],
+        ]} />
+      ),
+    },
+    {
+      id: 'progress', title: 'Progress',
+      node: <Progress name="kit-assets.zip" size="24.8 MB" value={values.upload} onReplay={() => set('upload')(0)} />,
+    },
+    {
+      id: 'tooltip', title: 'Tooltip',
+      node: <CopyLink />,
+    },
+    {
+      id: 'pagination', title: 'Pagination',
+      node: <Pagination value={values.page} onChange={set('page')} />,
+    },
+    {
+      id: 'avatars', title: 'Avatars',
+      node: <Avatars extra={5} people={[['JW', 'Jimmy Wu'], ['AL', 'Ada Lin'], ['MK', 'Mei Kao'], ['SR', 'Sam Reyes']]} />,
+    },
+    {
+      id: 'badges', title: 'Badges',
+      node: <Badges />,
+    },
+    {
+      id: 'spinner', title: 'Spinner',
+      node: <Spinner label="Syncing" note="Saving your changes" />,
+    },
+    {
+      id: 'rating', title: 'Rating',
+      node: <Rating value={values.rating} onChange={set('rating')} />,
     },
   ]
 
@@ -181,7 +280,7 @@ function ElementsPage() {
     <>
       <div className="component-grid" id="top">
         {demos.map((demo) => (
-          <Cell className={demo.cell} key={demo.id} title={demo.title} onExpand={() => setExpanded(demo.id)}>
+          <Cell className={demo.cell ?? 'cell-control'} key={demo.id} title={demo.title} onExpand={() => setExpanded(demo.id)}>
             {demo.node}
           </Cell>
         ))}

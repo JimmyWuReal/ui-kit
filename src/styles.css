@@ -32,7 +32,7 @@ body {
   background: #090909;
 }
 
-button, input { font: inherit; }
+button, input, textarea { font: inherit; }
 button { color: inherit; }
 
 .mono-label {
@@ -220,10 +220,8 @@ footer { display: flex; justify-content: space-between; gap: 20px; padding: 30px
    for the on state. */
 
 /* Every cell that holds a single control shares one centred measure,
-   so the checkbox, toggle and field all sit on the same edges. */
-.cell-checkbox .cell-content,
-.cell-toggle .cell-content,
-.cell-input .cell-content {
+   so the checkbox, toggle, fields and the rest all sit on the same edges. */
+.cell-control .cell-content {
   width: min(100%, calc(var(--col) + var(--pad) * 2));
   margin-inline: auto;
   flex-direction: column;
@@ -235,12 +233,19 @@ footer { display: flex; justify-content: space-between; gap: 20px; padding: 30px
 .cell-buttons .cell-content { justify-content: center; }
 
 .control-row { display: flex; align-items: center; justify-content: space-between; gap: 20px; }
-.control-row > div,
-.checkbox-row > span:last-child { display: flex; flex-direction: column; gap: 5px; }
+.control-row > div:first-child,
+.checkbox-row > span:last-child,
+.radio-row > span:last-child { display: flex; flex-direction: column; gap: 5px; }
 .control-row strong,
-.checkbox-row strong { font-size: 13px; font-weight: 500; letter-spacing: -.01em; }
-.control-row > div span,
-.checkbox-row small { font-size: 11.5px; color: var(--sub); }
+.checkbox-row strong,
+.radio-row strong { font-size: 13px; font-weight: 500; letter-spacing: -.01em; }
+.control-row > div:first-child span,
+.checkbox-row small,
+.radio-row small { font-size: 11.5px; color: var(--sub); }
+
+/* A mono label over a control, with a value read out at the far end. */
+.field-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.mono-value { font: 400 11px/1 'DM Mono', ui-monospace, monospace; color: #d6d6d6; font-variant-numeric: tabular-nums; }
 
 .checkbox-row { display: flex; align-items: center; gap: 14px; cursor: pointer; }
 .checkbox-row input { position: absolute; opacity: 0; pointer-events: none; }
@@ -283,7 +288,11 @@ footer { display: flex; justify-content: space-between; gap: 20px; padding: 30px
 .checkbox-row input:focus-visible + .checkbox-box { outline: 2px solid rgba(255, 255, 255, .8); outline-offset: 3px; }
 
 .text-field { display: flex; flex-direction: column; gap: 12px; }
-.text-field input {
+/* The text field, text area, search and select trigger are one box. */
+.text-field input,
+.text-field textarea,
+.search-field input,
+.select-trigger {
   width: 100%;
   height: 48px;
   padding: 0 16px;
@@ -297,10 +306,16 @@ footer { display: flex; justify-content: space-between; gap: 20px; padding: 30px
   box-shadow: inset 0 0 0 1px var(--line);
   transition: box-shadow 200ms ease;
 }
-.text-field input::placeholder { color: #565656; }
-.text-field input:hover { box-shadow: inset 0 0 0 1px var(--line-hover); }
+.text-field :is(input, textarea)::placeholder,
+.search-field input::placeholder { color: #565656; }
+.text-field :is(input, textarea):hover,
+.search-field input:hover,
+.select-trigger:hover { box-shadow: inset 0 0 0 1px var(--line-hover); }
 /* The brightened outline is the focus state — no separate ring. */
-.text-field input:focus { box-shadow: inset 0 0 0 1px var(--line-live); }
+.text-field :is(input, textarea):focus,
+.search-field input:focus,
+.select.is-open .select-trigger { box-shadow: inset 0 0 0 1px var(--line-live); }
+.text-field textarea { height: auto; padding: 14px 16px; line-height: 1.6; resize: none; display: block; }
 
 .toggle {
   position: relative;
@@ -336,9 +351,506 @@ footer { display: flex; justify-content: space-between; gap: 20px; padding: 30px
 .toggle.is-on { background: #fff; box-shadow: inset 0 0 0 1px #fff; }
 .toggle.is-on .toggle-knob { transform: translateX(20px) scale(1); background: #0a0a0a; }
 
-button:focus-visible, input:focus-visible { outline: 2px solid rgba(255, 255, 255, .8); outline-offset: 3px; }
-.text-field input:focus-visible { outline: 0; }
+/* ── More flat controls ───────────────────────────────────────────
+   Same rules as the three above: a hairline that steps up at rest,
+   hover and in use; white for on, with black drawn into it; motion on
+   transform with the one ease-out curve. A keyframe only where a node
+   is new — a rolled number, a typed digit, a changed panel. */
 
+/* Radio: the checkbox's circle. The dot scales in after the fill,
+   the way the tick follows the box. */
+.radio-group { display: flex; flex-direction: column; gap: 16px; }
+.radio-row { display: flex; align-items: center; gap: 14px; cursor: pointer; }
+.radio-row input { position: absolute; opacity: 0; pointer-events: none; }
+.radio-dot {
+  width: 22px;
+  height: 22px;
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1px var(--line);
+  transition: background-color 200ms ease, box-shadow 200ms ease;
+}
+.radio-dot::after {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #0b0b0b;
+  transform: scale(0);
+  transition: transform 240ms cubic-bezier(.65, 0, .35, 1);
+}
+.radio-row:hover .radio-dot { box-shadow: inset 0 0 0 1px var(--line-hover); }
+.radio-row input:checked + .radio-dot { background: #fff; box-shadow: inset 0 0 0 1px #fff; }
+.radio-row input:checked + .radio-dot::after { transform: scale(1); transition-delay: 70ms; }
+.radio-row input:focus-visible + .radio-dot { outline: 2px solid rgba(255, 255, 255, .8); outline-offset: 3px; }
+
+/* Segmented control and pagination share one thumb: a single white
+   block moved by index, so it slides rather than fading between cells. */
+.segmented {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(var(--count), minmax(0, 1fr));
+  padding: 4px;
+  border-radius: 12px;
+  box-shadow: inset 0 0 0 1px var(--line);
+  transition: box-shadow 200ms ease;
+}
+.segmented:hover { box-shadow: inset 0 0 0 1px var(--line-hover); }
+.segmented-thumb {
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  left: 4px;
+  width: calc((100% - 8px) / var(--count));
+  border-radius: 8px;
+  background: #fff;
+  transform: translateX(calc(var(--index) * 100%));
+  transition: transform 320ms cubic-bezier(.22, 1, .36, 1);
+}
+.segmented button,
+.pages button {
+  position: relative;
+  z-index: 1;
+  height: 36px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: #8a8a8a;
+  font-size: 12.5px;
+  font-weight: 500;
+  letter-spacing: -.01em;
+  cursor: pointer;
+  transition: color 260ms ease;
+}
+.segmented button:not(.is-active):hover,
+.pages button:not(.is-active):hover { color: #e6e6e6; }
+.segmented button.is-active,
+.pages button.is-active { color: #0a0a0a; }
+
+/* Slider: the toggle's on state laid flat — white fill, black knob. */
+.slider-field { display: flex; flex-direction: column; gap: 16px; }
+.slider-field input {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 18px;
+  margin: 0;
+  background: transparent;
+  cursor: pointer;
+}
+.slider-field input::-webkit-slider-runnable-track {
+  height: 6px;
+  border-radius: 999px;
+  background: linear-gradient(#fff, #fff) 0 0 / var(--fill) 100% no-repeat;
+  box-shadow: inset 0 0 0 1px var(--line);
+  transition: box-shadow 200ms ease;
+}
+.slider-field input:hover::-webkit-slider-runnable-track { box-shadow: inset 0 0 0 1px var(--line-hover); }
+.slider-field input::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  margin-top: -6px;
+  border-radius: 50%;
+  background: #0a0a0a;
+  box-shadow: inset 0 0 0 1.5px #fff;
+  transition: transform 180ms cubic-bezier(.22, 1, .36, 1);
+}
+.slider-field input:active::-webkit-slider-thumb { transform: scale(1.15); }
+.slider-field input::-moz-range-track { height: 6px; border-radius: 999px; box-shadow: inset 0 0 0 1px var(--line); }
+.slider-field input::-moz-range-progress { height: 6px; border-radius: 999px; background: #fff; }
+.slider-field input::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border: 0;
+  border-radius: 50%;
+  background: #0a0a0a;
+  box-shadow: inset 0 0 0 1.5px #fff;
+  transition: transform 180ms cubic-bezier(.22, 1, .36, 1);
+}
+.slider-field input:active::-moz-range-thumb { transform: scale(1.15); }
+
+/* Stepper: the number rolls the way it moved. */
+.stepper { display: flex; align-items: center; padding: 3px; border-radius: 10px; box-shadow: inset 0 0 0 1px var(--line); }
+.stepper button {
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: #bdbdbd;
+  cursor: pointer;
+  transition: color 180ms ease-out, transform 140ms cubic-bezier(.22, 1, .36, 1);
+}
+.stepper button:hover:not(:disabled) { color: #fff; }
+.stepper button:active:not(:disabled) { transform: scale(.88); }
+.stepper button:disabled { color: #3d3d3d; cursor: default; }
+.stepper-value {
+  width: 34px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  font-size: 13px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+.roll-up { animation: roll-up 260ms cubic-bezier(.22, 1, .36, 1); }
+.roll-down { animation: roll-down 260ms cubic-bezier(.22, 1, .36, 1); }
+
+/* Select: the field's box, and a menu on the raised gray. Shown by
+   class with visibility held back, so it eases out as well as in. */
+.select { position: relative; display: flex; flex-direction: column; gap: 12px; }
+.select-trigger { display: flex; align-items: center; justify-content: space-between; padding: 0 14px 0 16px; text-align: left; cursor: pointer; }
+.select-trigger svg { color: #8a8a8a; transition: transform 320ms cubic-bezier(.22, 1, .36, 1), color 200ms ease; }
+.select.is-open .select-trigger svg { transform: rotate(180deg); color: #fff; }
+.select-menu {
+  position: absolute;
+  z-index: 5;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 5px;
+  border-radius: 12px;
+  background: #1c1c1c;
+  box-shadow: inset 0 0 0 1px var(--line);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-4px) scale(.98);
+  transform-origin: top;
+  transition: opacity 160ms ease-out, transform 240ms cubic-bezier(.22, 1, .36, 1), visibility 0s 240ms;
+}
+.select.is-open .select-menu { opacity: 1; visibility: visible; transform: none; transition-delay: 0s; }
+.select-menu button {
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 11px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: #a8a8a8;
+  font-size: 13px;
+  letter-spacing: -.01em;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 140ms ease-out, color 140ms ease-out;
+}
+.select-menu button:is(:hover, :focus-visible) { outline: 0; color: #fff; background: rgba(255, 255, 255, .07); }
+.select-menu button[aria-selected='true'] { color: #fff; }
+
+/* Search: the field's box with an icon, and a clear button that only
+   exists while there is something to clear. */
+.search-field { position: relative; }
+.search-field input { -webkit-appearance: none; appearance: none; padding: 0 44px 0 42px; }
+.search-field input::-webkit-search-cancel-button { display: none; }
+.search-icon { position: absolute; top: 50%; left: 16px; color: #6f6f6f; transform: translateY(-50%); pointer-events: none; transition: color 200ms ease; }
+.search-field:focus-within .search-icon { color: #fff; }
+.search-clear {
+  position: absolute;
+  top: 11px;
+  right: 11px;
+  width: 26px;
+  height: 26px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 7px;
+  color: #cfcfcf;
+  background: rgba(255, 255, 255, .08);
+  cursor: pointer;
+  opacity: 0;
+  visibility: hidden;
+  transform: scale(.8);
+  transition: opacity 160ms ease-out, transform 200ms cubic-bezier(.22, 1, .36, 1), visibility 0s 200ms, background-color 140ms ease-out;
+}
+.search-field.has-value .search-clear { opacity: 1; visibility: visible; transform: none; transition-delay: 0s; }
+.search-clear:hover { color: #fff; background: rgba(255, 255, 255, .14); }
+
+/* Text area: the counter stays dim until the limit is close. */
+.text-field .mono-value { color: var(--dim); transition: color 200ms ease; }
+.text-field .mono-value.is-near { color: #fff; }
+
+/* Code input: six boxes drawing one invisible input. */
+.code-field { display: flex; flex-direction: column; gap: 12px; }
+.code-boxes { position: relative; display: grid; grid-template-columns: repeat(var(--count), minmax(0, 1fr)); gap: 8px; }
+.code-boxes input {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  opacity: 0;
+  font-size: 16px;
+  cursor: text;
+}
+.code-box {
+  height: 52px;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  font-size: 18px;
+  font-weight: 500;
+  box-shadow: inset 0 0 0 1px var(--line);
+  transition: box-shadow 200ms ease;
+}
+.code-box.is-filled { box-shadow: inset 0 0 0 1px var(--line-hover); }
+.code-box.is-active { box-shadow: inset 0 0 0 1px var(--line-live); }
+.code-box.is-active:not(.is-filled)::after { content: ''; width: 1.5px; height: 18px; background: #fff; animation: caret-blink 1s steps(1) infinite; }
+.code-digit { animation: digit-enter 200ms cubic-bezier(.22, 1, .36, 1); }
+
+/* Chips: the checkbox again, as a pill. The tick opens a space for
+   itself, then draws in. */
+.chips-field { display: flex; flex-direction: column; gap: 12px; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip {
+  height: 34px;
+  display: inline-flex;
+  align-items: center;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: #a8a8a8;
+  font-size: 12.5px;
+  font-weight: 500;
+  letter-spacing: -.01em;
+  box-shadow: inset 0 0 0 1px var(--line);
+  cursor: pointer;
+  transition: background-color 200ms ease, color 200ms ease, box-shadow 200ms ease, padding 240ms cubic-bezier(.22, 1, .36, 1);
+}
+.chip:hover { color: #e6e6e6; box-shadow: inset 0 0 0 1px var(--line-hover); }
+.chip.is-on { padding-left: 11px; color: #0a0a0a; background: #fff; box-shadow: inset 0 0 0 1px #fff; }
+.chip-check { width: 0; display: flex; overflow: hidden; transition: width 240ms cubic-bezier(.22, 1, .36, 1), margin 240ms cubic-bezier(.22, 1, .36, 1); }
+.chip.is-on .chip-check { width: 14px; margin-right: 6px; }
+.chip-check .check-mark { flex: 0 0 auto; }
+.chip.is-on .check-mark { stroke-dashoffset: 0; transition-delay: 70ms; }
+
+/* Tabs: a hairline baseline with one bright stretch of it that slides. */
+.tab-list { position: relative; display: grid; grid-template-columns: repeat(var(--count), minmax(0, 1fr)); box-shadow: inset 0 -1px 0 var(--line); }
+.tab-list button {
+  height: 42px;
+  padding: 0;
+  border: 0;
+  border-radius: 8px 8px 0 0;
+  background: transparent;
+  color: #7d7d7d;
+  font-size: 12.5px;
+  font-weight: 500;
+  letter-spacing: -.01em;
+  cursor: pointer;
+  transition: color 200ms ease;
+}
+.tab-list button:hover { color: #d0d0d0; }
+.tab-list button[aria-selected='true'] { color: #fff; }
+.tab-list button:focus-visible { outline-offset: -2px; }
+.tab-indicator {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: calc(100% / var(--count));
+  height: 1px;
+  background: #fff;
+  transform: translateX(calc(var(--index) * 100%));
+  transition: transform 320ms cubic-bezier(.22, 1, .36, 1);
+}
+.tab-panel { min-height: 3.4em; margin: 18px 0 0; font-size: 12.5px; line-height: 1.7; color: var(--sub); }
+.tab-panel.is-entering { animation: panel-enter 260ms cubic-bezier(.22, 1, .36, 1); }
+
+/* Accordion: the plus turns into a cross, the panel opens on a 0fr→1fr row. */
+.accordion-item { box-shadow: inset 0 -1px 0 var(--rule); }
+.accordion-item button {
+  width: 100%;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #cfcfcf;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: -.01em;
+  text-align: left;
+  cursor: pointer;
+  transition: color 200ms ease;
+}
+.accordion-item button:hover,
+.accordion-item.is-open button { color: #fff; }
+.accordion-item button svg { flex: 0 0 auto; color: #7d7d7d; transition: transform 320ms cubic-bezier(.22, 1, .36, 1), color 200ms ease; }
+.accordion-item.is-open button svg { color: #fff; transform: rotate(45deg); }
+.accordion-panel { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 320ms cubic-bezier(.22, 1, .36, 1); }
+.accordion-item.is-open .accordion-panel { grid-template-rows: 1fr; }
+.accordion-panel > div { min-height: 0; overflow: hidden; }
+.accordion-panel p { margin: 0; padding: 0 28px 18px 0; font-size: 12.5px; line-height: 1.7; color: var(--sub); opacity: 0; transition: opacity 200ms ease; }
+.accordion-item.is-open .accordion-panel p { opacity: 1; transition-delay: 80ms; }
+
+/* Progress: one white bar, scaled rather than resized. */
+.progress { display: flex; flex-direction: column; gap: 16px; }
+.progress-end { display: flex; align-items: center; gap: 10px; }
+.progress-track { height: 6px; overflow: hidden; border-radius: 999px; box-shadow: inset 0 0 0 1px var(--line); }
+.progress-fill { display: block; height: 100%; border-radius: inherit; background: #fff; transform-origin: left; transition: transform 320ms cubic-bezier(.22, 1, .36, 1); }
+
+/* A hairline icon button, for the controls that need one. */
+.icon-button {
+  position: relative;
+  width: 34px;
+  height: 34px;
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: #bdbdbd;
+  box-shadow: inset 0 0 0 1px var(--line);
+  cursor: pointer;
+  transition:
+    color 180ms ease-out,
+    background-color 200ms ease,
+    box-shadow 200ms ease,
+    opacity 160ms ease-out,
+    transform 140ms cubic-bezier(.22, 1, .36, 1);
+}
+.icon-button:hover:not(:disabled) { color: #fff; box-shadow: inset 0 0 0 1px var(--line-hover); }
+.icon-button:active:not(:disabled) { transform: scale(.94); }
+.icon-button:disabled { color: #3d3d3d; cursor: default; }
+.icon-button.is-on { color: #0a0a0a; background: #fff; box-shadow: inset 0 0 0 1px #fff; }
+.icon-button.is-small { width: 28px; height: 28px; border-radius: 8px; }
+.icon-button.is-hidden { opacity: 0; transform: scale(.8); pointer-events: none; }
+.icon-button > svg { grid-area: 1 / 1; transition: opacity 200ms ease, transform 240ms cubic-bezier(.22, 1, .36, 1); }
+.icon-button .icon-in,
+.icon-button.is-on .icon-out { opacity: 0; transform: scale(.6); }
+.icon-button.is-on .icon-in { opacity: 1; transform: none; }
+
+/* Tooltip: a small white label, up on hover or keyboard focus, and held
+   for a moment after a copy. */
+.tooltip-anchor { position: relative; display: inline-flex; }
+.tooltip {
+  position: absolute;
+  bottom: calc(100% + 10px);
+  left: 50%;
+  padding: 6px 9px;
+  border-radius: 7px;
+  color: #0a0a0a;
+  background: #fff;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transform: translate(-50%, 4px) scale(.96);
+  transition: opacity 160ms ease-out, transform 200ms cubic-bezier(.22, 1, .36, 1);
+}
+.tooltip-anchor:hover .tooltip,
+.tooltip-anchor:has(:focus-visible) .tooltip,
+.tooltip-anchor.is-shown .tooltip { opacity: 1; transform: translate(-50%, 0); }
+
+/* Pagination: the segmented thumb, run under the page numbers. */
+.pagination-field { display: flex; flex-direction: column; align-items: center; gap: 16px; }
+.pagination { display: flex; align-items: center; gap: 8px; }
+.pages { position: relative; display: grid; grid-template-columns: repeat(var(--count), 34px); }
+.pages .segmented-thumb { top: 0; bottom: 0; left: 0; width: calc(100% / var(--count)); border-radius: 10px; }
+.pages button { height: 34px; padding: 0; border-radius: 10px; font-variant-numeric: tabular-nums; }
+
+/* Avatars: overlapped circles cut out of the card by a ring of its gray. */
+.avatars { display: flex; }
+.avatar {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  margin-left: -6px;
+  border-radius: 50%;
+  color: #cfcfcf;
+  background: #111;
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: .02em;
+  box-shadow: inset 0 0 0 1px var(--line), 0 0 0 2px #111;
+  cursor: default;
+  transition: transform 240ms cubic-bezier(.22, 1, .36, 1), box-shadow 200ms ease;
+}
+.avatar:first-child { margin-left: 0; }
+.avatar:hover { transform: translateY(-3px); box-shadow: inset 0 0 0 1px var(--line-live), 0 0 0 2px #111; }
+.avatar.is-count { font: var(--mono); letter-spacing: 0; color: #0a0a0a; background: #fff; box-shadow: inset 0 0 0 1px #fff, 0 0 0 2px #111; }
+
+/* Badges: one pill, four states told apart by the dot alone. */
+.badges { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+.badge {
+  height: 28px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 11px;
+  border-radius: 999px;
+  color: #d6d6d6;
+  font: var(--mono);
+  letter-spacing: var(--track);
+  text-transform: uppercase;
+  box-shadow: inset 0 0 0 1px var(--line);
+}
+.badge i { position: relative; width: 6px; height: 6px; border-radius: 50%; box-shadow: inset 0 0 0 1px #8a8a8a; }
+.badge.is-live i { background: #fff; box-shadow: none; }
+.badge.is-live i::after { content: ''; position: absolute; inset: 0; border-radius: 50%; background: #fff; animation: live-pulse 1.8s cubic-bezier(.22, 1, .36, 1) infinite; }
+.badge.is-review i { background: linear-gradient(90deg, #fff 50%, transparent 50%); box-shadow: inset 0 0 0 1px #fff; }
+.badge.is-archived { color: var(--dim); }
+.badge.is-archived i { background: #4a4a4a; box-shadow: none; }
+
+/* Rating: hovering previews; the stars fill one after another. */
+.rating-field { display: flex; flex-direction: column; align-items: center; gap: 14px; }
+.rating { display: flex; gap: 4px; }
+.star {
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 9px;
+  background: transparent;
+  color: #4a4a4a;
+  cursor: pointer;
+  transition: color 200ms ease var(--delay), transform 240ms cubic-bezier(.22, 1, .36, 1);
+}
+.star svg { fill: transparent; transition: fill 200ms ease var(--delay); }
+.star.is-on { color: #fff; }
+.star.is-on svg { fill: currentColor; }
+.star:hover { transform: scale(1.12); }
+.star:active { transform: scale(.92); }
+
+/* Spinner: a hairline ring with one bright quarter running round it. */
+.spinner { position: relative; width: 20px; height: 20px; flex: 0 0 auto; border-radius: 50%; box-shadow: inset 0 0 0 1.5px var(--line); }
+.spinner::after { content: ''; position: absolute; inset: 0; border: 1.5px solid transparent; border-top-color: #fff; border-radius: 50%; animation: spin 800ms linear infinite; }
+
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes roll-up { from { opacity: 0; transform: translateY(9px); } }
+@keyframes roll-down { from { opacity: 0; transform: translateY(-9px); } }
+@keyframes digit-enter { from { opacity: 0; transform: translateY(4px) scale(.9); } }
+@keyframes panel-enter { from { opacity: 0; transform: translateY(4px); } }
+@keyframes caret-blink { 50% { opacity: 0; } }
+@keyframes live-pulse { from { opacity: .55; transform: scale(1); } to { opacity: 0; transform: scale(3); } }
+
+button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 2px solid rgba(255, 255, 255, .8); outline-offset: 3px; }
+.text-field :is(input, textarea):focus-visible,
+.search-field input:focus-visible,
+.code-boxes input:focus-visible { outline: 0; }
 @media (max-width: 680px) {
   :root { --pad: 24px; }
   .showcase-shell { width: calc(100% - 32px); }
@@ -349,6 +861,8 @@ button:focus-visible, input:focus-visible { outline: 2px solid rgba(255, 255, 25
   .type-wide { grid-column: auto; }
   .type-card { padding: 24px; }
   .spec-items { grid-template-columns: repeat(auto-fit, minmax(84px, 1fr)); }
+  .pages { grid-template-columns: repeat(var(--count), 30px); }
+  .code-boxes { gap: 6px; }
   footer { flex-direction: column; gap: 8px; }
 }
 
