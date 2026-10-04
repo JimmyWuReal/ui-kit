@@ -14,6 +14,24 @@ The style is deliberately simple: dark surfaces, lit primary buttons, flat
 controls, grayscale charts, and a small set of typography rules. You can adapt
 the copy, colors, and layout to your project.
 
+## Demo: personal introduction site
+
+A personal introduction site built with the skill, with profile details and
+90 days of demo commit and monthly recurring revenue (MRR) data.
+
+**Model:** Opus 5.5 · **Effort:** High
+
+Demo prompt:
+
+```text
+/ui-kit Create a folder named demo-2 in ~/Downloads and build a personal
+introduction site using the UI Kit skill. Include details about the person
+and charts showing commit counts and monthly recurring revenue (MRR).
+Use demo data spanning more than 30 days.
+```
+
+![Personal introduction demo with profile details, commit counts, and MRR charts](docs/screenshots/demo-2.jpg)
+
 ## A few elements
 
 These are screenshots of the running demo.
