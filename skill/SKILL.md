@@ -1,22 +1,35 @@
 ---
 name: ui-kit
-description: Design and implement websites using Jimmy Wu's UI kit. Use when a site should use this kit's dark surfaces, depth buttons, flat controls, grayscale charts, and typography, or when adapting its existing components.
+description: Design and implement minimal websites using Jimmy Wu's UI kit. Use when a site should use this kit's dark surfaces, depth buttons, flat controls, grayscale charts, and typography, or when adapting its existing components.
 ---
 
 # UI Kit
 
-Use this kit to compose a site around the user's content and actions. Read only the element, background, and text references needed for the design. Each reference contains the important values and a usage recipe; the tables below are the entry point.
+Use this kit to compose a minimal site around the user's content and actions. Choose the content first, then read only the element, background, and text references needed for it. The tables below are a menu of available styles, not a checklist of things to include.
 
 This skill works in Claude Code and Codex. Resolve relative file links from this file's real directory, following the installed skill symlink, rather than from the project you are designing. The installation keeps this repository's `skill/` and `src/` together.
 
 ## Design rules
 
-- Use two materials: lit depth for primary and AI actions; flat hairlines for other controls. Keep backgrounds flat or use the kit's crisp patterns.
+- Use lit depth for primary and AI actions; keep other controls flat, with hairlines only where they define a control or state. Keep the page canvas and content surfaces flat by default.
 - Start with a near-black page, gray surfaces, white emphasis, and quieter secondary text. Reserve red for destructive actions. Change colors when requested, preserving readable text and clear states.
-- Use Inter for reading and controls, DM Mono for labels and values, and Georgia only for italic quotes. Load Inter 400/500/600 and DM Mono 400; keep system fallbacks.
-- Compose an actual page for the task. The gallery cells, expand buttons, surface picker, type specimens, and demo copy are showcase tools, not required product layout.
+- Use Inter for reading and controls, and DM Mono for useful labels and values. Load Inter 400/500/600 and DM Mono 400; keep system fallbacks. Georgia is an optional style for a quote when the content calls for one.
+- Compose an actual page for the task. Gallery cells, expand buttons, surface pickers, type specimens, and demo copy belong to the showcase.
 - Adapt labels, content, widths, and heights to the task. Retain the component's material, hierarchy, state behavior, and proportions. A primary action should be visually clear; use outline actions for supporting choices.
 - Preserve keyboard operation, visible focus, accessible names, and disabled states. Critical instructions must be readable; brighten muted text when needed.
+
+## Minimal composition
+
+Minimalism applies to the whole page: its sections, words, controls, and decoration. Include an element when it helps the visitor understand the content or complete an intended action. If removing it loses no useful information or capability, leave it out. Do not fill space merely to make a page look finished.
+
+- Separate sections with spacing, alignment, and type hierarchy. Omit decorative horizontal rules, header/footer borders, short accent lines, and routine dividers between cards or profile rows. Keep functional lines such as control outlines, focus indicators, chart marks, and necessary chart guides.
+- Use a direct heading and only the supporting copy it needs. Omit default eyebrows, uppercase role/location tags, numbered section labels, badges, slogans, and repeated captions. Put each fact in one useful place. Do not shrink unnecessary copy into tiny mono text to justify keeping it.
+- End the page when the requested content is complete. Do not append a quote, philosophy/principles block, testimonial, FAQ, or closing call to action without a content or task reason. A type style or component being available is not a reason to use it. Never invent a quote to decorate the page.
+- Choose the fewest components that support the task. Add charts, stat cards, meters, tabs, filters, exports, or data tables only for a real need or an explicit request. A plain text block or link may be enough; not every group needs a card, icon, description, or button.
+- Keep useful field labels, units, errors, and accessible names. For sample content, disclose that it is demo data once near the relevant content; repeat only where a separately viewed section would otherwise mislead. Minimal copy must still explain the interface honestly.
+- Treat patterned backgrounds as an intentional optional choice. Do not add dots, grids, nested panels, monograms, or ornamental icons just to fill empty space.
+
+For a personal introduction, use direct headings, a concise introduction, and flat panels where grouping helps. Include profile details, projects, and activity charts when requested. Omit the redundant `Developer · Taiwan` eyebrow when the profile already gives those facts, and omit the trailing quote and principles section unless requested. The showcase does not set a target section count or component inventory.
 
 ## Motion rule
 
@@ -86,6 +99,8 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
 
 Keep backgrounds, spacing, and type consistent across a page. The showcase's useful layout defaults are a 1120px maximum page width, 20px grid gaps, and a 404px maximum single-control measure. These are starting points, not a required layout. At 680px and below, its grid becomes one column, gaps become 16px, and side gutters become 16px. Give wider charts enough space and avoid page overflow at 320px.
 
+The foundation's border tokens and mono classes support functional controls and data. Their presence does not call for page dividers or extra labels.
+
 ## Elements
 
 | Element | Place | Description | Use case |
@@ -150,6 +165,6 @@ The recipes work as design references on their own. Their short CSS examples emp
 | [src/main.jsx](../src/main.jsx) | Button, checkbox, toggle, card markup; `SURFACES`, `typeScale` |
 | [src/styles.css](../src/styles.css) | Complete class rules; search the selectors named in each reference |
 
-Usage snippets assume the control is imported and its state variable / setter are defined in the destination component. In a different project, copy the chosen component, its helper/import dependencies, and relevant class rules. The named exports in `controls.jsx` and `charts.jsx` can be imported; the demo functions in `main.jsx` cannot. Extract their markup without copying the gallery or its `createRoot` call. The source uses React and `lucide-react`; charts use SVG without a chart library. Charts currently contain sample data rather than data props: adapt the data and accessible summaries together.
+Usage snippets assume the control is imported and its state variable / setter are defined in the destination component. In a different project, copy the chosen component, its helper/import dependencies, and relevant class rules. Avoid importing the entire showcase stylesheet: it includes gallery layout and decoration unrelated to the new page. The named exports in `controls.jsx` and `charts.jsx` can be imported; the demo functions in `main.jsx` cannot. Extract only the needed markup without copying the gallery, its surrounding labels, or its `createRoot` call. The source uses React and `lucide-react`; charts use SVG without a chart library. Charts currently contain sample data rather than data props: adapt the data and accessible summaries together.
 
-After composing the design, check it on a narrow screen, operate its controls with a keyboard, and verify the motion rule on both first render and revealed content. Keep shared decisions here and element-specific behavior in the references. When updating kit values, update the matching reference too.
+Before finishing, make a subtraction pass over the whole page: remove redundant words, decorative lines, unnecessary wrappers and controls, and sections added only to showcase the kit. Then check it on a narrow screen, operate its controls with a keyboard, and verify the motion rule on both first render and revealed content. Keep shared decisions here and element-specific behavior in the references. When updating kit values, update the matching reference too.

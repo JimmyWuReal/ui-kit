@@ -1,6 +1,6 @@
 # Dot matrix
 
-Use for a quiet patterned region or canvas. Dots are 1px in radius, spaced on a 16px square grid, over the default black.
+An optional patterned region or canvas, used when the design intentionally calls for it. Prefer a flat background by default; do not add dots to every hero or card. Dots are 1px in radius, spaced on a 16px square grid, over the default black.
 
 ```css
 .bg-dots {

@@ -6,6 +6,6 @@ Use as the default page canvas. The visible page is near-black `#090909`; the sh
 .bg-default { background: #090909; }
 ```
 
-Place cards and raised layers above it. Keep this surface flat and static.
+Keep this surface flat and static. Content can sit directly on it; add a card or raised layer only when grouping or interaction calls for one. Use spacing instead of decorative section rules.
 
 Source: [styles.css](../../src/styles.css), `.bg-default` and `body`.

@@ -1,6 +1,6 @@
 # Grid
 
-Use for an alignment, editor, or diagram canvas. This is two hard 1px line layers, not a soft color wash.
+Use when an alignment, editor, or diagram canvas needs a spatial guide. Keep ordinary page sections flat; do not add this pattern as page decoration. This is two hard 1px line layers, not a soft color wash.
 
 ```css
 .bg-grid {

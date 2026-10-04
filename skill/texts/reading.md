@@ -2,6 +2,8 @@
 
 Use semantic headings and paragraphs. Inter uses `Inter, ui-sans-serif, system-ui, sans-serif`; quote uses `Georgia, serif`, italic only. These are the kit's important prose roles.
 
+Choose only the roles the content needs. A heading does not automatically need a description or caption. Keep copy direct and omit repeated slogans. Use the quote style only for a relevant quotation supplied by the user or supported by a source; do not add a quote section to show this type role or repeat the introduction.
+
 | Role | Use | Size | Weight | Line height | Tracking | Color |
 | --- | --- | --- | --- | --- | --- | --- |
 | Display | Page opener | 64px | 500 | 1.05 | -.065em | #ffffff |

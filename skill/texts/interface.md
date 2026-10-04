@@ -2,6 +2,8 @@
 
 Use Inter for these roles. Weight, muted color, and context separate labels from values; do not make every control bold.
 
+Add helper text when it clarifies a choice, constraint, error, or unfamiliar behavior. Omit obvious instructions, duplicate labels, and decorative footer taglines. Keep the labels and accessible names needed to operate controls.
+
 | Role | Use | Size | Weight | Line height | Tracking | Color |
 | --- | --- | --- | --- | --- | --- | --- |
 | Brand | Site header | 15px | 600 | normal | -.035em | #efefef |

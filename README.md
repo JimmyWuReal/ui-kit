@@ -14,6 +14,10 @@ The style is deliberately simple: dark surfaces, lit primary buttons, flat
 controls, grayscale charts, and a small set of typography rules. You can adapt
 the copy, colors, and layout to your project.
 
+The skill favors minimal pages: use spacing to separate sections, keep only
+useful copy, and choose components for the task. Decorative rules, repeated
+labels, and extra quote or principles sections are omitted by default.
+
 ## Demo: personal introduction site
 
 A personal introduction site built with the skill, with profile details and
