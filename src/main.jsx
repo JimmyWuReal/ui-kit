@@ -2,7 +2,7 @@ import React, { createContext, useContext, useEffect, useRef, useState } from 'r
 import { createRoot } from 'react-dom/client'
 import { Maximize2, Plus, Sparkles, X } from 'lucide-react'
 import {
-  Accordion, Avatars, Badges, CheckMark, Chips, CodeInput, CopyLink, Pagination, Progress,
+  Accordion, CheckMark, Chips, CodeInput, CopyLink, Pagination, Progress,
   RadioGroup, Rating, SearchField, Segmented, Select, Slider, Spinner, Stepper, Tabs, TextArea,
 } from './controls.jsx'
 import './styles.css'
@@ -255,14 +255,6 @@ function ElementsPage() {
       node: <Pagination value={values.page} onChange={set('page')} />,
     },
     {
-      id: 'avatars', title: 'Avatars',
-      node: <Avatars extra={5} people={[['JW', 'Jimmy Wu'], ['AL', 'Ada Lin'], ['MK', 'Mei Kao'], ['SR', 'Sam Reyes']]} />,
-    },
-    {
-      id: 'badges', title: 'Badges',
-      node: <Badges />,
-    },
-    {
       id: 'spinner', title: 'Spinner',
       node: <Spinner label="Syncing" note="Saving your changes" />,
     },
@@ -317,107 +309,143 @@ function BackgroundPage() {
   )
 }
 
-/* The values a sample is actually drawn with — every sample states the
-   same six, so the sheets under them all read the same way. */
-const spec = (font, size, weight, leading, tracking, color) =>
-  ({ font, size, weight, leading, tracking, color })
+/* The three faces the kit is set in, with the weights it actually uses. */
+const FAMILIES = {
+  'Inter': 'Inter, ui-sans-serif, system-ui, sans-serif',
+  'DM Mono': "'DM Mono', ui-monospace, monospace",
+  'Georgia': 'Georgia, serif',
+}
+const WEIGHTS = { 400: 'Regular', 500: 'Medium', 600: 'Semibold' }
 
-function SpecSheet({ specs }) {
+const typefaces = [
+  { name: 'Inter', kind: 'Sans', use: 'Everything you read and click.', weights: [400, 500, 600], wide: true },
+  { name: 'DM Mono', kind: 'Mono', use: 'Labels, values and counts.', weights: [400] },
+  { name: 'Georgia', kind: 'Serif', use: 'Quotes, and only in italic.', weights: [400], italic: true },
+]
+
+/* Every kind of text in the kit, with the values it is drawn with. These
+   mirror the rules in styles.css — keep the two in step. A sample on a
+   light fill names it as `on`. */
+const style = (role, use, sample, font, size, weight, leading, tracking, color, extra = {}) =>
+  ({ role, use, sample, font, size, weight, leading, tracking, color, ...extra })
+
+const typeScale = [
+  ['Reading', [
+    style('Display', 'Page openers', 'Less, but better.', 'Inter', '64px', 500, '1.05', '-0.065em', '#FFFFFF'),
+    style('Title', 'Page and section titles', 'Make room for good ideas.', 'Inter', '36px', 500, '1.15', '-0.045em', '#FFFFFF'),
+    style('Heading', 'The start of a section', 'Details make the difference.', 'Inter', '24px', 500, '1.3', '-0.035em', '#FFFFFF'),
+    style('Quote', 'Pull quotes', '“Simplicity is the ultimate sophistication.”', 'Georgia', '24px', 400, '1.5', '0', '#CCCCCC', { italic: true }),
+    style('Description', 'An intro under a title', 'Thoughtful interfaces start with the essentials.', 'Inter', '18px', 400, '1.6', '-0.02em', '#AAAAAA'),
+    style('Body', 'Running text', 'Good design makes the complex feel simple.', 'Inter', '14px', 400, '1.75', '0', '#999999'),
+    style('Caption', 'Notes, background card notes', 'A collection of things, made with care.', 'Inter', '12px', 400, '1.5', '0', '#888888'),
+  ]],
+  ['Interface', [
+    style('Brand', 'Site header', 'Jimmy Wu’s UI Kit', 'Inter', '15px', 600, 'normal', '-0.035em', '#EFEFEF'),
+    style('Card name', 'Background cards', 'Dot matrix', 'Inter', '14px', 500, 'normal', '0', '#FFFFFF'),
+    style('Button', 'AI button; #111111 on the primary', 'Create with AI', 'Inter', '13px', 600, 'normal', '-0.01em', '#FFFFFF'),
+    style('Control title', 'Toggle, checkbox, radio, stepper', 'Notifications', 'Inter', '13px', 500, 'normal', '-0.01em', '#FFFFFF'),
+    style('Question', 'Accordion', 'What is in the kit?', 'Inter', '13px', 500, 'normal', '-0.01em', '#CFCFCF'),
+    style('Count', 'Stepper value', '3', 'Inter', '13px', 500, 'normal', '0', '#FFFFFF'),
+    style('Field text', 'Text field, search, select', 'studio@form.co', 'Inter', '13px', 400, 'normal', '-0.01em', '#EDEDED'),
+    style('Option', 'Select menu', 'Singapore', 'Inter', '13px', 400, 'normal', '-0.01em', '#A8A8A8'),
+    style('Code digit', 'Code input', '4 8 1 5', 'Inter', '18px', 500, 'normal', '0', '#FFFFFF'),
+    style('Segment', 'Segmented, pagination', 'Board', 'Inter', '12.5px', 500, 'normal', '-0.01em', '#8A8A8A'),
+    style('Tab', 'Tabs', 'Overview', 'Inter', '12.5px', 500, 'normal', '-0.01em', '#7D7D7D'),
+    style('Chip', 'Chips', 'Motion', 'Inter', '12.5px', 500, 'normal', '-0.01em', '#A8A8A8'),
+    style('Panel text', 'Tab panel, accordion answer', 'Three changes this week.', 'Inter', '12.5px', 400, '1.7', '0', '#7D7D7D'),
+    style('Nav link', 'Site header', 'Elements', 'Inter', '12px', 400, 'normal', '0', '#888888'),
+    style('Control note', 'Under a control title', 'Product updates', 'Inter', '11.5px', 400, 'normal', '0', '#7D7D7D'),
+    style('Tooltip', 'Tooltip, on white', 'Copy link', 'Inter', '11px', 500, '1', '0', '#0A0A0A', { on: '#FFFFFF' }),
+    style('Footer', 'Site footer', 'A personal collection, made with care.', 'Inter', '11px', 400, 'normal', '0', '#666666'),
+  ]],
+  ['Mono', [
+    style('Value', 'Slider, progress, character count', '24.8 MB', 'DM Mono', '11px', 400, '1', '0', '#D6D6D6'),
+    style('Label', 'Eyebrows over content', 'THE SMALL DETAILS', 'DM Mono', '10px', 400, '1.5', '0.15em', '#FFFFFF'),
+    style('Field label', 'Over fields, card numbers', 'EMAIL ADDRESS', 'DM Mono', '9px', 400, '1', '0.14em', '#6F6F6F'),
+  ]],
+]
+
+const typeStyle = (font, { size, weight = 400, leading, tracking, color, italic, on }) => ({
+  fontFamily: FAMILIES[font], fontSize: size, fontWeight: weight, lineHeight: leading,
+  letterSpacing: tracking, color, fontStyle: italic ? 'italic' : undefined,
+  ...(on && { display: 'inline-block', padding: '6px 9px', borderRadius: 7, background: on }),
+})
+
+function SectionHead({ id, index, title, note }) {
   return (
-    <div className="type-spec">
-      {specs.map(([name, values]) => (
-        <div className="spec-group" key={name || 'only'}>
-          {name && <span className="mono-label spec-name">{name}</span>}
-          <dl className="spec-items">
-            {Object.entries(values).map(([key, value]) => (
-              <div className="spec-item" key={key}>
-                <dt className="mono-label">{key}</dt>
-                <dd className={key === 'color' ? 'spec-color' : ''}>
-                  {key === 'color' && <i style={{ background: value }} aria-hidden="true" />}
-                  {value}
-                </dd>
-              </div>
+    <header className="section-head">
+      <span className="mono-label">{index}</span>
+      <h2 id={id}>{title}</h2>
+      <p>{note}</p>
+    </header>
+  )
+}
+
+function Typeface({ name, kind, use, weights, italic, wide, index }) {
+  const face = (weight) => typeStyle(name, { weight, italic })
+  return (
+    <article className={`sample-card typeface ${wide ? 'is-wide' : ''}`}>
+      <span className="mono-label">0{index} &#8212; {kind}</span>
+      <p className="typeface-name" style={face(500)}>{name}</p>
+      <p className="typeface-use">{use}</p>
+      <p className="typeface-glyphs" style={face(400)}>
+        ABCDEFGHIJKLMNOPQRSTUVWXYZ<br />abcdefghijklmnopqrstuvwxyz<br />0123456789 &amp;?!@#%
+      </p>
+      <div className="typeface-weights">
+        {weights.map((weight) => (
+          <div key={weight}>
+            <span style={face(weight)}>Aa</span>
+            <span className="mono-label">{weight} {italic ? 'Italic' : WEIGHTS[weight]}</span>
+          </div>
+        ))}
+      </div>
+    </article>
+  )
+}
+
+function TypeTable() {
+  return (
+    <div className="type-table-wrap">
+      <table className="type-table">
+        <thead>
+          <tr>{['Role', 'Sample', 'Font', 'Size', 'Weight', 'Leading', 'Tracking', 'Color'].map((head) =>
+            <th className="mono-label" key={head} scope="col">{head}</th>)}</tr>
+        </thead>
+        {typeScale.map(([group, rows]) => (
+          <tbody key={group}>
+            <tr className="type-group"><th className="mono-label" colSpan={8} scope="rowgroup">{group}</th></tr>
+            {rows.map((row) => (
+              <tr key={row.role}>
+                <th scope="row"><strong>{row.role}</strong><small>{row.use}</small></th>
+                <td className="type-sample"><span style={typeStyle(row.font, row)}>{row.sample}</span></td>
+                <td>{row.font}{row.italic && ' Italic'}</td>
+                <td>{row.size}</td>
+                <td>{row.weight} {WEIGHTS[row.weight]}</td>
+                <td>{row.leading}</td>
+                <td>{row.tracking}</td>
+                <td><span className="type-color"><i style={{ background: row.color }} aria-hidden="true" />{row.color}</span></td>
+              </tr>
             ))}
-          </dl>
-        </div>
-      ))}
+          </tbody>
+        ))}
+      </table>
     </div>
   )
 }
 
-function TypeCard({ label, index, specs, className = '', onExpand, children }) {
-  return <article className={`sample-card type-card ${className}`}>
-    <span className="mono-label type-meta">{index} &#8212; {label}</span>
-    <div className="type-preview">{children}</div>
-    <SpecSheet specs={specs} />
-    {onExpand && <ExpandButton label={label} onClick={onExpand} />}
-  </article>
-}
-
-const typeSamples = [
-  {
-    label: 'Display', className: 'type-wide',
-    node: <p className="type-display">Less, but better.</p>,
-    specs: [[null, spec('Inter', '64px', 'Medium 500', '1.05', '-0.065em', '#FFFFFF')]],
-  },
-  {
-    label: 'Title',
-    node: <h1 className="type-title">Make room<br />for good ideas.</h1>,
-    specs: [[null, spec('Inter', '36px', 'Medium 500', '1.15', '-0.045em', '#FFFFFF')]],
-  },
-  {
-    label: 'Description',
-    node: <p className="type-description">Thoughtful interfaces start with the essentials. A little space, a clear purpose, and details that feel just right.</p>,
-    specs: [[null, spec('Inter', '18px', 'Regular 400', '1.6', '-0.02em', '#AAAAAA')]],
-  },
-  {
-    label: 'Heading',
-    node: <><h2 className="type-heading">Details make the difference.</h2><p className="type-body">Give every section a clear starting point.</p></>,
-    specs: [
-      ['Heading', spec('Inter', '24px', 'Medium 500', '1.3', '-0.035em', '#FFFFFF')],
-      ['Body', spec('Inter', '14px', 'Regular 400', '1.75', '0', '#999999')],
-    ],
-  },
-  {
-    label: 'Body',
-    node: <p className="type-body">Good design makes the complex feel simple. Use comfortable line lengths and a steady rhythm to make your words easy to read, from the first sentence to the last.</p>,
-    specs: [[null, spec('Inter', '14px', 'Regular 400', '1.75', '0', '#999999')]],
-  },
-  {
-    label: 'Label & caption',
-    node: <div><span className="type-label">THE SMALL DETAILS</span><p className="type-caption">A collection of things, made with care.</p></div>,
-    specs: [
-      ['Label', spec('DM Mono', '10px', 'Regular 400', '1.5', '0.15em', '#FFFFFF')],
-      ['Caption', spec('Inter', '12px', 'Regular 400', '1.5', '0', '#888888')],
-    ],
-  },
-  {
-    label: 'Quote',
-    node: <blockquote>&#8220;Simplicity is the ultimate sophistication.&#8221;</blockquote>,
-    specs: [[null, spec('Georgia Italic', '24px', 'Regular 400', '1.5', '0', '#CCCCCC')]],
-  },
-]
-
 function TextPage() {
-  const [expanded, setExpanded] = useState(null)
-  const active = typeSamples.find((sample) => sample.label === expanded)
-
   return (
     <>
-      <div className="sample-grid typography-grid" aria-label="Typography samples">
-        {typeSamples.map((sample, index) => (
-          <TypeCard key={sample.label} label={sample.label} index={`0${index + 1}`} specs={sample.specs}
-            className={sample.className} onExpand={() => setExpanded(sample.label)}>
-            {sample.node}
-          </TypeCard>
-        ))}
-      </div>
-      {active && (
-        <ExpandedView title={active.label} wide onClose={() => setExpanded(null)}>
-          <div className="type-preview">{active.node}</div>
-          <SpecSheet specs={active.specs} />
-        </ExpandedView>
-      )}
+      <section className="type-section" aria-labelledby="typefaces">
+        <SectionHead id="typefaces" index="01" title="Typefaces" note="The three faces the kit is set in." />
+        <div className="sample-grid">
+          {typefaces.map((face, index) => <Typeface key={face.name} index={index + 1} {...face} />)}
+        </div>
+      </section>
+      <section className="type-section" aria-labelledby="type-scale">
+        <SectionHead id="type-scale" index="02" title="Type scale" note="Every kind of text in the kit, and what it is drawn with." />
+        <TypeTable />
+      </section>
     </>
   )
 }

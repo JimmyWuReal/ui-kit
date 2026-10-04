@@ -73,32 +73,36 @@ footer { display: flex; justify-content: space-between; gap: 20px; padding: 30px
 .sample-caption { display: flex; justify-content: space-between; align-items: center; gap: 20px; padding: 22px 26px; }
 .sample-caption h2 { margin: 0; font-size: 14px; font-weight: 500; }
 .sample-caption p { margin: 7px 0 0; font-size: 12px; color: #888; line-height: 1.5; }
-.type-card { padding: 26px 30px 24px; min-height: 230px; display: flex; flex-direction: column; }
-.type-preview { flex: 1; display: flex; flex-direction: column; justify-content: center; padding: 26px 0 24px; }
-.type-preview p, .type-preview h1, .type-preview h2, .type-preview blockquote { margin: 0; }
-.type-wide { grid-column: span 2; }
-.type-display { font-size: clamp(38px, 6vw, 64px); line-height: 1.05; letter-spacing: -.065em; font-weight: 500; }
-.type-title { font-size: 36px; line-height: 1.15; letter-spacing: -.045em; font-weight: 500; }
-.type-description { font-size: 18px; line-height: 1.6; color: #aaa; letter-spacing: -.02em; }
-.type-heading { font-size: 24px; line-height: 1.3; letter-spacing: -.035em; font-weight: 500; }
-.type-body { font-size: 14px; line-height: 1.75; color: #999; }
-.type-heading + .type-body { margin-top: 12px; }
-.type-label { font: 10px/1.5 'DM Mono', monospace; letter-spacing: .15em; }
-.type-preview .type-caption { font-size: 12px; line-height: 1.5; color: #888; margin-top: 12px; }
-.type-preview blockquote { font: italic 24px/1.5 Georgia, serif; color: #ccc; }
+/* Text page: the typefaces first, then the table of every style. */
+.type-section + .type-section { margin-top: 64px; }
+.section-head { display: flex; flex-direction: column; gap: 10px; margin: 0 2px 22px; }
+.section-head h2 { margin: 0; font-size: 24px; font-weight: 500; line-height: 1.3; letter-spacing: -.035em; }
+.section-head p { margin: 0; font-size: 12px; line-height: 1.5; color: #888; }
 
-/* The spec sheet under each sample — the values it is actually drawn
-   with, so the page documents itself. Keep these in step with the
-   .type-* rules above. */
-.type-spec { display: flex; flex-direction: column; gap: 20px; padding-top: 17px; border-top: 1px solid var(--rule); }
-.spec-group { display: flex; flex-direction: column; gap: 11px; }
-.spec-name { color: #9a9a9a; }
-/* A uniform track so a card's two groups line up column for column. */
-.spec-items { margin: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px 12px; }
-.spec-item { display: flex; flex-direction: column; gap: 7px; }
-.spec-item dd { margin: 0; font: 400 11px/1 'DM Mono', ui-monospace, monospace; color: #d6d6d6; }
-.spec-color { display: flex; align-items: center; gap: 6px; }
-.spec-color i { width: 9px; height: 9px; border-radius: 50%; box-shadow: inset 0 0 0 1px #ffffff38; }
+/* A specimen per face: its name set in itself, the full set, the weights in use. */
+.typeface { display: flex; flex-direction: column; padding: 26px 30px 28px; }
+.typeface.is-wide { grid-column: span 2; }
+.typeface-name { margin: 34px 0 0; font-size: 56px; line-height: 1; letter-spacing: -.04em; }
+.typeface-use { margin: 12px 0 0; font-size: 12px; line-height: 1.5; color: #888; }
+.typeface-glyphs { flex: 1; margin: 30px 0 0; font-size: 17px; line-height: 1.6; color: #aaa; overflow-wrap: anywhere; }
+.typeface-weights { display: flex; gap: 40px; margin-top: 28px; padding-top: 20px; border-top: 1px solid var(--rule); }
+.typeface-weights div { display: flex; flex-direction: column; gap: 10px; }
+.typeface-weights div span:first-child { font-size: 32px; line-height: 1; }
+
+/* The type table scrolls sideways on its own when the page is narrow. */
+.type-table-wrap { overflow-x: auto; border-radius: 20px; background: #111; }
+.type-table { width: 100%; min-width: 900px; border-collapse: collapse; }
+.type-table th, .type-table td { padding: 16px 18px; text-align: left; vertical-align: middle; white-space: nowrap; }
+.type-table td { font: 400 11px/1 'DM Mono', ui-monospace, monospace; color: #d6d6d6; border-top: 1px solid var(--rule); }
+.type-table thead th { padding-top: 22px; padding-bottom: 18px; }
+.type-table .type-group th { padding-top: 30px; padding-bottom: 12px; color: #9a9a9a; }
+.type-table tbody th[scope='row'] { border-top: 1px solid var(--rule); font-weight: 400; }
+.type-table tbody th strong { display: block; font-size: 13px; font-weight: 500; letter-spacing: -.01em; }
+.type-table tbody th small { display: block; margin-top: 5px; font-size: 11.5px; color: var(--sub); }
+/* The sample takes whatever width is left, and trims what does not fit. */
+.type-table .type-sample { width: 100%; max-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.type-color { display: flex; align-items: center; gap: 6px; }
+.type-color i { width: 9px; height: 9px; border-radius: 50%; box-shadow: inset 0 0 0 1px #ffffff38; }
 
 .cell-content {
   width: 100%;
@@ -391,9 +395,7 @@ footer { display: flex; justify-content: space-between; gap: 20px; padding: 30px
   padding: 4px;
   border-radius: 12px;
   box-shadow: inset 0 0 0 1px var(--line);
-  transition: box-shadow 200ms ease;
 }
-.segmented:hover { box-shadow: inset 0 0 0 1px var(--line-hover); }
 .segmented-thumb {
   position: absolute;
   top: 4px;
@@ -426,7 +428,11 @@ footer { display: flex; justify-content: space-between; gap: 20px; padding: 30px
 .segmented button.is-active,
 .pages button.is-active { color: #0a0a0a; }
 
-/* Slider: the toggle's on state laid flat — white fill, black knob. */
+/* Slider and progress share one track: a thin, faint bar with no outline,
+   so the white fill carries all the contrast. */
+.slider-field, .progress { --track: rgba(255, 255, 255, .12); }
+
+/* Slider: a solid white knob on the fill, so the two read as one piece. */
 .slider-field { display: flex; flex-direction: column; gap: 16px; }
 .slider-field input {
   -webkit-appearance: none;
@@ -438,33 +444,28 @@ footer { display: flex; justify-content: space-between; gap: 20px; padding: 30px
   cursor: pointer;
 }
 .slider-field input::-webkit-slider-runnable-track {
-  height: 6px;
+  height: 4px;
   border-radius: 999px;
-  background: linear-gradient(#fff, #fff) 0 0 / var(--fill) 100% no-repeat;
-  box-shadow: inset 0 0 0 1px var(--line);
-  transition: box-shadow 200ms ease;
+  background: linear-gradient(#fff, #fff) 0 0 / var(--fill) 100% no-repeat, var(--track);
 }
-.slider-field input:hover::-webkit-slider-runnable-track { box-shadow: inset 0 0 0 1px var(--line-hover); }
 .slider-field input::-webkit-slider-thumb {
   -webkit-appearance: none;
   width: 18px;
   height: 18px;
-  margin-top: -6px;
+  margin-top: -7px;
   border-radius: 50%;
-  background: #0a0a0a;
-  box-shadow: inset 0 0 0 1.5px #fff;
+  background: #fff;
   transition: transform 180ms cubic-bezier(.22, 1, .36, 1);
 }
 .slider-field input:active::-webkit-slider-thumb { transform: scale(1.15); }
-.slider-field input::-moz-range-track { height: 6px; border-radius: 999px; box-shadow: inset 0 0 0 1px var(--line); }
-.slider-field input::-moz-range-progress { height: 6px; border-radius: 999px; background: #fff; }
+.slider-field input::-moz-range-track { height: 4px; border-radius: 999px; background: var(--track); }
+.slider-field input::-moz-range-progress { height: 4px; border-radius: 999px; background: #fff; }
 .slider-field input::-moz-range-thumb {
   width: 18px;
   height: 18px;
   border: 0;
   border-radius: 50%;
-  background: #0a0a0a;
-  box-shadow: inset 0 0 0 1.5px #fff;
+  background: #fff;
   transition: transform 180ms cubic-bezier(.22, 1, .36, 1);
 }
 .slider-field input:active::-moz-range-thumb { transform: scale(1.15); }
@@ -698,7 +699,7 @@ footer { display: flex; justify-content: space-between; gap: 20px; padding: 30px
 /* Progress: one white bar, scaled rather than resized. */
 .progress { display: flex; flex-direction: column; gap: 16px; }
 .progress-end { display: flex; align-items: center; gap: 10px; }
-.progress-track { height: 6px; overflow: hidden; border-radius: 999px; box-shadow: inset 0 0 0 1px var(--line); }
+.progress-track { height: 4px; overflow: hidden; border-radius: 999px; background: var(--track); }
 .progress-fill { display: block; height: 100%; border-radius: inherit; background: #fff; transform-origin: left; transition: transform 320ms cubic-bezier(.22, 1, .36, 1); }
 
 /* A hairline icon button, for the controls that need one. */
@@ -726,7 +727,8 @@ footer { display: flex; justify-content: space-between; gap: 20px; padding: 30px
 .icon-button:hover:not(:disabled) { color: #fff; box-shadow: inset 0 0 0 1px var(--line-hover); }
 .icon-button:active:not(:disabled) { transform: scale(.94); }
 .icon-button:disabled { color: #3d3d3d; cursor: default; }
-.icon-button.is-on { color: #0a0a0a; background: #fff; box-shadow: inset 0 0 0 1px #fff; }
+.icon-button.is-on,
+.icon-button.is-on:hover:not(:disabled) { color: #0a0a0a; background: #fff; box-shadow: inset 0 0 0 1px #fff; }
 .icon-button.is-small { width: 28px; height: 28px; border-radius: 8px; }
 .icon-button.is-hidden { opacity: 0; transform: scale(.8); pointer-events: none; }
 .icon-button > svg { grid-area: 1 / 1; transition: opacity 200ms ease, transform 240ms cubic-bezier(.22, 1, .36, 1); }
@@ -757,6 +759,29 @@ footer { display: flex; justify-content: space-between; gap: 20px; padding: 30px
 .tooltip-anchor:hover .tooltip,
 .tooltip-anchor:has(:focus-visible) .tooltip,
 .tooltip-anchor.is-shown .tooltip { opacity: 1; transform: translate(-50%, 0); }
+/* Both labels share one cell, so the tooltip is sized to the longer and
+   never jumps when the words change. The swap is sequential — the old
+   label fades out, then the new one slides in — so they never overlap. */
+.tooltip { display: grid; justify-items: center; clip-path: inset(0 round 7px); }
+.tooltip-label {
+  grid-area: 1 / 1;
+  transition: opacity 100ms ease-out var(--hold), transform 240ms cubic-bezier(.22, 1, .36, 1) var(--hold);
+}
+.tooltip-label.is-copied,
+.tooltip-anchor.is-shown .tooltip-label:not(.is-copied) { opacity: 0; transform: translateY(6px); }
+.tooltip-anchor.is-shown .tooltip-label:not(.is-copied) { transform: translateY(-6px); }
+.tooltip-anchor.is-shown .tooltip-label.is-copied { opacity: 1; transform: none; }
+/* The incoming label waits for the outgoing one to clear. */
+.tooltip-anchor:not(.is-shown) .tooltip-label:not(.is-copied),
+.tooltip-anchor.is-shown .tooltip-label.is-copied {
+  transition:
+    opacity 160ms ease-out calc(var(--hold) + 90ms),
+    transform 240ms cubic-bezier(.22, 1, .36, 1) calc(var(--hold) + 90ms);
+}
+/* When the tooltip is fading out on its own, hold the words until it has
+   gone, rather than swapping them on the way out. */
+.tooltip-anchor { --hold: 0ms; }
+.tooltip-anchor:not(:hover, :has(:focus-visible)) { --hold: 200ms; }
 
 /* Pagination: the segmented thumb, run under the page numbers. */
 .pagination-field { display: flex; flex-direction: column; align-items: center; gap: 16px; }
@@ -764,50 +789,6 @@ footer { display: flex; justify-content: space-between; gap: 20px; padding: 30px
 .pages { position: relative; display: grid; grid-template-columns: repeat(var(--count), 34px); }
 .pages .segmented-thumb { top: 0; bottom: 0; left: 0; width: calc(100% / var(--count)); border-radius: 10px; }
 .pages button { height: 34px; padding: 0; border-radius: 10px; font-variant-numeric: tabular-nums; }
-
-/* Avatars: overlapped circles cut out of the card by a ring of its gray. */
-.avatars { display: flex; }
-.avatar {
-  width: 34px;
-  height: 34px;
-  display: grid;
-  place-items: center;
-  margin-left: -6px;
-  border-radius: 50%;
-  color: #cfcfcf;
-  background: #111;
-  font-size: 10.5px;
-  font-weight: 500;
-  letter-spacing: .02em;
-  box-shadow: inset 0 0 0 1px var(--line), 0 0 0 2px #111;
-  cursor: default;
-  transition: transform 240ms cubic-bezier(.22, 1, .36, 1), box-shadow 200ms ease;
-}
-.avatar:first-child { margin-left: 0; }
-.avatar:hover { transform: translateY(-3px); box-shadow: inset 0 0 0 1px var(--line-live), 0 0 0 2px #111; }
-.avatar.is-count { font: var(--mono); letter-spacing: 0; color: #0a0a0a; background: #fff; box-shadow: inset 0 0 0 1px #fff, 0 0 0 2px #111; }
-
-/* Badges: one pill, four states told apart by the dot alone. */
-.badges { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
-.badge {
-  height: 28px;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 0 11px;
-  border-radius: 999px;
-  color: #d6d6d6;
-  font: var(--mono);
-  letter-spacing: var(--track);
-  text-transform: uppercase;
-  box-shadow: inset 0 0 0 1px var(--line);
-}
-.badge i { position: relative; width: 6px; height: 6px; border-radius: 50%; box-shadow: inset 0 0 0 1px #8a8a8a; }
-.badge.is-live i { background: #fff; box-shadow: none; }
-.badge.is-live i::after { content: ''; position: absolute; inset: 0; border-radius: 50%; background: #fff; animation: live-pulse 1.8s cubic-bezier(.22, 1, .36, 1) infinite; }
-.badge.is-review i { background: linear-gradient(90deg, #fff 50%, transparent 50%); box-shadow: inset 0 0 0 1px #fff; }
-.badge.is-archived { color: var(--dim); }
-.badge.is-archived i { background: #4a4a4a; box-shadow: none; }
 
 /* Rating: hovering previews; the stars fill one after another. */
 .rating-field { display: flex; flex-direction: column; align-items: center; gap: 14px; }
@@ -841,7 +822,6 @@ footer { display: flex; justify-content: space-between; gap: 20px; padding: 30px
 @keyframes digit-enter { from { opacity: 0; transform: translateY(4px) scale(.9); } }
 @keyframes panel-enter { from { opacity: 0; transform: translateY(4px); } }
 @keyframes caret-blink { 50% { opacity: 0; } }
-@keyframes live-pulse { from { opacity: .55; transform: scale(1); } to { opacity: 0; transform: scale(3); } }
 
 button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 2px solid rgba(255, 255, 255, .8); outline-offset: 3px; }
 .text-field :is(input, textarea):focus-visible,
@@ -854,9 +834,9 @@ button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 2px
   .site-header nav { width: 100%; }
   .site-header nav a { flex: 1; text-align: center; }
   .component-grid, .sample-grid { grid-template-columns: 1fr; gap: 16px; }
-  .type-wide { grid-column: auto; }
-  .type-card { padding: 24px; }
-  .spec-items { grid-template-columns: repeat(auto-fit, minmax(84px, 1fr)); }
+  .typeface.is-wide { grid-column: auto; }
+  .typeface { padding: 24px; }
+  .typeface-name { font-size: 44px; }
   .pages { grid-template-columns: repeat(var(--count), 30px); }
   .code-boxes { gap: 6px; }
   footer { flex-direction: column; gap: 8px; }
@@ -944,10 +924,6 @@ button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 2px
   animation: expand-enter 300ms cubic-bezier(.22, 1, .36, 1) both;
 }
 .expand-content.is-wide { width: min(760px, 100%); gap: 0; }
-.expand-content .type-preview { padding: 0; }
-.expand-content .type-spec { margin-top: 32px; }
-/* Three across here too, so the sheet reads the same expanded as in the card. */
-.expand-content .spec-items { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 
 .expand-bar {
   position: absolute;

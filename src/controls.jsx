@@ -321,7 +321,10 @@ export function CopyLink() {
           <Copy className="icon-out" size={15} strokeWidth={2} />
           <Check className="icon-in" size={15} strokeWidth={2.4} />
         </button>
-        <span className="tooltip" aria-hidden="true">{copied ? 'Copied' : 'Copy link'}</span>
+        <span className="tooltip" aria-hidden="true">
+          <span className="tooltip-label">Copy link</span>
+          <span className="tooltip-label is-copied">Copied</span>
+        </span>
       </span>
     </div>
   )
@@ -349,30 +352,6 @@ export function Pagination({ value, onChange, total = 6, perPage = 10 }) {
         </button>
       </nav>
       <span className="mono-label">Results {(value - 1) * perPage + 1}–{value * perPage} of {total * perPage}</span>
-    </div>
-  )
-}
-
-export function Avatars({ people, extra }) {
-  return (
-    <div className="control-row">
-      <div><strong>Shared with {people.length + extra}</strong><span>Everyone can edit</span></div>
-      <div className="avatars">
-        {people.map(([initials, name]) => <span className="avatar" key={initials} title={name}>{initials}</span>)}
-        <span className="avatar is-count">+{extra}</span>
-      </div>
-    </div>
-  )
-}
-
-/* Four states, one shape. Only Live moves, and only its halo. */
-export function Badges() {
-  return (
-    <div className="badges">
-      <span className="badge is-live"><i />Live</span>
-      <span className="badge is-review"><i />In review</span>
-      <span className="badge"><i />Draft</span>
-      <span className="badge is-archived"><i />Archived</span>
     </div>
   )
 }
