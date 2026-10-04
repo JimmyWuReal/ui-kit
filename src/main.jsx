@@ -349,11 +349,10 @@ const typeScale = [
     style('Field text', 'Text field, search, select', 'studio@form.co', 'Inter', '13px', 400, 'normal', '-0.01em', '#EDEDED'),
     style('Option', 'Select menu', 'Singapore', 'Inter', '13px', 400, 'normal', '-0.01em', '#A8A8A8'),
     style('Code digit', 'Code input', '4 8 1 5', 'Inter', '18px', 500, 'normal', '0', '#FFFFFF'),
-    style('Segment', 'Segmented, pagination', 'Board', 'Inter', '12.5px', 500, 'normal', '-0.01em', '#8A8A8A'),
+    style('Segment', 'Segmented, pagination, site nav', 'Board', 'Inter', '12.5px', 500, 'normal', '-0.01em', '#8A8A8A'),
     style('Tab', 'Tabs', 'Overview', 'Inter', '12.5px', 500, 'normal', '-0.01em', '#7D7D7D'),
     style('Chip', 'Chips', 'Motion', 'Inter', '12.5px', 500, 'normal', '-0.01em', '#A8A8A8'),
     style('Panel text', 'Tab panel, accordion answer', 'Three changes this week.', 'Inter', '12.5px', 400, '1.7', '0', '#7D7D7D'),
-    style('Nav link', 'Site header', 'Elements', 'Inter', '12px', 400, 'normal', '0', '#888888'),
     style('Control note', 'Under a control title', 'Product updates', 'Inter', '11.5px', 400, 'normal', '0', '#7D7D7D'),
     style('Tooltip', 'Tooltip, on white', 'Copy link', 'Inter', '11px', 500, '1', '0', '#0A0A0A', { on: '#FFFFFF' }),
     style('Footer', 'Site footer', 'A personal collection, made with care.', 'Inter', '11px', 400, 'normal', '0', '#666666'),
@@ -450,8 +449,9 @@ function TextPage() {
   )
 }
 
-const pages = ['elements', 'background', 'text']
-const currentPage = () => pages.includes(window.location.hash.slice(1)) ? window.location.hash.slice(1) : 'elements'
+/* The pages, by their names. The hash is the lowercase name. */
+const pages = ['Elements', 'Background', 'Text']
+const currentPage = () => pages.find((name) => name.toLowerCase() === window.location.hash.slice(1)) ?? pages[0]
 
 function App() {
   const [page, setPage] = useState(currentPage)
@@ -461,15 +461,19 @@ function App() {
     window.addEventListener('hashchange', navigate)
     return () => window.removeEventListener('hashchange', navigate)
   }, [])
-  useEffect(() => { document.title = `${page[0].toUpperCase() + page.slice(1)} · Jimmy Wu's UI Kit` }, [page])
+  useEffect(() => { document.title = `${page} · Jimmy Wu's UI Kit` }, [page])
   return <SurfaceContext.Provider value={surface}>
     <div className="showcase-shell">
       <header className="site-header">
         <a className="brand" href="#elements"><span className="brand-icon" aria-hidden="true"><i /><i /><i /><i /></span>Jimmy Wu's UI Kit</a>
-        <nav aria-label="Main navigation">{pages.map(item => <a key={item} href={`#${item}`} aria-current={page === item ? 'page' : undefined}>{item[0].toUpperCase() + item.slice(1)}</a>)}</nav>
+        {/* The page chooser is the kit's own segmented control. Choosing sets
+            the hash, and the hashchange listener above follows it. */}
+        <nav className="site-nav" aria-label="Main navigation">
+          <Segmented label="Page" options={pages} value={page} onChange={(name) => { window.location.hash = name.toLowerCase() }} />
+        </nav>
       </header>
       <main key={page}>
-        {page === 'elements' ? <ElementsPage /> : page === 'background' ? <BackgroundPage /> : <TextPage />}
+        {page === 'Elements' ? <ElementsPage /> : page === 'Background' ? <BackgroundPage /> : <TextPage />}
       </main>
       <footer><span>A personal collection, made with care.</span><span>Jimmy Wu © {new Date().getFullYear()}</span></footer>
     </div>
