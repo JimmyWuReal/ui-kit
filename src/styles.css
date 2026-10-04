@@ -61,19 +61,15 @@ a:focus-visible { outline: 2px solid #fff; outline-offset: 4px; }
 .grid-cell { min-height: 220px; }
 footer { display: flex; justify-content: space-between; gap: 20px; padding: 30px 2px; color: #666; font-size: 11px; }
 .sample-card { overflow: hidden; }
-.background-preview { height: 270px; display: grid; place-items: center; }
-.preview-mark { font-size: 52px; letter-spacing: -.08em; color: currentColor; opacity: .74; font-weight: 500; }
+.background-preview { height: 270px; }
 
-/* Surfaces. Flat fills only — the patterns are hard-edged, never a wash.
-   Light surfaces flip the ink so the sample mark stays readable. */
+/* Surfaces. Flat fills only — the patterns are hard-edged, never a wash. */
 .bg-default { background: #090909; }
 .bg-card { background: #111; }
 .bg-raised { background: #1c1c1c; }
-.bg-dots { background: radial-gradient(#ffffff24 1px, transparent 1px) 0 0 / 16px 16px, radial-gradient(ellipse at top, #252525, #101010); }
+.bg-dots { background: radial-gradient(#ffffff24 1px, transparent 1px) 0 0 / 16px 16px, #090909; }
 .bg-grid { background: linear-gradient(#ffffff12 1px, transparent 1px) 0 0 / 24px 24px, linear-gradient(90deg, #ffffff12 1px, transparent 1px) 0 0 / 24px 24px, #090909; }
 .bg-checker { background: repeating-conic-gradient(#222 0 25%, #151515 0 50%) 0 0 / 20px 20px; }
-.bg-white { background: #fff; color: #000; }
-.bg-mist { background: #f2f2f2; color: #000; }
 .sample-caption { display: flex; justify-content: space-between; align-items: center; gap: 20px; padding: 22px 26px; }
 .sample-caption h2 { margin: 0; font-size: 14px; font-weight: 500; }
 .sample-caption p { margin: 7px 0 0; font-size: 12px; color: #888; line-height: 1.5; }
@@ -928,8 +924,6 @@ button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 2px
 }
 
 .expand-surface { position: absolute; inset: 0; }
-/* The element sits beside the surface, not in it, so pass the light ink across. */
-.expand-surface:is(.bg-white, .bg-mist) ~ .expand-body .preview-mark { color: #000; }
 
 .expand-body {
   position: relative;
@@ -1000,7 +994,6 @@ button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 2px
 .expand-close:hover { color: #fff; background: rgba(32, 32, 32, .8); transform: scale(1.06); }
 .expand-close:active { transform: scale(.94); }
 
-/* Dark chrome throughout, so the picker stays legible on the white surfaces. */
 .surface-picker {
   position: absolute;
   z-index: 2;
@@ -1045,8 +1038,6 @@ button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 2px
 .swatch.bg-grid { background-size: 7px 7px, 7px 7px, auto; }
 .swatch.bg-checker { background-size: 10px 10px; }
 
-.surface-sampler { display: flex; flex-direction: column; align-items: center; gap: 34px; }
-.surface-sampler .preview-mark { font-size: 96px; }
 
 @keyframes overlay-enter { from { opacity: 0; } to { opacity: 1; } }
 @keyframes expand-enter { from { opacity: 0; transform: translateY(10px) scale(.985); } to { opacity: 1; transform: none; } }
