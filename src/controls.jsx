@@ -441,7 +441,7 @@ export function Popup() {
         <strong id={`${id}-title`}>Archive Formless?</strong>
         <p>It leaves your library, and comes back whenever you ask.</p>
         <div className="popup-actions">
-          <button className="ghost-button is-small" type="button" onClick={close}>Cancel</button>
+          <button className="outline-button is-small" type="button" onClick={close}>Cancel</button>
           <button className="outline-button is-small" type="button" onClick={close}>Archive</button>
         </div>
       </div>

@@ -121,8 +121,8 @@ function PrimaryButton() {
   )
 }
 
-/* The quiet pair: drawn in the flat controls' hairline rather than the lit
-   material, for every action that is not the main one. */
+/* Drawn in the flat controls' hairline rather than the lit material,
+   for every action that is not the main one. */
 function OutlineButton() {
   return (
     <button className="outline-button" type="button">
@@ -130,14 +130,6 @@ function OutlineButton() {
         <span className="button-icon"><Download size={17} strokeWidth={2.15} /></span>
         <span>Export</span>
       </span>
-    </button>
-  )
-}
-
-function GhostButton() {
-  return (
-    <button className="ghost-button" type="button">
-      <span className="button-content">Skip for now</span>
     </button>
   )
 }
@@ -182,12 +174,21 @@ function ElementsPage() {
   const demos = [
     {
       id: 'buttons', title: 'Buttons', cell: 'cell-buttons',
-      node: (
-        <div className="button-stack">
-          <div className="button-group"><PrimaryButton /><DepthButton /></div>
-          <div className="button-group"><OutlineButton /><GhostButton /></div>
-        </div>
-      ),
+      node: <div className="button-group"><PrimaryButton /><DepthButton /></div>,
+    },
+    {
+      id: 'outline', title: 'Outline button', cell: 'cell-buttons',
+      node: <div className="button-group"><OutlineButton /></div>,
+    },
+    /* The two layers that land on the page itself, so their cells are the
+       page's black rather than the cell gray. */
+    {
+      id: 'card', title: 'Card', cell: 'cell-control cell-black',
+      node: <ProjectCard />,
+    },
+    {
+      id: 'popup', title: 'Popup', cell: 'cell-control cell-black',
+      node: <Popup />,
     },
     {
       id: 'checkbox', title: 'Checkbox',
@@ -305,16 +306,6 @@ function ElementsPage() {
       id: 'rating', title: 'Rating',
       node: <Rating value={values.rating} onChange={set('rating')} />,
     },
-    /* The two layers that land on the page itself, so their cells are the
-       page's black rather than the cell gray. */
-    {
-      id: 'card', title: 'Card', cell: 'cell-control cell-black',
-      node: <ProjectCard />,
-    },
-    {
-      id: 'popup', title: 'Popup', cell: 'cell-control cell-black',
-      node: <Popup />,
-    },
     {
       id: 'line', title: 'Line chart', cell: 'cell-chart', wide: true,
       node: <LineChart />,
@@ -415,7 +406,7 @@ const typeScale = [
   ['Interface', [
     style('Brand', 'Site header', 'Jimmy Wu’s UI Kit', 'Inter', '15px', 600, 'normal', '-0.035em', '#EFEFEF'),
     style('Card name', 'Cards, background cards', 'Dot matrix', 'Inter', '14px', 500, 'normal', '0', '#FFFFFF'),
-    style('Button', 'AI, outline; #BDBDBD ghost, #111111 primary', 'Create with AI', 'Inter', '13px', 600, 'normal', '-0.01em', '#FFFFFF'),
+    style('Button', 'AI and outline; #111111 on the primary', 'Create with AI', 'Inter', '13px', 600, 'normal', '-0.01em', '#FFFFFF'),
     style('Control title', 'Toggle, checkbox, radio, stepper, popup', 'Notifications', 'Inter', '13px', 500, 'normal', '-0.01em', '#FFFFFF'),
     style('Question', 'Accordion', 'What is in the kit?', 'Inter', '13px', 500, 'normal', '-0.01em', '#CFCFCF'),
     style('Count', 'Stepper value', '3', 'Inter', '13px', 500, 'normal', '0', '#FFFFFF'),
