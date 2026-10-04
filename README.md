@@ -24,10 +24,10 @@ A personal introduction site built with the skill, with profile details and
 Demo prompt:
 
 ```text
-/ui-kit Create a folder named demo-2 in ~/Downloads and build a personal
-introduction site using the UI Kit skill. Include details about the person
-and charts showing commit counts and monthly recurring revenue (MRR).
-Use demo data spanning more than 30 days.
+/ui-kit Build a responsive personal introduction site with a short bio,
+profile details, and featured projects. Add charts for daily commit counts
+and monthly recurring revenue (MRR), using clearly labeled demo data
+spanning more than 30 days.
 ```
 
 ![Personal introduction demo with profile details, commit counts, and MRR charts](docs/screenshots/demo-2.jpg)
