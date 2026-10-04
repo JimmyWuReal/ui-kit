@@ -137,15 +137,9 @@ function OutlineButton() {
 function ProjectCard() {
   return (
     <article className="card">
-      <div className="card-preview bg-dots" />
-      <div className="card-body">
-        <strong>Formless</strong>
-        <p>A small set of elements, drawn in two materials.</p>
-      </div>
-      <div className="card-foot">
-        <span className="mono-label">Edited 2h ago</span>
-        <button className="outline-button is-small" type="button">Open</button>
-      </div>
+      <strong>Formless</strong>
+      <p>A small set of elements, drawn in two materials.</p>
+      <button className="outline-button is-small" type="button">Open</button>
     </article>
   )
 }
@@ -180,14 +174,14 @@ function ElementsPage() {
       id: 'outline', title: 'Outline button', cell: 'cell-buttons',
       node: <div className="button-group"><OutlineButton /></div>,
     },
-    /* The two layers that land on the page itself, so their cells are the
-       page's black rather than the cell gray. */
+    /* The card lands on the page itself, so its cell is the page's black
+       rather than the cell gray. */
     {
       id: 'card', title: 'Card', cell: 'cell-control cell-black',
       node: <ProjectCard />,
     },
     {
-      id: 'popup', title: 'Popup', cell: 'cell-control cell-black',
+      id: 'popup', title: 'Popup',
       node: <Popup />,
     },
     {

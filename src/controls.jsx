@@ -1,4 +1,5 @@
 import React, { useEffect, useId, useLayoutEffect, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { Check, ChevronDown, ChevronLeft, ChevronRight, Copy, Minus, Plus, RotateCcw, Search, Star, X } from 'lucide-react'
 
 /* The flat controls. Every one is controlled — its value lives with the
@@ -409,42 +410,43 @@ export function Rating({ value, onChange }) {
   )
 }
 
-/* Popup: a small confirm, opened from its own outline button. It starts open
-   so it can be seen, and closes on either action, on Escape, or when focus
-   leaves it. */
+/* Popup: a delete confirm, opened from its own outline button into the centre
+   of the screen over a dimmed backdrop. Closes on either action, on Escape, or
+   on a click outside it. Portalled to the body so no cell clips it. */
 export function Popup() {
-  const [open, setOpen] = useState(true)
-  const root = useRef(null)
+  const [open, setOpen] = useState(false)
   const trigger = useRef(null)
+  const cancel = useRef(null)
   const id = useId()
 
-  /* Focus moves in only when the trigger opened it — not on load. */
-  useEffect(() => {
-    if (open && document.activeElement === trigger.current) root.current.querySelector('.popup button').focus()
-  }, [open])
+  useEffect(() => { if (open) cancel.current.focus() }, [open])
 
   const close = () => { setOpen(false); trigger.current.focus() }
 
   return (
-    <div className={`popup-anchor ${open ? 'is-open' : ''}`} ref={root}
-      onKeyDown={(event) => {
-        // Close the popup only — not the expanded view around it.
-        if (event.key === 'Escape' && open) { event.stopPropagation(); close() }
-      }}
-      onBlur={(event) => { if (!root.current.contains(event.relatedTarget)) setOpen(false) }}>
+    <>
       <div className="control-row">
-        <div><strong>Archive project</strong><span>Hide it from your library</span></div>
+        <div><strong>Delete project</strong><span>This can't be undone</span></div>
         <button className="outline-button is-small" type="button" ref={trigger} aria-haspopup="dialog"
-          aria-expanded={open} aria-controls={id} onClick={() => setOpen(!open)}>Archive</button>
+          onClick={() => setOpen(true)}>Delete</button>
       </div>
-      <div className="popup" role="dialog" id={id} aria-labelledby={`${id}-title`}>
-        <strong id={`${id}-title`}>Archive Formless?</strong>
-        <p>It leaves your library, and comes back whenever you ask.</p>
-        <div className="popup-actions">
-          <button className="outline-button is-small" type="button" onClick={close}>Cancel</button>
-          <button className="outline-button is-small" type="button" onClick={close}>Archive</button>
-        </div>
-      </div>
-    </div>
+      {open && createPortal(
+        <div className="popup-backdrop" onMouseDown={(event) => { if (event.target === event.currentTarget) close() }}
+          onKeyDown={(event) => {
+            // Close the popup only — not the expanded view behind it.
+            if (event.key === 'Escape') { event.stopPropagation(); close() }
+          }}>
+          <div className="popup" role="alertdialog" aria-modal="true" aria-labelledby={`${id}-title`} aria-describedby={`${id}-text`}>
+            <strong id={`${id}-title`}>Delete Formless?</strong>
+            <p id={`${id}-text`}>The project and everything in it will be removed for good.</p>
+            <div className="popup-actions">
+              <button className="outline-button is-small" type="button" ref={cancel} onClick={close}>Cancel</button>
+              <button className="outline-button is-small is-danger" type="button" onClick={close}>Delete</button>
+            </div>
+          </div>
+        </div>,
+        document.body,
+      )}
+    </>
   )
 }
