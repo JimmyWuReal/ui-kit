@@ -909,7 +909,7 @@ footer { display: flex; justify-content: space-between; gap: 20px; padding: 30px
   animation: draw 900ms cubic-bezier(.65, 0, .35, 1) backwards;
 }
 .chart-cross { stroke: var(--line); stroke-width: 1; shape-rendering: crispEdges; }
-.chart-end { transition: cx 160ms cubic-bezier(.22, 1, .36, 1), cy 160ms cubic-bezier(.22, 1, .36, 1); }
+.chart-end { transition: cx 160ms cubic-bezier(.22, 1, .36, 1), cy 160ms cubic-bezier(.22, 1, .36, 1), opacity 160ms ease; }
 
 /* A legend for lines: a short stroke, not a block. */
 .chart-legend { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 6px 14px; font-size: 11.5px; color: var(--sub); }

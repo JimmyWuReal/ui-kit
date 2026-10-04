@@ -83,6 +83,8 @@ const VISITORS = [
 export function LineChart() {
   const [ref, width] = useWidth()
   const [hover, setHover] = useState(null)
+  // Where the dots sit. Unlike hover it outlives the pointer, so they fade where they were.
+  const [at, setAt] = useState(MONTHS.length - 1)
   const height = 180, left = 30, right = 6, top = 10, bottom = 26
   const max = 6000
   const step = (width - left - right) / (MONTHS.length - 1)
@@ -99,7 +101,11 @@ export function LineChart() {
         {width > 0 && (
           <svg width={width} height={height} role="img"
             aria-label="Visitors by month. This year rises from 2,100 to 5,900; last year from 1,800 to 4,400."
-            onPointerMove={(event) => setHover(nearest(event, left, step, MONTHS.length))}
+            onPointerMove={(event) => {
+              const index = nearest(event, left, step, MONTHS.length)
+              setHover(index)
+              setAt(index)
+            }}
             onPointerLeave={() => setHover(null)}>
             {[0, 2000, 4000, 6000].map((tick) => (
               <g key={tick}>
@@ -115,8 +121,11 @@ export function LineChart() {
               <path key={name} className="chart-line" stroke={color} pathLength="1"
                 d={smoothPath(values.map((value, i) => [x(i), y(value)]))} />
             ))}
-            {hover !== null && VISITORS.map(([name, color, values]) =>
-              <circle key={name} cx={x(hover)} cy={y(values[hover])} r={4} fill={color} />)}
+            {/* Always mounted, so they glide between months like the sparkline's dot,
+                and fade out in place when the pointer leaves. */}
+            {VISITORS.map(([name, color, values]) =>
+              <circle key={name} className="chart-end" cx={x(at)} cy={y(values[at])} r={4} fill={color}
+                style={{ opacity: hover === null ? 0 : 1 }} />)}
           </svg>
         )}
         {hover !== null && (
