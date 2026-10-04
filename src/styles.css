@@ -858,7 +858,9 @@ footer { display: flex; justify-content: space-between; gap: 20px; padding: 30px
   display: grid;
   place-items: center;
   padding: 16px;
-  background: rgba(0, 0, 0, .6);
+  background: rgba(0, 0, 0, .5);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   animation: popup-fade 160ms ease-out;
 }
 .popup {
@@ -874,10 +876,13 @@ footer { display: flex; justify-content: space-between; gap: 20px; padding: 30px
 }
 .popup strong { font-size: 13px; font-weight: 500; letter-spacing: -.01em; }
 .popup p { margin: 0; font-size: 12.5px; line-height: 1.7; color: var(--sub); }
-/* Both actions at full button height, splitting the width evenly. */
-.popup-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 14px; }
-.popup-actions .outline-button { min-width: 0; }
-.outline-button.is-danger { color: #ff6b6b; }
+/* Both actions split the width evenly. Sized down from the page's buttons and
+   set at the title's weight, so they don't outshout the question. Cancel keeps
+   the outline; Delete is the one solid fill, so the choice reads at a glance. */
+.popup-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 16px; }
+.popup-actions .outline-button { min-width: 0; height: 40px; border-radius: 10px; font-weight: 500; }
+.popup-actions .outline-button.is-danger { background: #e5484d; box-shadow: none; }
+.popup-actions .outline-button.is-danger:hover { background: #ec5d61; }
 @keyframes popup-fade { from { opacity: 0; } }
 @keyframes popup-in { from { opacity: 0; transform: scale(.96); } }
 
