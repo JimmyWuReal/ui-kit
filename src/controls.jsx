@@ -440,8 +440,8 @@ export function Popup() {
             <strong id={`${id}-title`}>Delete Formless?</strong>
             <p id={`${id}-text`}>The project and everything in it will be removed for good.</p>
             <div className="popup-actions">
-              <button className="outline-button is-small" type="button" ref={cancel} onClick={close}>Cancel</button>
-              <button className="outline-button is-small is-danger" type="button" onClick={close}>Delete</button>
+              <button className="outline-button" type="button" ref={cancel} onClick={close}>Cancel</button>
+              <button className="outline-button is-danger" type="button" onClick={close}>Delete</button>
             </div>
           </div>
         </div>,
