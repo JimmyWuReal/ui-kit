@@ -3,7 +3,7 @@ set -eu
 
 usage() {
   printf 'Usage: %s [both|claude|codex]\n' "$0"
-  printf 'Link the UI Kit skill into your personal Claude Code and/or Codex skills directory.\n'
+  printf 'Link the skill into Claude Code and/or Codex using the name in skill/SKILL.md.\n'
 }
 
 agent=${1:-both}
@@ -18,6 +18,21 @@ case "$agent" in
 esac
 
 skill_root=$(CDPATH= cd -- "$(dirname -- "$0")/../skill" && pwd -P)
+skill_name=$(awk '
+  /^---$/ { section++; next }
+  section == 1 && /^name:[[:space:]]*/ { sub(/^name:[[:space:]]*/, ""); print; exit }
+' "$skill_root/SKILL.md")
+case "$skill_name" in
+  ''|*[!a-z0-9-]*|-*|*-|*--*)
+    printf 'Use lowercase letters, digits, and single hyphens for name in skill/SKILL.md.\n' >&2
+    exit 1
+    ;;
+esac
+if [ "${#skill_name}" -gt 64 ]; then
+  printf 'The skill name in skill/SKILL.md must be 64 characters or fewer.\n' >&2
+  exit 1
+fi
+
 claude_skills_dir=${UI_KIT_CLAUDE_SKILLS_DIR:-${CLAUDE_CONFIG_DIR:-$HOME/.claude}/skills}
 codex_skills_dir=${UI_KIT_CODEX_SKILLS_DIR:-$HOME/.agents/skills}
 if [ -n "${CODEX_HOME:-}" ] && [ -z "${UI_KIT_CODEX_SKILLS_DIR:-}" ]; then
@@ -26,7 +41,7 @@ fi
 
 # Check every selected destination before creating links. Never replace an existing skill.
 check_destination() {
-  destination=$1/ui-kit
+  destination=$1/$skill_name
   if [ -L "$destination" ] && [ "$(readlink "$destination")" = "$skill_root" ]; then
     return
   fi
@@ -37,7 +52,7 @@ check_destination() {
 }
 
 link_skill() {
-  destination=$1/ui-kit
+  destination=$1/$skill_name
   if [ -L "$destination" ]; then
     printf 'Already linked: %s\n' "$destination"
     return
@@ -52,6 +67,6 @@ if [ "$agent" != claude ]; then check_destination "$codex_skills_dir"; fi
 if [ "$agent" != codex ]; then link_skill "$claude_skills_dir"; fi
 if [ "$agent" != claude ]; then link_skill "$codex_skills_dir"; fi
 
-printf '\nUse /ui-kit in Claude Code or $ui-kit in Codex.\n'
+printf '\nUse /%s in Claude Code or $%s in Codex.\n' "$skill_name" "$skill_name"
 printf 'If the skill is missing from an open session, restart that session.\n'
 printf 'Keep this checkout in place; git pull updates the linked skill and source together.\n'
