@@ -408,3 +408,41 @@ export function Rating({ value, onChange }) {
     </div>
   )
 }
+
+/* Popup: a small confirm, opened from its own outline button. It closes on
+   either action, on Escape, or when focus leaves it. */
+export function Popup() {
+  const [open, setOpen] = useState(false)
+  const root = useRef(null)
+  const trigger = useRef(null)
+  const id = useId()
+
+  useEffect(() => {
+    if (open) root.current.querySelector('.popup button')?.focus()
+  }, [open])
+
+  const close = () => { setOpen(false); trigger.current.focus() }
+
+  return (
+    <div className={`popup-anchor ${open ? 'is-open' : ''}`} ref={root}
+      onKeyDown={(event) => {
+        // Close the popup only — not the expanded view around it.
+        if (event.key === 'Escape' && open) { event.stopPropagation(); close() }
+      }}
+      onBlur={(event) => { if (!root.current.contains(event.relatedTarget)) setOpen(false) }}>
+      <div className="control-row">
+        <div><strong>Archive project</strong><span>Hide it from your library</span></div>
+        <button className="outline-button is-small" type="button" ref={trigger} aria-haspopup="dialog"
+          aria-expanded={open} aria-controls={id} onClick={() => setOpen(!open)}>Archive</button>
+      </div>
+      <div className="popup" role="dialog" id={id} aria-labelledby={`${id}-title`}>
+        <strong id={`${id}-title`}>Archive Formless?</strong>
+        <p>It leaves your library, and comes back whenever you ask.</p>
+        <div className="popup-actions">
+          <button className="ghost-button is-small" type="button" onClick={close}>Cancel</button>
+          <button className="outline-button is-small" type="button" onClick={close}>Archive</button>
+        </div>
+      </div>
+    </div>
+  )
+}

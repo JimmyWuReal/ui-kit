@@ -820,6 +820,112 @@ footer { display: flex; justify-content: space-between; gap: 20px; padding: 30px
 .spinner { position: relative; width: 20px; height: 20px; flex: 0 0 auto; border-radius: 50%; box-shadow: inset 0 0 0 1.5px var(--line); }
 .spinner::after { content: ''; position: absolute; inset: 0; border: 1.5px solid transparent; border-top-color: #fff; border-radius: 50%; animation: spin 800ms linear infinite; }
 
+/* ── Charts ───────────────────────────────────────────────────────
+   The flat controls' rules, applied to data: white for what matters,
+   steps of gray for the rest, a hairline grid at the --rule gray, axes
+   and values in mono. Lines draw on with the checkmark's dashoffset;
+   bars and the meter grow out of their baseline. */
+
+/* The wide line chart spans both columns. */
+.cell-chart { grid-column: span 2; }
+.cell-chart .cell-content { flex-direction: column; justify-content: center; align-items: stretch; }
+
+.chart { display: flex; flex-direction: column; gap: 20px; }
+.chart-plot { position: relative; }
+.chart-plot svg { display: block; overflow: visible; touch-action: pan-y; }
+.chart-grid { stroke: var(--rule); stroke-width: 1; shape-rendering: crispEdges; }
+.chart-axis { font: var(--mono); letter-spacing: var(--track); fill: var(--dim); text-transform: uppercase; }
+.chart-line {
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1;
+  animation: draw 900ms cubic-bezier(.65, 0, .35, 1) backwards;
+}
+.chart-cross { stroke: var(--line); stroke-width: 1; shape-rendering: crispEdges; }
+.chart-end { transition: cx 160ms cubic-bezier(.22, 1, .36, 1), cy 160ms cubic-bezier(.22, 1, .36, 1); }
+
+/* A legend for lines: a short stroke, not a block. */
+.chart-legend { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 6px 14px; font-size: 11.5px; color: var(--sub); }
+.chart-legend span { display: inline-flex; align-items: center; gap: 7px; white-space: nowrap; }
+.chart-legend i { width: 10px; height: 2px; border-radius: 1px; }
+
+/* The tooltip's quiet hint on the raised gray, with values in mono. */
+.chart-tip {
+  position: absolute;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 9px 10px;
+  border-radius: 8px;
+  color: #a8a8a8;
+  background: #1c1c1c;
+  font-size: 11px;
+  line-height: 1;
+  white-space: nowrap;
+  pointer-events: none;
+}
+.chart-tip-row { display: flex; align-items: center; gap: 7px; }
+.chart-tip-row i { width: 8px; height: 2px; border-radius: 1px; }
+.chart-tip b { margin-left: auto; padding-left: 14px; font-weight: 400; }
+.chart-tip.is-above b { padding: 0; }
+
+/* A key for fills: a small square, the name, the value at the far end. */
+.chart-key { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 12px; margin: 0; padding: 0; list-style: none; }
+.chart-key.is-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 28px; }
+.chart-key li { display: flex; align-items: center; gap: 10px; font-size: 12.5px; color: #a8a8a8; letter-spacing: -.01em; }
+.chart-key i { width: 8px; height: 8px; flex: 0 0 auto; border-radius: 2px; }
+.chart-key .mono-value { margin-left: auto; }
+/* Pointing at one category quiets the others, in the chart and the key alike. */
+.chart-key li, .pie path, .meter span { transition: opacity 200ms ease; }
+.chart .is-dim { opacity: .25; }
+
+/* Sparkline: the Title size, so the number leads and the line supports it. */
+.stat-value { font-size: 36px; font-weight: 500; line-height: 1; letter-spacing: -.045em; font-variant-numeric: tabular-nums; }
+
+/* Bars: the hairline's gray at rest, its live step under the cursor, white
+   for today. Rounded only at the data end; square on the baseline. */
+.bars { display: flex; gap: 8px; height: 120px; box-shadow: inset 0 -1px 0 var(--line); }
+.bar-slot { flex: 1; display: flex; align-items: flex-end; justify-content: center; }
+.bar {
+  position: relative;
+  width: min(60%, 26px);
+  border-radius: 4px 4px 0 0;
+  background: rgba(255, 255, 255, .18);
+  transform-origin: bottom;
+  transition: background-color 200ms ease;
+  animation: bar-grow 600ms cubic-bezier(.22, 1, .36, 1) var(--delay) backwards;
+}
+.bar-slot:hover .bar { background: var(--line-live); }
+.bar.is-today, .bar-slot:hover .bar.is-today { background: #fff; }
+.chart-tip.is-above {
+  bottom: calc(100% + 8px);
+  left: 50%;
+  opacity: 0;
+  transform: translate(-50%, 4px);
+  transition: opacity 160ms ease-out, transform 200ms cubic-bezier(.22, 1, .36, 1);
+}
+.bar-slot:hover .chart-tip.is-above { opacity: 1; transform: translate(-50%, 0); }
+.bar-labels { display: flex; gap: 8px; margin-top: 12px; }
+.bar-labels span { flex: 1; text-align: center; }
+
+/* Pie: the slices are parted by real gaps, so it sits on any surface. */
+.pie-chart { display: flex; align-items: center; gap: 32px; }
+.pie { width: 132px; height: 132px; flex: 0 0 auto; overflow: visible; }
+.pie path { animation: slice-enter 400ms ease-out var(--delay) backwards; }
+
+/* Stacked bar: each category, then the faint track for what is left. */
+.meter { display: flex; gap: 2px; height: 8px; border-radius: 999px; overflow: hidden; clip-path: inset(0 round 999px); animation: meter-fill 700ms cubic-bezier(.22, 1, .36, 1) backwards; }
+.meter span { min-width: 0; flex-basis: 0; }
+.meter .is-free { background: rgba(255, 255, 255, .12); }
+
+@keyframes draw { from { stroke-dashoffset: 1; } }
+@keyframes bar-grow { from { transform: scaleY(0); } }
+@keyframes slice-enter { from { opacity: 0; } }
+@keyframes meter-fill { from { clip-path: inset(0 100% 0 0 round 999px); } }
+
 @keyframes spin { to { transform: rotate(360deg); } }
 @keyframes roll-up { from { opacity: 0; transform: translateY(9px); } }
 @keyframes roll-down { from { opacity: 0; transform: translateY(-9px); } }
@@ -837,13 +943,19 @@ button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 2px
   .site-header { flex-direction: column; align-items: flex-start; padding: 26px 0; gap: 24px; }
   .site-nav { width: 100%; }
   .component-grid, .sample-grid { grid-template-columns: 1fr; gap: 16px; }
-  .typeface.is-wide { grid-column: auto; }
+  .typeface.is-wide, .cell-chart { grid-column: auto; }
+  .pie-chart { gap: 24px; }
+  .pie { width: 104px; height: 104px; }
+  .chart-key.is-grid { column-gap: 20px; }
   .typeface { padding: 24px; }
   .typeface-name { font-size: 44px; }
   .pages { grid-template-columns: repeat(var(--count), 30px); }
   .code-boxes { gap: 6px; }
   footer { flex-direction: column; gap: 8px; }
 }
+
+/* Too narrow for the storage key's two columns. */
+@media (max-width: 440px) { .chart-key.is-grid { grid-template-columns: 1fr; } }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {

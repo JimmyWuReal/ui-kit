@@ -1,10 +1,11 @@
 import React, { createContext, useContext, useEffect, useRef, useState } from 'react'
 import { createRoot } from 'react-dom/client'
-import { Maximize2, Plus, Sparkles, X } from 'lucide-react'
+import { Download, Maximize2, Plus, Sparkles, X } from 'lucide-react'
 import {
-  Accordion, CheckMark, Chips, CodeInput, CopyLink, Pagination, Progress,
+  Accordion, CheckMark, Chips, CodeInput, CopyLink, Pagination, Popup, Progress,
   RadioGroup, Rating, SearchField, Segmented, Select, Slider, Spinner, Stepper, Tabs, TextArea,
 } from './controls.jsx'
+import { BarChart, LineChart, PieChart, Sparkline, StackedBar } from './charts.jsx'
 import './styles.css'
 
 /* Every surface an element can be tested against, as [key, name, use].
@@ -120,6 +121,43 @@ function PrimaryButton() {
   )
 }
 
+/* The quiet pair: drawn in the flat controls' hairline rather than the lit
+   material, for every action that is not the main one. */
+function OutlineButton() {
+  return (
+    <button className="outline-button" type="button">
+      <span className="button-content">
+        <span className="button-icon"><Download size={17} strokeWidth={2.15} /></span>
+        <span>Export</span>
+      </span>
+    </button>
+  )
+}
+
+function GhostButton() {
+  return (
+    <button className="ghost-button" type="button">
+      <span className="button-content">Skip for now</span>
+    </button>
+  )
+}
+
+function ProjectCard() {
+  return (
+    <article className="card">
+      <div className="card-preview bg-dots" />
+      <div className="card-body">
+        <strong>Formless</strong>
+        <p>A small set of elements, drawn in two materials.</p>
+      </div>
+      <div className="card-foot">
+        <span className="mono-label">Edited 2h ago</span>
+        <button className="outline-button is-small" type="button">Open</button>
+      </div>
+    </article>
+  )
+}
+
 function ElementsPage() {
   const [checked, setChecked] = useState(true)
   const [enabled, setEnabled] = useState(true)
@@ -144,7 +182,12 @@ function ElementsPage() {
   const demos = [
     {
       id: 'buttons', title: 'Buttons', cell: 'cell-buttons',
-      node: <div className="button-group"><PrimaryButton /><DepthButton /></div>,
+      node: (
+        <div className="button-stack">
+          <div className="button-group"><PrimaryButton /><DepthButton /></div>
+          <div className="button-group"><OutlineButton /><GhostButton /></div>
+        </div>
+      ),
     },
     {
       id: 'checkbox', title: 'Checkbox',
@@ -262,6 +305,36 @@ function ElementsPage() {
       id: 'rating', title: 'Rating',
       node: <Rating value={values.rating} onChange={set('rating')} />,
     },
+    /* The two layers that land on the page itself, so their cells are the
+       page's black rather than the cell gray. */
+    {
+      id: 'card', title: 'Card', cell: 'cell-control cell-black',
+      node: <ProjectCard />,
+    },
+    {
+      id: 'popup', title: 'Popup', cell: 'cell-control cell-black',
+      node: <Popup />,
+    },
+    {
+      id: 'line', title: 'Line chart', cell: 'cell-chart', wide: true,
+      node: <LineChart />,
+    },
+    {
+      id: 'sparkline', title: 'Sparkline',
+      node: <Sparkline />,
+    },
+    {
+      id: 'bar', title: 'Bar chart',
+      node: <BarChart />,
+    },
+    {
+      id: 'pie', title: 'Pie chart',
+      node: <PieChart />,
+    },
+    {
+      id: 'stacked', title: 'Stacked bar',
+      node: <StackedBar />,
+    },
   ]
 
   const active = demos.find((demo) => demo.id === expanded)
@@ -332,7 +405,7 @@ const style = (role, use, sample, font, size, weight, leading, tracking, color, 
 const typeScale = [
   ['Reading', [
     style('Display', 'Page openers', 'Better.', 'Inter', '64px', 500, '1.05', '-0.065em', '#FFFFFF'),
-    style('Title', 'Page and section titles', 'Make room.', 'Inter', '36px', 500, '1.15', '-0.045em', '#FFFFFF'),
+    style('Title', 'Page and section titles, stat values', 'Make room.', 'Inter', '36px', 500, '1.15', '-0.045em', '#FFFFFF'),
     style('Heading', 'The start of a section', 'Details matter.', 'Inter', '24px', 500, '1.3', '-0.035em', '#FFFFFF'),
     style('Quote', 'Pull quotes', '“Simply put.”', 'Georgia', '24px', 400, '1.5', '0', '#CCCCCC', { italic: true }),
     style('Description', 'An intro under a title', 'Start with the essentials.', 'Inter', '18px', 400, '1.6', '-0.02em', '#AAAAAA'),
@@ -341,9 +414,9 @@ const typeScale = [
   ]],
   ['Interface', [
     style('Brand', 'Site header', 'Jimmy Wu’s UI Kit', 'Inter', '15px', 600, 'normal', '-0.035em', '#EFEFEF'),
-    style('Card name', 'Background cards', 'Dot matrix', 'Inter', '14px', 500, 'normal', '0', '#FFFFFF'),
-    style('Button', 'AI button; #111111 on the primary', 'Create with AI', 'Inter', '13px', 600, 'normal', '-0.01em', '#FFFFFF'),
-    style('Control title', 'Toggle, checkbox, radio, stepper', 'Notifications', 'Inter', '13px', 500, 'normal', '-0.01em', '#FFFFFF'),
+    style('Card name', 'Cards, background cards', 'Dot matrix', 'Inter', '14px', 500, 'normal', '0', '#FFFFFF'),
+    style('Button', 'AI, outline; #BDBDBD ghost, #111111 primary', 'Create with AI', 'Inter', '13px', 600, 'normal', '-0.01em', '#FFFFFF'),
+    style('Control title', 'Toggle, checkbox, radio, stepper, popup', 'Notifications', 'Inter', '13px', 500, 'normal', '-0.01em', '#FFFFFF'),
     style('Question', 'Accordion', 'What is in the kit?', 'Inter', '13px', 500, 'normal', '-0.01em', '#CFCFCF'),
     style('Count', 'Stepper value', '3', 'Inter', '13px', 500, 'normal', '0', '#FFFFFF'),
     style('Field text', 'Text field, search, select', 'studio@form.co', 'Inter', '13px', 400, 'normal', '-0.01em', '#EDEDED'),
@@ -351,16 +424,16 @@ const typeScale = [
     style('Code digit', 'Code input', '4 8 1 5', 'Inter', '18px', 500, 'normal', '0', '#FFFFFF'),
     style('Segment', 'Segmented, pagination, site nav', 'Board', 'Inter', '12.5px', 500, 'normal', '-0.01em', '#8A8A8A'),
     style('Tab', 'Tabs', 'Overview', 'Inter', '12.5px', 500, 'normal', '-0.01em', '#7D7D7D'),
-    style('Chip', 'Chips', 'Motion', 'Inter', '12.5px', 500, 'normal', '-0.01em', '#A8A8A8'),
-    style('Panel text', 'Tab panel, accordion answer', 'Three changes this week.', 'Inter', '12.5px', 400, '1.7', '0', '#7D7D7D'),
-    style('Control note', 'Under a control title', 'Product updates', 'Inter', '11.5px', 400, 'normal', '0', '#7D7D7D'),
-    style('Tooltip', 'Tooltip, on white', 'Copy link', 'Inter', '11px', 500, '1', '0', '#0A0A0A', { on: '#FFFFFF' }),
+    style('Chip', 'Chips, chart keys', 'Motion', 'Inter', '12.5px', 500, 'normal', '-0.01em', '#A8A8A8'),
+    style('Panel text', 'Tab panel, accordion, card, popup', 'Three changes this week.', 'Inter', '12.5px', 400, '1.7', '0', '#7D7D7D'),
+    style('Control note', 'Under a control title, chart legends', 'Product updates', 'Inter', '11.5px', 400, 'normal', '0', '#7D7D7D'),
+    style('Tooltip', 'Tooltip and chart tooltip, on raised', 'Copy link', 'Inter', '11px', 400, '1', '0', '#A8A8A8', { on: '#1C1C1C' }),
     style('Footer', 'Site footer', 'A personal collection, made with care.', 'Inter', '11px', 400, 'normal', '0', '#666666'),
   ]],
   ['Mono', [
-    style('Value', 'Slider, progress, character count', '24.8 MB', 'DM Mono', '11px', 400, '1', '0', '#D6D6D6'),
+    style('Value', 'Slider, progress, counts, chart values', '24.8 MB', 'DM Mono', '11px', 400, '1', '0', '#D6D6D6'),
     style('Label', 'Eyebrows over content', 'THE SMALL DETAILS', 'DM Mono', '10px', 400, '1.5', '0.15em', '#FFFFFF'),
-    style('Field label', 'Over fields, card numbers', 'EMAIL ADDRESS', 'DM Mono', '9px', 400, '1', '0.14em', '#6F6F6F'),
+    style('Field label', 'Over fields, card numbers, chart axes', 'EMAIL ADDRESS', 'DM Mono', '9px', 400, '1', '0.14em', '#6F6F6F'),
   ]],
 ]
 
