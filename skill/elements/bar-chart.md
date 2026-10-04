@@ -2,6 +2,8 @@
 
 Use for counts across a few categories or time buckets. Bars are flat gray; the current / emphasized bucket is white. Keep the data baseline at zero for count comparisons.
 
+Follow the [minimal chart defaults](../SKILL.md#minimal-charts): a short title, an optional single primary total, the bars, and sparse axis labels. Do not add a weekly-total subtitle, active-day count, latest-bucket footer, or a second value/period summary. Exact bucket values belong in an accessible hover/focus tooltip, not a permanent summary row. Keep daily data daily when requested.
+
 ```jsx
 <BarChart />
 ```
@@ -17,7 +19,7 @@ Exported from `charts.jsx`. The demo uses `COMMITS` tuples `[day, count]`, a fix
 @keyframes bar-grow { from { transform: scaleY(0); } }
 ```
 
-Height is `count / max * 100%`; `--delay` is `index * 40ms`. Only bars grow in. Header, total, baseline, and labels appear immediately. The entire column is a hover target and shows a raised value tooltip; remove the source tooltip's reveal transition under the global motion rule.
+Height is `count / max * 100%`; `--delay` is `index * 40ms`. Only bars grow in. The chosen title/value, baseline, and labels appear immediately; this does not require a headline total. The entire column is a hover target and shows a raised value tooltip; remove the source tooltip's reveal transition under the global motion rule. Expose the same point details on keyboard focus when adapting it.
 
 Labels sit 12px below the plot in mono. Keep the counts in the accessible summary; expose exact values without relying solely on hover if the task requires them.
 

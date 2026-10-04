@@ -31,11 +31,26 @@ Minimalism applies to the whole page: its sections, words, controls, and decorat
 
 For a personal introduction, use direct headings, a concise introduction, and flat panels where grouping helps. Include profile details, projects, and activity charts when requested. Omit the redundant `Developer · Taiwan` eyebrow when the profile already gives those facts, and omit the trailing quote and principles section unless requested. The showcase does not set a target section count or component inventory.
 
+## Minimal charts
+
+Use the referenced chart's visual construction, not an expanded analytics card. Decide what is visible before copying markup. These defaults apply to every chart reference and override extra copy or metrics in older showcase examples.
+
+- Start with one short metric title, the plot, and sparse readable axis ticks. Include units in the title or axis when needed. At most one main number may accompany the plot when it represents the chart's primary metric; it is optional.
+- Omit subtitles, corner annotations, summary footers, period recaps, change percentages, averages, streaks, active-day counts, and additional KPI rows unless the user explicitly requests those details. A request for a chart, dashboard, or demo data does not request every statistic you can calculate.
+- For a commits chart, `Commits`, an optional primary total such as `674`, and the dated plot are enough. Do not add `Weekly totals`, `78 active days out of 90`, `Latest week`, or `37 commits · 7 days` by default. A tooltip may show that bucket's date and value while inspected; do not repeat it in a permanent footer.
+- Preserve the requested data granularity. Do not replace daily observations with weekly totals to make a chart look simpler. Reduce tick-label density instead. If aggregation is requested, make it clear in the existing title or axis rather than adding another explanatory label.
+- Use a legend only to identify multiple series or otherwise unnamed categories. A single named series needs no legend. Show point details on hover and keyboard focus, then dismiss them when inspection ends; keep accessible chart descriptions without adding visible summary prose.
+- Put a shared date-range control or demo-data disclosure once near the chart group when needed. Do not repeat its range, day count, or explanation inside each chart. Add export controls or a visible data table only when requested or necessary to complete the user's task.
+
+Before finishing a chart, inspect every text node outside the plot: keep the title, any chosen primary value, and labels necessary to interpret the data. Remove the rest unless it was explicitly requested. Do not replace removed labels with new wording that communicates the same extra statistics.
+
 ## Motion rule
 
 **Only chart data marks may have appearing animations.** Every other element and text must be visible immediately on initial render, navigation, mounting, opening, or content reveal. This includes menus, dialogs, accordion bodies, tab panels, tooltips, digits, and updated counts. Do not add page fades, scroll reveals, staggered cards, or animated headings. Chart titles, axes, legends, and surrounding cards also appear immediately.
 
 Hover, press, selection movement, and ongoing status feedback are allowed as described in the relevant element reference. These are local interactions, not permission to animate an element into view. A spinner may rotate while loading; a progress bar may track real progress. Initialize controls at their actual value without a startup sweep.
+
+**Preserve smooth hover-dot movement on line charts and sparklines.** Keep the marker mounted and glide its `cx`/`cy` to the inspected point over 160ms using the chart reference's easing. This interaction is part of the kit, even on a minimal chart. Do not remove it with a blanket no-animation rule or recreate the marker on each hover. Tooltip text and values update immediately; reduced-motion mode uses immediate marker movement.
 
 The showcase includes some non-chart entrance effects. **These instructions override those effects.** When reusing its stylesheet, place this compatibility block after it. When recreating a component, omit the corresponding entrance code entirely:
 
@@ -165,6 +180,6 @@ The recipes work as design references on their own. Their short CSS examples emp
 | [src/main.jsx](../src/main.jsx) | Button, checkbox, toggle, card markup; `SURFACES`, `typeScale` |
 | [src/styles.css](../src/styles.css) | Complete class rules; search the selectors named in each reference |
 
-Usage snippets assume the control is imported and its state variable / setter are defined in the destination component. In a different project, copy the chosen component, its helper/import dependencies, and relevant class rules. Avoid importing the entire showcase stylesheet: it includes gallery layout and decoration unrelated to the new page. The named exports in `controls.jsx` and `charts.jsx` can be imported; the demo functions in `main.jsx` cannot. Extract only the needed markup without copying the gallery, its surrounding labels, or its `createRoot` call. The source uses React and `lucide-react`; charts use SVG without a chart library. Charts currently contain sample data rather than data props: adapt the data and accessible summaries together.
+Usage snippets assume the control is imported and its state variable / setter are defined in the destination component. In a different project, copy the chosen component, its helper/import dependencies, and relevant class rules. Avoid importing the entire showcase stylesheet: it includes gallery layout and decoration unrelated to the new page. The named exports in `controls.jsx` and `charts.jsx` can be imported; the demo functions in `main.jsx` cannot. Extract only the needed markup without copying the gallery, its surrounding labels, or its `createRoot` call. The source uses React and `lucide-react`; charts use SVG without a chart library. Charts currently contain sample data rather than data props: adapt the data and accessible summaries together, then apply the [minimal chart defaults](#minimal-charts) to the visible content.
 
 Before finishing, make a subtraction pass over the whole page: remove redundant words, decorative lines, unnecessary wrappers and controls, and sections added only to showcase the kit. Then check it on a narrow screen, operate its controls with a keyboard, and verify the motion rule on both first render and revealed content. Keep shared decisions here and element-specific behavior in the references. When updating kit values, update the matching reference too.

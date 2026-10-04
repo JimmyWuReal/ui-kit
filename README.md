@@ -17,6 +17,11 @@ the copy, colors, and layout to your project.
 The skill favors minimal pages: use spacing to separate sections, keep only
 useful copy, and choose components for the task. Decorative rules, repeated
 labels, and extra quote or principles sections are omitted by default.
+Charts use a title, the plot, necessary labels, and at most one primary value.
+Extra subtitles, activity statistics, percentage changes, and summary footers
+require an explicit request.
+Line-chart and sparkline hover dots still glide between inspected points;
+minimal copy does not remove this interaction.
 
 ## Demo: personal introduction site
 

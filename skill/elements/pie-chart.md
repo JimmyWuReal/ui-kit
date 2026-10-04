@@ -2,6 +2,8 @@
 
 Use for a few parts of a whole, with names and percentages in a visible key. Assign brightness in this order: `#ffffff`, `#a3a3a3`, `#5c5c5c`, `#383838`. Keep at most four displayed categories; combine the remainder into Other rather than cycling colors.
 
+Follow the [minimal chart defaults](../SKILL.md#minimal-charts). The category key is needed to identify the slices; it is not permission to add a descriptive subtitle, overall total, change percentage, or summary footer. Keep each category's name and value in one place.
+
 ```jsx
 <PieChart />
 ```

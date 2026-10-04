@@ -2,6 +2,8 @@
 
 Use for capacity or allocation in a compact space. This is a data chart, distinct from the task [progress bar](progress.md).
 
+Follow the [minimal chart defaults](../SKILL.md#minimal-charts). Use a short title, the meter, and the category key needed to identify its segments. For capacity, a single used/total value with units may be useful; do not also repeat it as a percentage, free-space statistic, or footer summary unless requested.
+
 ```jsx
 <StackedBar />
 ```
@@ -19,6 +21,6 @@ Exported from `charts.jsx`. The demo uses `STORAGE` `[name, value]` tuples and `
 
 Use `flexGrow: value` for each segment and `flexGrow: capacity - used` for free space, so gaps do not overflow the meter. The shades are `#ffffff`, `#a3a3a3`, `#5c5c5c`, `#383838`; keep at most four displayed categories and fold extras into Other.
 
-Only the meter reveals from left to right over 700ms. Header, percentage, and key appear immediately. Hovering a segment or key row dims the other categories to .25 over 200ms. Use the source `Key` helper for matching names, values, and square swatches; its two-column key becomes one column at 440px.
+Only the meter reveals from left to right over 700ms. The title, any chosen capacity value, and key appear immediately. Hovering a segment or key row dims the other categories to .25 over 200ms. Use the source `Key` helper for matching names, values, and square swatches; its two-column key becomes one column at 440px.
 
 Source: [charts.jsx](../../src/charts.jsx), `StackedBar`, `Key`, `SHADES`, `dim`; [styles.css](../../src/styles.css), `.meter*`, `.chart-key*`, `meter-fill`.

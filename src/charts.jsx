@@ -3,7 +3,9 @@ import React, { useLayoutEffect, useRef, useState } from 'react'
 /* The charts. Drawn the way the flat controls are: white for the thing that
    matters, steps of gray for the rest, a hairline grid that stays out of the
    way, and values in mono. No hues — identity is carried by brightness and a
-   label, never by colour alone. Hover is passing UI state, so it stays local. */
+   label, never by colour alone. Keep visible copy to a title, at most one
+   primary value, and labels needed to read the plot. Hover is passing UI
+   state, so it stays local rather than becoming a permanent summary row. */
 
 /* The grays a series or a slice is drawn in, brightest first. Assigned in
    this order and never cycled — a fifth category folds into "Other". */
@@ -94,7 +96,7 @@ export function LineChart() {
   return (
     <div className="chart">
       <div className="control-row">
-        <div><strong>Visitors</strong><span>The past twelve months</span></div>
+        <div><strong>Visitors</strong></div>
         <Legend items={VISITORS} />
       </div>
       <div className="chart-plot" ref={ref} style={{ height }}>
@@ -155,7 +157,6 @@ export function Sparkline() {
   const [ref, width] = useWidth()
   const [hover, setHover] = useState(null)
   const shown = hover ?? REVENUE.length - 1
-  const change = shown ? (REVENUE[shown] / REVENUE[shown - 1] - 1) * 100 : 0
   const height = 56, inset = 5
   const min = Math.min(...REVENUE), max = Math.max(...REVENUE)
   const step = (width - inset * 2) / (REVENUE.length - 1)
@@ -166,7 +167,6 @@ export function Sparkline() {
     <div className="chart">
       <div className="field-head">
         <span className="mono-label">{hover === null ? 'Revenue today' : DAYS[hover]}</span>
-        <span className="mono-value">{change >= 0 ? '+' : ''}{change.toFixed(1)}%</span>
       </div>
       <strong className="stat-value">${REVENUE[shown].toLocaleString()}</strong>
       <div className="chart-plot" ref={ref} style={{ height }}>
@@ -194,8 +194,8 @@ export function BarChart() {
   return (
     <div className="chart">
       <div className="control-row">
-        <div><strong>Commits</strong><span>This week</span></div>
-        <span className="mono-value">{total} total</span>
+        <div><strong>Commits</strong></div>
+        <span className="mono-value">{total}</span>
       </div>
       <div>
         <div className="bars" role="img" aria-label={COMMITS.map(([day, count]) => `${day} ${count}`).join(', ')}>
@@ -236,7 +236,7 @@ export function PieChart() {
   return (
     <div className="chart">
       <div className="control-row">
-        <div><strong>Traffic</strong><span>Where visitors came from</span></div>
+        <div><strong>Traffic</strong></div>
       </div>
       <div className="pie-chart">
         <svg className="pie" viewBox="0 0 100 100" role="img"
@@ -266,7 +266,6 @@ export function StackedBar() {
     <div className="chart">
       <div className="control-row">
         <div><strong>Storage</strong><span>{used.toFixed(1)} of {CAPACITY} GB used</span></div>
-        <span className="mono-value">{Math.round((used / CAPACITY) * 100)}%</span>
       </div>
       <div className="meter" role="img" aria-label={STORAGE.map(([name, value]) => `${name} ${value} GB`).join(', ')}
         onPointerLeave={() => setHover(null)}>
