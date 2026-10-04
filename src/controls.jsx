@@ -409,16 +409,18 @@ export function Rating({ value, onChange }) {
   )
 }
 
-/* Popup: a small confirm, opened from its own outline button. It closes on
-   either action, on Escape, or when focus leaves it. */
+/* Popup: a small confirm, opened from its own outline button. It starts open
+   so it can be seen, and closes on either action, on Escape, or when focus
+   leaves it. */
 export function Popup() {
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState(true)
   const root = useRef(null)
   const trigger = useRef(null)
   const id = useId()
 
+  /* Focus moves in only when the trigger opened it — not on load. */
   useEffect(() => {
-    if (open) root.current.querySelector('.popup button')?.focus()
+    if (open && document.activeElement === trigger.current) root.current.querySelector('.popup button').focus()
   }, [open])
 
   const close = () => { setOpen(false); trigger.current.focus() }
