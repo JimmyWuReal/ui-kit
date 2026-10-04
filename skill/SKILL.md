@@ -7,6 +7,8 @@ description: Design and implement websites using Jimmy Wu's UI kit. Use when a s
 
 Use this kit to compose a site around the user's content and actions. Read only the element, background, and text references needed for the design. Each reference contains the important values and a usage recipe; the tables below are the entry point.
 
+This skill works in Claude Code and Codex. Resolve relative file links from this file's real directory, following the installed skill symlink, rather than from the project you are designing. The installation keeps this repository's `skill/` and `src/` together.
+
 ## Design rules
 
 - Use two materials: lit depth for primary and AI actions; flat hairlines for other controls. Keep backgrounds flat or use the kit's crisp patterns.
