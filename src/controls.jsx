@@ -1,4 +1,4 @@
-import React, { useEffect, useId, useRef, useState } from 'react'
+import React, { useEffect, useId, useLayoutEffect, useRef, useState } from 'react'
 import { Check, ChevronDown, ChevronLeft, ChevronRight, Copy, Minus, Plus, RotateCcw, Search, Star, X } from 'lucide-react'
 
 /* The flat controls. Every one is controlled — its value lives with the
@@ -43,13 +43,33 @@ export function RadioGroup({ label, options, value, onChange }) {
 
 /* The white thumb is one element moved by index, so it slides between
    segments instead of each segment fading its own fill. */
+/* Each segment is as wide as its label, so short and long words get the same
+   room around them. The thumb is measured off the active button and slides
+   and resizes to it. It is left out until the first measurement, so it lands
+   in place on load rather than sliding in from the left. */
 export function Segmented({ label, options, value, onChange }) {
   const index = options.indexOf(value)
+  const ref = useRef(null)
+  const [thumb, setThumb] = useState(null)
+
+  useLayoutEffect(() => {
+    const buttons = ref.current.querySelectorAll('button')
+    const measure = () => {
+      const active = buttons[index]
+      if (active) setThumb({ '--thumb-x': `${active.offsetLeft}px`, '--thumb-width': `${active.offsetWidth}px` })
+    }
+    measure()
+    /* Widths change when the web font arrives and when the control is resized. */
+    const observer = new ResizeObserver(measure)
+    buttons.forEach((button) => observer.observe(button))
+    return () => observer.disconnect()
+  }, [index, options.length])
+
   return (
-    <div className="segmented" role="radiogroup" aria-label={label}
-      style={{ '--count': options.length, '--index': index }}
+    <div className="segmented" role="radiogroup" aria-label={label} ref={ref}
+      style={{ '--count': options.length }}
       onKeyDown={(event) => arrowStep(event, options.length, index, (next) => onChange(options[next]))}>
-      <span className="segmented-thumb" aria-hidden="true" />
+      {thumb && <span className="segmented-thumb" style={thumb} aria-hidden="true" />}
       {options.map((option) => (
         <button key={option} type="button" role="radio" data-step aria-checked={option === value}
           tabIndex={option === value ? 0 : -1} className={option === value ? 'is-active' : ''}
