@@ -3,16 +3,18 @@ import { createRoot } from 'react-dom/client'
 import { Maximize2, Plus, Sparkles, X } from 'lucide-react'
 import './styles.css'
 
-/* Every surface an element can be tested against. The first is the default. */
+/* Every surface an element can be tested against, as [key, name, use].
+   All flat black, gray and white — the places an element actually lands.
+   The first is the default. */
 const SURFACES = [
-  ['default', 'Default black'],
-  ['midnight', 'Midnight'],
-  ['aurora', 'Aurora'],
-  ['dots', 'Dot matrix'],
-  ['warmth', 'Warmth'],
-  ['metal', 'Brushed metal'],
-  ['eclipse', 'Eclipse'],
-  ['paper', 'Paper'],
+  ['default', 'Black', 'The page the kit is drawn on.'],
+  ['card', 'Card', 'The gray every cell sits on.'],
+  ['raised', 'Raised', 'Menus, popovers and dialogs.'],
+  ['dots', 'Dot matrix', 'A little structure, a lot of space.'],
+  ['grid', 'Grid', 'A canvas for checking alignment.'],
+  ['checker', 'Checker', 'Shows what a translucent layer lets through.'],
+  ['white', 'White', 'A light page.'],
+  ['mist', 'Mist', 'The gray a light page sits on.'],
 ]
 
 const SurfaceContext = createContext(['default', () => {}])
@@ -193,24 +195,15 @@ function ElementsPage() {
   )
 }
 
-const backgrounds = [
-  ['Midnight', 'A quiet, soft-lit surface.', 'midnight'],
-  ['Aurora', 'A wash of violet and cool blue.', 'aurora'],
-  ['Dot matrix', 'A little structure, a lot of space.', 'dots'],
-  ['Warmth', 'An amber glow at the horizon.', 'warmth'],
-  ['Brushed metal', 'Light and shadow in fine layers.', 'metal'],
-  ['Eclipse', 'A halo emerging from the dark.', 'eclipse'],
-]
-
 function BackgroundPage() {
   const [, setSurface] = useSurface()
   const [expanded, setExpanded] = useState(null)
-  const active = backgrounds.find(([, , style]) => style === expanded)
+  const active = SURFACES.find(([style]) => style === expanded)
 
   return (
     <>
       <div className="sample-grid" aria-label="Background styles">
-        {backgrounds.map(([name, description, style], index) =>
+        {SURFACES.map(([style, name, description], index) =>
           <article className="sample-card background-card" key={style}>
             <div className={`background-preview bg-${style}`}><span className="preview-mark">Aa</span></div>
             <div className="sample-caption"><div><h2>{name}</h2><p>{description}</p></div><span className="mono-label">0{index + 1}</span></div>
@@ -219,7 +212,7 @@ function BackgroundPage() {
         )}
       </div>
       {active && (
-        <ExpandedView title={active[0]} wide onClose={() => setExpanded(null)}>
+        <ExpandedView title={active[1]} wide onClose={() => setExpanded(null)}>
           <div className="surface-sampler">
             <span className="preview-mark">Aa</span>
             <div className="button-group"><PrimaryButton /><DepthButton /></div>

@@ -61,17 +61,19 @@ a:focus-visible { outline: 2px solid #fff; outline-offset: 4px; }
 .grid-cell { min-height: 220px; }
 footer { display: flex; justify-content: space-between; gap: 20px; padding: 30px 2px; color: #666; font-size: 11px; }
 .sample-card { overflow: hidden; }
-.background-preview { height: 270px; display: grid; place-items: center; position: relative; isolation: isolate; }
-.preview-mark { font-size: 52px; letter-spacing: -.08em; color: #ffffffbd; font-weight: 500; text-shadow: 0 2px 20px #0003; }
-.bg-midnight { background: radial-gradient(ellipse at 50% 0%, #363943, #101115 75%); }
-.bg-aurora { background: radial-gradient(ellipse at 15% 100%, #235c73, transparent 65%), radial-gradient(ellipse at 85% 20%, #7948a3, transparent 65%), #12182a; }
-.bg-dots { background: radial-gradient(#ffffff24 1px, transparent 1px) 0 0 / 16px 16px, radial-gradient(ellipse at top, #252525, #101010); }
-.bg-warmth { background: radial-gradient(ellipse at 50% 120%, #efb16b, #9a4b2d 25%, #36201f 52%, #141214 80%); }
-.bg-metal { background: repeating-linear-gradient(100deg, #ffffff03 0 1px, #00000003 1px 3px), linear-gradient(115deg, #141414, #535353 40%, #262626 60%, #111); }
-.bg-eclipse { background: #09090c; }
-.bg-eclipse::before { content: ''; position: absolute; z-index: -1; width: 170px; height: 170px; border-radius: 50%; background: #09090c; box-shadow: 0 -5px 20px #ccc6, 0 -1px 3px #fff, 0 12px 70px #6a668855; }
+.background-preview { height: 270px; display: grid; place-items: center; }
+.preview-mark { font-size: 52px; letter-spacing: -.08em; color: currentColor; opacity: .74; font-weight: 500; }
+
+/* Surfaces. Flat fills only — the patterns are hard-edged, never a wash.
+   Light surfaces flip the ink so the sample mark stays readable. */
 .bg-default { background: #090909; }
-.bg-paper { background: radial-gradient(ellipse at 50% -10%, #fff, #e9e6e0 78%); }
+.bg-card { background: #111; }
+.bg-raised { background: #1c1c1c; }
+.bg-dots { background: radial-gradient(#ffffff24 1px, transparent 1px) 0 0 / 16px 16px, radial-gradient(ellipse at top, #252525, #101010); }
+.bg-grid { background: linear-gradient(#ffffff12 1px, transparent 1px) 0 0 / 24px 24px, linear-gradient(90deg, #ffffff12 1px, transparent 1px) 0 0 / 24px 24px, #090909; }
+.bg-checker { background: repeating-conic-gradient(#222 0 25%, #151515 0 50%) 0 0 / 20px 20px; }
+.bg-white { background: #fff; color: #000; }
+.bg-mist { background: #f2f2f2; color: #000; }
 .sample-caption { display: flex; justify-content: space-between; align-items: center; gap: 20px; padding: 22px 26px; }
 .sample-caption h2 { margin: 0; font-size: 14px; font-weight: 500; }
 .sample-caption p { margin: 7px 0 0; font-size: 12px; color: #888; line-height: 1.5; }
@@ -411,20 +413,9 @@ button:focus-visible, input:focus-visible { outline: 2px solid rgba(255, 255, 25
   animation: overlay-enter 220ms ease-out both;
 }
 
-/* The surface is its own layer so the eclipse halo, which sits at
-   z-index -1, still lands behind the element and not behind the page. */
-.expand-surface {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  isolation: isolate;
-}
-.expand-surface.bg-eclipse::before {
-  width: 420px;
-  height: 420px;
-  box-shadow: 0 -12px 44px #ccc6, 0 -2px 6px #fff, 0 30px 150px #6a668855;
-}
+.expand-surface { position: absolute; inset: 0; }
+/* The element sits beside the surface, not in it, so pass the light ink across. */
+.expand-surface:is(.bg-white, .bg-mist) ~ .expand-body .preview-mark { color: #000; }
 
 .expand-body {
   position: relative;
@@ -495,7 +486,7 @@ button:focus-visible, input:focus-visible { outline: 2px solid rgba(255, 255, 25
 .expand-close:hover { color: #fff; background: rgba(32, 32, 32, .8); transform: scale(1.06); }
 .expand-close:active { transform: scale(.94); }
 
-/* Dark chrome throughout, so the picker stays legible on paper and on amber. */
+/* Dark chrome throughout, so the picker stays legible on the white surfaces. */
 .surface-picker {
   position: absolute;
   z-index: 2;
@@ -537,11 +528,8 @@ button:focus-visible, input:focus-visible { outline: 2px solid rgba(255, 255, 25
 }
 /* The sampled surfaces are drawn at page scale; bring them down to a swatch. */
 .swatch.bg-dots { background-size: 6px 6px, auto; }
-.swatch.bg-eclipse::before {
-  width: 22px;
-  height: 22px;
-  box-shadow: 0 -2px 5px #ccc9, 0 -1px 2px #fff;
-}
+.swatch.bg-grid { background-size: 7px 7px, 7px 7px, auto; }
+.swatch.bg-checker { background-size: 10px 10px; }
 
 .surface-sampler { display: flex; flex-direction: column; align-items: center; gap: 34px; }
 .surface-sampler .preview-mark { font-size: 96px; }
