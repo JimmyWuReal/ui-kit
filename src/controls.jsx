@@ -299,8 +299,8 @@ export function Progress({ name, size, value, onReplay }) {
   )
 }
 
-/* The tooltip is the one place the white fill is used as a surface: it
-   shows on hover and focus, and stays up for a moment to confirm a copy. */
+/* The tooltip sits on the raised gray, like the select menu. It shows on
+   hover and focus, and stays up for a moment to confirm a copy. */
 export function CopyLink() {
   const [copied, setCopied] = useState(false)
   useEffect(() => {

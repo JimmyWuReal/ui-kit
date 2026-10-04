@@ -736,8 +736,8 @@ footer { display: flex; justify-content: space-between; gap: 20px; padding: 30px
 .icon-button.is-on .icon-out { opacity: 0; transform: scale(.6); }
 .icon-button.is-on .icon-in { opacity: 1; transform: none; }
 
-/* Tooltip: a small white label, up on hover or keyboard focus, and held
-   for a moment after a copy. */
+/* Tooltip: a small label on the raised gray, the same as the select
+   menu — up on hover or keyboard focus, and held for a moment after a copy. */
 .tooltip-anchor { position: relative; display: inline-flex; }
 .tooltip {
   position: absolute;
@@ -745,8 +745,9 @@ footer { display: flex; justify-content: space-between; gap: 20px; padding: 30px
   left: 50%;
   padding: 6px 9px;
   border-radius: 7px;
-  color: #0a0a0a;
-  background: #fff;
+  color: #ededed;
+  background: #1c1c1c;
+  box-shadow: inset 0 0 0 1px var(--line);
   font-size: 11px;
   font-weight: 500;
   line-height: 1;
