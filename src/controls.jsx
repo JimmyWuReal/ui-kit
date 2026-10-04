@@ -299,7 +299,7 @@ export function Progress({ name, size, value, onReplay }) {
   )
 }
 
-/* The tooltip sits on the raised gray, like the select menu. It shows on
+/* The tooltip is a quiet hint on the raised gray, with no edge. It shows on
    hover and focus, and stays up for a moment to confirm a copy. */
 export function CopyLink() {
   const [copied, setCopied] = useState(false)
