@@ -1,19 +1,30 @@
 # Buttons
 
-Use the light primary for the main action, the dark depth variant for an AI / generate action, and outline for supporting actions. All share 48px height, 12px radius, 20px horizontal padding, and 13px/600 Inter with -.01em tracking.
+Use the flat `outline-button` by default for all regular actions, including primary, submit, and AI / generate actions.
+
+The two gradient styles, light `primary-button` and dark `depth-button`, are reserved for CTAs in the homepage hero section only. Use them only when the user requests a homepage hero section, with **at most two gradient buttons across the entire website, counting both variants together**. Use outline buttons for navigation, forms, cards, dialogs, other sections, and other pages. Do not add a hero section just to use gradients.
+
+All three styles share 48px height, 12px radius, 20px horizontal padding, and 13px/600 Inter with -.01em tracking. Regular actions:
 
 ```jsx
-<button className="primary-button" type="button" onClick={createProject}>
+<button className="outline-button" type="button" onClick={createProject}>
   <span className="button-content">
     <span className="button-icon"><Plus size={17} strokeWidth={2.15} /></span>
     <span>Create project</span>
   </span>
 </button>
-<button className="depth-button" type="button" onClick={generate}>Create with AI</button>
+<button className="outline-button" type="button" onClick={generate}>Create with AI</button>
 <button className="outline-button" type="button" onClick={exportProject}>Export</button>
 ```
 
 `Plus` is from `lucide-react`; icons are optional. The helpers keep icon and text aligned.
+
+For a requested homepage hero only:
+
+```jsx
+<button className="primary-button" type="button" onClick={getStarted}>Get started</button>
+<button className="depth-button" type="button" onClick={openDemo}>Try demo</button>
+```
 
 ```css
 .primary-button, .depth-button, .outline-button {
@@ -62,6 +73,6 @@ Use the light primary for the main action, the dark depth variant for an AI / ge
 .outline-button.is-small { min-width: 0; height: 36px; padding: 0 14px; border-radius: 10px; }
 ```
 
-You may change height, width, label, icon, and base color. Keep the inset highlight / shade order on depth variants, maintain contrast, and keep secondary buttons flat. Derive hover and pressed colors from the chosen base. Use `type="submit"` for form submission. Add a clear disabled state when needed; the showcase buttons have none.
+You may change height, width, label, icon, and base color. For eligible hero CTAs, keep the inset highlight / shade order on gradient variants. Maintain contrast and keep regular buttons flat. Derive hover and pressed colors from the chosen base. Use `type="submit"` for form submission. Add a clear disabled state when needed; the showcase buttons have none.
 
 Source: [main.jsx](../../src/main.jsx), `PrimaryButton`, `DepthButton`, `OutlineButton`; [styles.css](../../src/styles.css), the three button classes and `.button-content` / `.button-icon`.

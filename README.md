@@ -10,9 +10,12 @@ Use it for a prototype, a small product, a dashboard, or an internal tool. It
 includes React components, plain CSS, and a skill that teaches Claude Code and
 Codex how to use the kit in your own projects.
 
-The style is deliberately simple: dark surfaces, lit primary buttons, flat
-controls, grayscale charts, and a small set of typography rules. You can adapt
-the copy, colors, and layout to your project.
+The style is deliberately simple: dark surfaces, flat controls, grayscale
+charts, and a small set of typography rules. Outline buttons are the default,
+including for primary and AI actions. The two gradient button styles are only
+for requested homepage hero CTAs, with at most two gradient buttons across the
+entire website, both styles combined. You can adapt the copy, colors, and layout
+to your project.
 
 The skill favors minimal pages: use spacing to separate sections, keep only
 useful copy, and choose components for the task. Decorative rules, repeated

@@ -1,6 +1,6 @@
 ---
 name: ui-kit
-description: Design and implement minimal websites using Jimmy Wu's UI kit. Use when a site should use this kit's dark surfaces, depth buttons, flat controls, grayscale charts, and typography, or when adapting its existing components.
+description: Design and implement minimal websites using Jimmy Wu's UI kit. Use when a site should use this kit's dark surfaces, flat controls, homepage hero CTAs, grayscale charts, and typography, or when adapting its existing components.
 ---
 
 # UI Kit
@@ -11,11 +11,12 @@ This skill works in Claude Code and Codex. Resolve relative file links from this
 
 ## Design rules
 
-- Use lit depth for primary and AI actions; keep other controls flat, with hairlines only where they define a control or state. Keep the page canvas and content surfaces flat by default.
+- Default to the flat `outline-button` for regular actions, including primary, submit, and AI / generate actions. Keep other controls flat, with hairlines only where they define a control or state. Keep the page canvas and content surfaces flat by default.
+- Reserve the gradient `primary-button` and `depth-button` for CTAs in the homepage hero section only, and use them only when the user requests a homepage hero section. **Use at most two gradient buttons across the entire website, counting both variants together.** Use outline buttons everywhere else; do not add a hero section just to use gradients.
 - Start with a near-black page, gray surfaces, white emphasis, and quieter secondary text. Reserve red for destructive actions. Change colors when requested, preserving readable text and clear states.
 - Use Inter for reading and controls, and DM Mono for useful labels and values. Load Inter 400/500/600 and DM Mono 400; keep system fallbacks. Georgia is an optional style for a quote when the content calls for one.
 - Compose an actual page for the task. Gallery cells, expand buttons, surface pickers, type specimens, and demo copy belong to the showcase.
-- Adapt labels, content, widths, and heights to the task. Retain the component's material, hierarchy, state behavior, and proportions. A primary action should be visually clear; use outline actions for supporting choices.
+- Adapt labels, content, widths, and heights to the task. Retain the component's material, hierarchy, state behavior, and proportions. Make the primary action clear through its label and placement.
 - Preserve keyboard operation, visible focus, accessible names, and disabled states. Critical instructions must be readable; brighten muted text when needed.
 
 ## Minimal composition
@@ -120,8 +121,8 @@ The foundation's border tokens and mono classes support functional controls and 
 
 | Element | Place | Description | Use case |
 | --- | --- | --- | --- |
-| Primary / AI button | [button.md](elements/button.md) | Light or dark lit action | Create, submit, generate |
-| Outline button | [button.md](elements/button.md) | Transparent hairline action | Export, cancel, supporting action |
+| Outline button (default) | [button.md](elements/button.md) | Flat transparent hairline action | Regular actions, including create, submit, generate, export, cancel |
+| Gradient buttons (hero only) | [button.md](elements/button.md) | Light primary or dark depth variant | Requested homepage hero CTAs only; at most two per website combined |
 | Icon button | [icon-button.md](elements/icon-button.md) | Compact hairline action | Copy, previous/next, replay |
 | Card | [card.md](elements/card.md) | Solid gray content block | Project or resource summary |
 | Popup | [popup.md](elements/popup.md) | Raised confirmation dialog | Confirm a destructive action |
