@@ -1,6 +1,6 @@
 ---
 name: ui-kit
-description: Design and implement minimal websites using Jimmy Wu's UI kit. Use when a site should use this kit's dark surfaces, flat controls, homepage hero CTAs, grayscale charts, and typography, or when adapting its existing components.
+description: Design, implement, review, and refine user interfaces with Jimmy Wu's UI kit. Use automatically for UI and frontend work, including pages, layouts, components, styling, responsive behavior, and visual polish, even when the user does not mention the kit. Respect existing project design systems and the user's explicit design choices.
 ---
 
 # UI Kit
