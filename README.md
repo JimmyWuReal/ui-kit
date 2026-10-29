@@ -105,7 +105,7 @@ sh scripts/install-skill.sh codex
 
 If you keep the default name, use `/ui-kit` in Claude Code or `$ui-kit` in Codex.
 Restart an open session if the skill does not appear. Both apps can also select
-it automatically when you ask to use Jimmy Wu's UI kit.
+it automatically for UI and frontend work.
 
 The installer creates symlinks to this checkout. Keep the **whole repository**
 in place: the skill references the components and CSS in `src/`. You do not need

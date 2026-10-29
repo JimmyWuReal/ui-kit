@@ -104,6 +104,10 @@ body { margin: 0; background: #090909; }
 button, input, textarea, select { font: inherit; }
 button { color: inherit; }
 .control-row { display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+/* A control's title and note, beside it. The stepper, spinner, progress, popup trigger, and copy demos use these. */
+.control-row > div:first-child { display: flex; flex-direction: column; gap: 5px; }
+.control-row strong { font-size: 13px; font-weight: 500; letter-spacing: -.01em; }
+.control-row > div:first-child span { font-size: 11.5px; color: var(--sub); }
 .field-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
 .mono-label { font: var(--mono); letter-spacing: var(--track); color: var(--dim); text-transform: uppercase; }
 .mono-value { font: 400 11px/1 'DM Mono', ui-monospace, monospace; color: #d6d6d6; font-variant-numeric: tabular-nums; }
@@ -111,6 +115,10 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
   outline: 2px solid rgba(255, 255, 255, .8);
   outline-offset: 3px;
 }
+/* Fields use their brightened edge as the focus indicator instead of a ring. */
+.text-field :is(input, textarea):focus-visible,
+.search-field input:focus-visible,
+.code-boxes input:focus-visible { outline: 0; }
 ```
 
 Keep backgrounds, spacing, and type consistent across a page. The showcase's useful layout defaults are a 1120px maximum page width, 20px grid gaps, and a 404px maximum single-control measure. These are starting points, not a required layout. At 680px and below, its grid becomes one column, gaps become 16px, and side gutters become 16px. Give wider charts enough space and avoid page overflow at 320px.
@@ -178,7 +186,7 @@ The recipes work as design references on their own. Their short CSS examples emp
 | --- | --- |
 | [src/controls.jsx](../src/controls.jsx) | Exported controls and their props / keyboard behavior |
 | [src/charts.jsx](../src/charts.jsx) | Exported charts, SVG helpers, and demo data |
-| [src/main.jsx](../src/main.jsx) | Button, checkbox, toggle, card markup; `SURFACES`, `typeScale` |
+| [src/main.jsx](../src/main.jsx) | Button, card, checkbox, toggle, text-field markup; `SURFACES`, `typeScale` |
 | [src/styles.css](../src/styles.css) | Complete class rules; search the selectors named in each reference |
 
 Usage snippets assume the control is imported and its state variable / setter are defined in the destination component. In a different project, copy the chosen component, its helper/import dependencies, and relevant class rules. Avoid importing the entire showcase stylesheet: it includes gallery layout and decoration unrelated to the new page. The named exports in `controls.jsx` and `charts.jsx` can be imported; the demo functions in `main.jsx` cannot. Extract only the needed markup without copying the gallery, its surrounding labels, or its `createRoot` call. The source uses React and `lucide-react`; charts use SVG without a chart library. Charts currently contain sample data rather than data props: adapt the data and accessible summaries together, then apply the [minimal chart defaults](#minimal-charts) to the visible content.

@@ -6,7 +6,7 @@ Use a quiet raised hint for an icon action, shown on hover and keyboard focus. C
 <CopyLink />
 ```
 
-Exported from `controls.jsx`. This demo copies `window.location.href` and holds its feedback for 1600ms. Adapt the URL / text and accessible labels to the task. Await clipboard success before showing `Copied`; the demo currently sets success even when copying fails.
+Exported from `controls.jsx`. This demo copies `window.location.href` and holds its feedback for 1600ms. Adapt the URL / text and accessible labels to the task. It shows `Copied` only after the clipboard write succeeds; keep that when adapting it.
 
 ```css
 .tooltip-anchor { position: relative; display: inline-flex; }

@@ -121,8 +121,9 @@ function PrimaryButton() {
   )
 }
 
-/* Drawn in the flat controls' hairline rather than the lit material,
-   for every action that is not the main one. */
+/* Drawn in the flat controls' hairline rather than the lit material. The
+   default for every action, the main one included; the lit pair above is
+   kept for homepage hero calls to action. */
 function OutlineButton() {
   return (
     <button className="outline-button" type="button">
@@ -275,7 +276,7 @@ function ElementsPage() {
       node: (
         <Accordion value={values.faq} onChange={set('faq')} items={[
           ['what', 'What is in the kit?', 'Buttons, flat controls, surfaces and type — each one documented by the values it is drawn with.'],
-          ['why', 'Why only two materials?', 'One lit material for actions, one flat line for everything else. Fewer rules, fewer surprises.'],
+          ['why', 'Why only two materials?', 'One lit material for hero calls to action, one flat line for everything else. Fewer rules, fewer surprises.'],
           ['use', 'Can I use it?', 'Take whatever helps. It was made to be borrowed.'],
         ]} />
       ),

@@ -30,6 +30,8 @@ For a requested homepage hero only:
 .primary-button, .depth-button, .outline-button {
   height: 48px; padding: 0 20px; border: 0; border-radius: 12px;
   font-size: 13px; font-weight: 600; letter-spacing: -.01em; cursor: pointer;
+}
+.primary-button, .depth-button {
   transition: background-color 180ms ease-out, box-shadow 180ms ease-out,
     transform 140ms cubic-bezier(.22, 1, .36, 1);
 }
@@ -66,7 +68,7 @@ For a requested homepage hero only:
 .primary-button:active, .depth-button:active { transform: translateY(1px) scale(.97); transition-duration: 55ms; }
 .primary-button:active { background-color: #e8e8e8; }
 .depth-button:active { background-color: #202020; }
-.outline-button { min-width: 164px; color: #fff; background: transparent; box-shadow: inset 0 0 0 1px var(--line); }
+.outline-button { min-width: 164px; color: #fff; background: transparent; box-shadow: inset 0 0 0 1px var(--line); transition: box-shadow 200ms ease, transform 140ms cubic-bezier(.22, 1, .36, 1); }
 .outline-button:hover { box-shadow: inset 0 0 0 1px var(--line-hover); }
 .outline-button[aria-expanded='true'] { box-shadow: inset 0 0 0 1px var(--line-live); }
 .outline-button:active { transform: scale(.97); transition-duration: 55ms; }

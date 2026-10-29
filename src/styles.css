@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400&family=Inter:wght@400;500;600&display=swap');
 
 :root {
   color-scheme: dark;
@@ -460,9 +460,10 @@ footer { display: flex; justify-content: space-between; gap: 20px; padding: 30px
 .segmented button.is-active,
 .pages button.is-active { color: #0a0a0a; }
 
-/* Slider and progress share one track: a thin, faint bar with no outline,
-   so the white fill carries all the contrast. */
-.slider-field, .progress { --track: rgba(255, 255, 255, .12); }
+/* Slider and progress share one rail: a thin, faint bar with no outline,
+   so the white fill carries all the contrast. Named apart from --track,
+   the mono letter-spacing, so the labels inside keep their tracking. */
+.slider-field, .progress { --rail: rgba(255, 255, 255, .12); }
 
 /* Slider: a solid white knob on the fill, so the two read as one piece. */
 .slider-field { display: flex; flex-direction: column; gap: 16px; }
@@ -478,7 +479,7 @@ footer { display: flex; justify-content: space-between; gap: 20px; padding: 30px
 .slider-field input::-webkit-slider-runnable-track {
   height: 4px;
   border-radius: 999px;
-  background: linear-gradient(#fff, #fff) 0 0 / var(--fill) 100% no-repeat, var(--track);
+  background: linear-gradient(#fff, #fff) 0 0 / var(--fill) 100% no-repeat, var(--rail);
 }
 .slider-field input::-webkit-slider-thumb {
   -webkit-appearance: none;
@@ -490,7 +491,7 @@ footer { display: flex; justify-content: space-between; gap: 20px; padding: 30px
   transition: transform 180ms cubic-bezier(.22, 1, .36, 1);
 }
 .slider-field input:active::-webkit-slider-thumb { transform: scale(1.15); }
-.slider-field input::-moz-range-track { height: 4px; border-radius: 999px; background: var(--track); }
+.slider-field input::-moz-range-track { height: 4px; border-radius: 999px; background: var(--rail); }
 .slider-field input::-moz-range-progress { height: 4px; border-radius: 999px; background: #fff; }
 .slider-field input::-moz-range-thumb {
   width: 18px;
@@ -731,7 +732,7 @@ footer { display: flex; justify-content: space-between; gap: 20px; padding: 30px
 /* Progress: one white bar, scaled rather than resized. */
 .progress { display: flex; flex-direction: column; gap: 16px; }
 .progress-end { display: flex; align-items: center; gap: 10px; }
-.progress-track { height: 4px; overflow: hidden; border-radius: 999px; background: var(--track); }
+.progress-track { height: 4px; overflow: hidden; border-radius: 999px; background: var(--rail); }
 .progress-fill { display: block; height: 100%; border-radius: inherit; background: #fff; transform-origin: left; transition: transform 320ms cubic-bezier(.22, 1, .36, 1); }
 
 /* A hairline icon button, for the controls that need one. */

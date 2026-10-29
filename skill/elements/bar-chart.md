@@ -23,4 +23,4 @@ Height is `count / max * 100%`; `--delay` is `index * 40ms`. Only bars grow in. 
 
 Labels sit 12px below the plot in mono. Keep the counts in the accessible summary; expose exact values without relying solely on hover if the task requires them.
 
-Source: [charts.jsx](../../src/charts.jsx), `BarChart`, `COMMITS`; [styles.css](../../src/styles.css), `.bars`, `.bar*`, `.chart-tip.is-above`, `bar-grow`.
+Source: [charts.jsx](../../src/charts.jsx), `BarChart`, `COMMITS`; [styles.css](../../src/styles.css), `.bars`, `.bar*`, `.chart-tip`, `.chart-tip.is-above`, `bar-grow`.

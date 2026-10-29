@@ -329,9 +329,9 @@ export function CopyLink() {
     const timer = setTimeout(() => setCopied(false), 1600)
     return () => clearTimeout(timer)
   }, [copied])
+  /* Confirm only once the clipboard has taken it; a failed copy stays quiet. */
   const copy = () => {
-    navigator.clipboard?.writeText(window.location.href).catch(() => {})
-    setCopied(true)
+    navigator.clipboard?.writeText(window.location.href).then(() => setCopied(true), () => {})
   }
   return (
     <div className="control-row">
