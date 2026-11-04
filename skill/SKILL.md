@@ -1,13 +1,13 @@
 ---
 name: ui-kit
-description: Design, implement, review, and refine user interfaces with Jimmy Wu's UI kit. Use automatically for UI and frontend work, including pages, layouts, components, styling, responsive behavior, and visual polish, even when the user does not mention the kit. Respect existing project design systems and the user's explicit design choices.
+description: Design, implement, review, and refine user interfaces with Jimmy Wu's UI kit. Use automatically for UI and frontend work, including pages, layouts, components, styling, animation, responsive behavior, and visual polish, even when the user does not mention the kit. Respect existing project design systems and the user's explicit design choices.
 ---
 
 # UI Kit
 
 Use this kit to compose a minimal site around the user's content and actions. Choose the content first, then read only the element, background, and text references needed for it. The tables below are a menu of available styles, not a checklist of things to include.
 
-This skill works in Claude Code and Codex. Resolve relative file links from this file's real directory, following the installed skill symlink, rather than from the project you are designing. The installation keeps this repository's `skill/` and `src/` together.
+This skill works in Claude Code and Codex. Resolve relative file links from this file's real directory, following the installed skill symlink, rather than from the project you are designing. A linked install keeps this repository's `skill/` and `src/` together; a copied install may have `skill/` alone, and the references are complete without `src/`.
 
 ## Design rules
 
@@ -15,7 +15,7 @@ This skill works in Claude Code and Codex. Resolve relative file links from this
 - Reserve the gradient `primary-button` and `depth-button` for CTAs in the homepage hero section only, and use them only when the user requests a homepage hero section. **Use at most two gradient buttons across the entire website, counting both variants together.** Use outline buttons everywhere else; do not add a hero section just to use gradients.
 - Start with a near-black page, gray surfaces, white emphasis, and quieter secondary text. Reserve red for destructive actions. Change colors when requested, preserving readable text and clear states.
 - Use Inter for reading and controls, and DM Mono for useful labels and values. Load Inter 400/500/600 and DM Mono 400; keep system fallbacks. Georgia is an optional style for a quote when the content calls for one.
-- Compose an actual page for the task. Gallery cells, expand buttons, surface pickers, type specimens, and demo copy belong to the showcase.
+- Compose an actual page for the task. Gallery cells, expand buttons, surface pickers, type specimens, and demo copy belong to the showcase; use them only when the task is itself a gallery, design system, or preview tool.
 - Adapt labels, content, widths, and heights to the task. Retain the component's material, hierarchy, state behavior, and proportions. Make the primary action clear through its label and placement.
 - Preserve keyboard operation, visible focus, accessible names, and disabled states. Critical instructions must be readable; brighten muted text when needed.
 
@@ -45,37 +45,19 @@ Use the referenced chart's visual construction, not an expanded analytics card. 
 
 Before finishing a chart, inspect every text node outside the plot: keep the title, any chosen primary value, and labels necessary to interpret the data. Remove the rest unless it was explicitly requested. Do not replace removed labels with new wording that communicates the same extra statistics.
 
-## Motion rule
+## Motion
 
-**Only chart data marks may have appearing animations.** Every other element and text must be visible immediately on initial render, navigation, mounting, opening, or content reveal. This includes menus, dialogs, accordion bodies, tab panels, tooltips, digits, and updated counts. Do not add page fades, scroll reveals, staggered cards, or animated headings. Chart titles, axes, legends, and surrounding cards also appear immediately.
+**Motion is part of the kit.** The site's animations are the specification, and every element reference carries them: its transitions, keyframes, and the state logic that triggers them. When you use an element, its motion comes with it. Do not flatten it with `transition: none`, an `!important` override, or a static recreation. Read [motion.md](motion.md) before building or changing anything interactive; it explains the system and lists every timing.
 
-Hover, press, selection movement, and ongoing status feedback are allowed as described in the relevant element reference. These are local interactions, not permission to animate an element into view. A spinner may rotate while loading; a progress bar may track real progress. Initialize controls at their actual value without a startup sweep.
+- **The page is complete when it paints.** No page fades, scroll reveals, staggered cards, animated headings, counting numbers, or route transitions.
+- **Chart data marks are the one mount animation.** Lines draw, bars grow, slices fade, and the meter reveals. Chart titles, axes, legends, and surrounding cards appear immediately.
+- **Everything else answers the user or real state.** Selecting moves a thumb. Menus, popups, accordions, tooltips, and tab panels animate as they open. A stepped number rolls and a typed digit rises. A spinner turns while loading, and a progress bar tracks real progress.
+- **Controls mount at rest.** Initialize them at their actual value, without a startup sweep.
+- **Transition when a node persists; keyframe when a node is new.** Keep persistent nodes mounted so they ease both ways. Move one thumb or marker rather than fading each option.
+- **Use the kit's timing.** Moving things use `cubic-bezier(.22, 1, .36, 1)`, drawn strokes use `cubic-bezier(.65, 0, .35, 1)`, and color and opacity use `ease` or `ease-out`. Most interactions take 140–320ms. Do not invent new curves or add an animation library.
+- **Add motion only where the kit has it.** A new element takes the motion of its closest kit element, not a new effect.
 
-**Preserve smooth hover-dot movement on line charts and sparklines.** Keep the marker mounted and glide its `cx`/`cy` to the inspected point over 160ms using the chart reference's easing. This interaction is part of the kit, even on a minimal chart. Do not remove it with a blanket no-animation rule or recreate the marker on each hover. Tooltip text and values update immediately; reduced-motion mode uses immediate marker movement.
-
-The showcase includes some non-chart entrance effects. **These instructions override those effects.** When reusing its stylesheet, place this compatibility block after it. When recreating a component, omit the corresponding entrance code entirely:
-
-```css
-.popup-backdrop, .popup, .tab-panel.is-entering, .code-digit,
-.roll-up, .roll-down, .expand-overlay, .expand-content, .surface-picker {
-  animation: none !important;
-}
-.select-menu, .accordion-panel, .accordion-panel p,
-.tooltip, .tooltip-label, .chart-tip.is-above {
-  transition: none !important;
-}
-.search-clear { transition-property: background-color, color; transform: none; }
-.progress-end .icon-button { transition-property: color, background-color, box-shadow; }
-.tooltip-anchor .icon-button > svg { transition: none; }
-.expand-button { transition-property: color, background; }
-/* Functional motion and chart entrances also respect reduced motion. */
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation: none !important;
-    transition: none !important;
-  }
-}
-```
+**Preserve smooth hover-dot movement on line charts and sparklines.** Keep the marker mounted and glide its `cx`/`cy` to the inspected point over 160ms using the chart reference's easing. This interaction is part of the kit, even on a minimal chart. Do not recreate the marker on each hover. Tooltip text and values update immediately; reduced-motion mode uses immediate marker movement.
 
 ## Shared foundation
 
@@ -87,41 +69,70 @@ Use plain CSS as the reference format. Tailwind or another styling system is fin
 :root {
   color-scheme: dark;
   font-family: Inter, ui-sans-serif, system-ui, sans-serif;
-  font-synthesis: none;
   color: #fff;
-  background: #090909;
+  background: #000;
+  font-synthesis: none;
+
   --rule: #262626;
+  --pad: 36px;
+  --col: 404px;
+
+  --mono: 400 9px/1 'DM Mono', ui-monospace, monospace;
+  --track: .14em;
+  --dim: #6f6f6f;
+  --sub: #7d7d7d;
+
+  /* The flat controls are drawn with a hairline and nothing else. Three
+     steps of the same line: at rest, under the cursor, and in use. */
   --line: rgba(255, 255, 255, .18);
   --line-hover: rgba(255, 255, 255, .34);
   --line-live: rgba(255, 255, 255, .72);
-  --dim: #6f6f6f;
-  --sub: #7d7d7d;
-  --mono: 400 9px/1 'DM Mono', ui-monospace, monospace;
-  --track: .14em;
 }
 * { box-sizing: border-box; }
-body { margin: 0; background: #090909; }
-button, input, textarea, select { font: inherit; }
-button { color: inherit; }
-.control-row { display: flex; align-items: center; justify-content: space-between; gap: 20px; }
-/* A control's title and note, beside it. The stepper, spinner, progress, popup trigger, and copy demos use these. */
-.control-row > div:first-child { display: flex; flex-direction: column; gap: 5px; }
-.control-row strong { font-size: 13px; font-weight: 500; letter-spacing: -.01em; }
-.control-row > div:first-child span { font-size: 11.5px; color: var(--sub); }
-.field-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
-.mono-label { font: var(--mono); letter-spacing: var(--track); color: var(--dim); text-transform: uppercase; }
-.mono-value { font: 400 11px/1 'DM Mono', ui-monospace, monospace; color: #d6d6d6; font-variant-numeric: tabular-nums; }
-button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visible {
-  outline: 2px solid rgba(255, 255, 255, .8);
-  outline-offset: 3px;
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background: #090909;
 }
-/* Fields use their brightened edge as the focus indicator instead of a ring. */
-.text-field :is(input, textarea):focus-visible,
-.search-field input:focus-visible,
-.code-boxes input:focus-visible { outline: 0; }
+button, input, textarea { font: inherit; }
+button { color: inherit; }
+.mono-label {
+  font: var(--mono);
+  letter-spacing: var(--track);
+  color: var(--dim);
+  text-transform: uppercase;
+}
+a:focus-visible { outline: 2px solid #fff; outline-offset: 4px; }
+.control-row { display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+.control-row > div:first-child,
+.checkbox-row > span:last-child,
+.radio-row > span:last-child { display: flex; flex-direction: column; gap: 5px; }
+.control-row strong,
+.checkbox-row strong,
+.radio-row strong { font-size: 13px; font-weight: 500; letter-spacing: -.01em; }
+.control-row > div:first-child span,
+.checkbox-row small,
+.radio-row small { font-size: 11.5px; color: var(--sub); }
+.field-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.mono-value { font: 400 11px/1 'DM Mono', ui-monospace, monospace; color: #d6d6d6; font-variant-numeric: tabular-nums; }
+button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 2px solid rgba(255, 255, 255, .8); outline-offset: 3px; }
 ```
 
-Keep backgrounds, spacing, and type consistent across a page. The showcase's useful layout defaults are a 1120px maximum page width, 20px grid gaps, and a 404px maximum single-control measure. These are starting points, not a required layout. At 680px and below, its grid becomes one column, gaps become 16px, and side gutters become 16px. Give wider charts enough space and avoid page overflow at 320px.
+Every page also gets the site's reduced-motion rule:
+
+```css
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    transition-duration: .01ms !important;
+    animation-duration: .01ms !important;
+    animation-delay: 0ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+```
+
+Keep backgrounds, spacing, and type consistent across a page. The showcase's useful layout defaults are a 1120px maximum page width, 20px grid gaps, and a 404px maximum single-control measure. These are starting points, not a required layout; the [site shell](elements/site-shell.md) has the exact frame. At 680px and below, its grid becomes one column, gaps become 16px, and side gutters become 16px. Give wider charts enough space and avoid page overflow at 320px.
 
 The foundation's border tokens and mono classes support functional controls and data. Their presence does not call for page dividers or extra labels.
 
@@ -159,6 +170,17 @@ The foundation's border tokens and mono classes support functional controls and 
 | Pie chart | [pie-chart.md](elements/pie-chart.md) | Gapped slices with a labeled key | A few parts of a whole |
 | Stacked bar | [stacked-bar.md](elements/stacked-bar.md) | Thin capacity meter with a key | Storage or allocation |
 
+## Showcase patterns
+
+The site's own frame and tools. Reach for these when the task calls for them; a normal page usually needs at most part of the shell.
+
+| Pattern | Place | Description | Use case |
+| --- | --- | --- | --- |
+| Site shell | [site-shell.md](elements/site-shell.md) | Column, header, brand, nav, footer, section head | A site or small app's frame |
+| Gallery | [gallery.md](elements/gallery.md) | Two-column cells and sample cards | Component galleries and previews |
+| Expanded view | [expanded-view.md](elements/expanded-view.md) | Full-screen element view with a surface picker | Inspecting one element or preview |
+| Type specimens | [specimens.md](texts/specimens.md) | Typeface cards and the type table | Design system pages; a base for data tables |
+
 ## Backgrounds
 
 | Background | Place | Description | Use case |
@@ -180,15 +202,19 @@ The foundation's border tokens and mono classes support functional controls and 
 
 ## Use the source
 
-The recipes work as design references on their own. Their short CSS examples emphasize construction values; references identify the complete source rules and dependencies to reuse for a working implementation. In this repository, reuse the React components and corresponding CSS rather than rebuilding their state logic:
+Every reference is complete on its own. Its CSS blocks are the site's rules verbatim, including all motion, and its `Component` block is the site's React code. The shared foundation above is the only other CSS an element needs. Copy these into a project rather than rebuilding their state logic, because that logic is often what triggers the animation.
+
+The components use React and `lucide-react`; add their imports when copying. Charts use SVG without a chart library. Charts contain sample data rather than data props: adapt the data and accessible summaries together, then apply the [minimal chart defaults](#minimal-charts) to the visible content. When combining references, drop repeated rules and keep the first copy, so a shared rule (one naming several elements, such as the field box) stays above each element's own rules. The cascade depends on that order. Usage snippets assume the state variable and setter exist in the destination component. Adapt demo labels, such as the search placeholder, to the task.
+
+When `../src` exists beside this file, you are in the kit's repository or a linked install, and these are the originals:
 
 | Source | Find |
 | --- | --- |
 | [src/controls.jsx](../src/controls.jsx) | Exported controls and their props / keyboard behavior |
 | [src/charts.jsx](../src/charts.jsx) | Exported charts, SVG helpers, and demo data |
-| [src/main.jsx](../src/main.jsx) | Button, card, checkbox, toggle, text-field markup; `SURFACES`, `typeScale` |
-| [src/styles.css](../src/styles.css) | Complete class rules; search the selectors named in each reference |
+| [src/main.jsx](../src/main.jsx) | Button, card, checkbox, toggle, text-field markup; `App`, `ExpandedView`, `Cell`, `TypeTable`; `SURFACES`, `typeScale` |
+| [src/styles.css](../src/styles.css) | The complete stylesheet |
 
-Usage snippets assume the control is imported and its state variable / setter are defined in the destination component. In a different project, copy the chosen component, its helper/import dependencies, and relevant class rules. Avoid importing the entire showcase stylesheet: it includes gallery layout and decoration unrelated to the new page. The named exports in `controls.jsx` and `charts.jsx` can be imported; the demo functions in `main.jsx` cannot. Extract only the needed markup without copying the gallery, its surrounding labels, or its `createRoot` call. The source uses React and `lucide-react`; charts use SVG without a chart library. Charts currently contain sample data rather than data props: adapt the data and accessible summaries together, then apply the [minimal chart defaults](#minimal-charts) to the visible content.
+Inside this repository, reuse the named exports from `controls.jsx` and `charts.jsx`. In another project, copy only the chosen components and rules. Avoid importing the entire showcase stylesheet: it includes gallery layout and decoration unrelated to the new page. The demo functions in `main.jsx` cannot be imported; extract only the needed markup, without the gallery, its surrounding labels, or its `createRoot` call.
 
-Before finishing, make a subtraction pass over the whole page: remove redundant words, decorative lines, unnecessary wrappers and controls, and sections added only to showcase the kit. Then check it on a narrow screen, operate its controls with a keyboard, and verify the motion rule on both first render and revealed content. Keep shared decisions here and element-specific behavior in the references. When updating kit values, update the matching reference too.
+Before finishing, make a subtraction pass over the whole page: remove redundant words, decorative lines, unnecessary wrappers and controls, and sections added only to showcase the kit. Then check it on a narrow screen, operate its controls with a keyboard, and check the motion: at first paint only chart marks and real status move, and every control still has its kit motion when used. Keep shared decisions here, motion rules in [motion.md](motion.md), and element-specific behavior in the references. When updating kit values or motion, update the matching reference and `motion.md` too.

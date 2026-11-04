@@ -16,6 +16,6 @@ These roles are optional. Use mono for useful units, dates, values, and field la
 .mono-label { font: 400 9px/1 'DM Mono', ui-monospace, monospace; letter-spacing: .14em; text-transform: uppercase; color: #6f6f6f; }
 ```
 
-The source class `.mono-label` is the **9px field label**, despite its name. Use `.eyebrow` for the 10px white Label role. Values remain visible without rolling, fading, or counting into view.
+The source class `.mono-label` is the **9px field label**, despite its name. Use `.eyebrow` for the 10px white Label role. Values are visible at first paint and never count up. The stepper's rolling number is the only value with its own motion.
 
 Source: [main.jsx](../../src/main.jsx), `typeScale` → `Mono`; [styles.css](../../src/styles.css), `.mono-label`, `.mono-value`.
