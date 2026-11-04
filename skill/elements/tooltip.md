@@ -55,7 +55,7 @@ Exported from `controls.jsx`. This demo copies `window.location.href` and holds 
 
 The hint rises 4px from `scale(.96)` and fades in (160ms opacity, 200ms movement), on hover, on keyboard focus, and while `.is-shown` holds it up after a copy.
 
-The two labels share one grid cell, so the tooltip is sized to the longer word and never jumps. The swap is sequential so they never overlap: the outgoing label fades over 100ms and slides 6px away, then the incoming one waits 90ms and fades in over 160ms while sliding over 240ms. `--hold` adds 200ms when the tooltip is fading out on its own, so the words do not change on the way out. At the same time the button turns white and its icons crossfade (see the [icon button](icon-button.md)). `.is-on` clears after 1600ms and everything reverses. Keep this whole sequence when adapting the copy action.
+The two labels share one grid cell, so the tooltip is sized to the longer word and never jumps. The swap is sequential so they never overlap: the outgoing label fades over 100ms and slides 6px away, then the incoming one waits 90ms and fades in over 160ms while sliding over 240ms. `--hold` adds 200ms when the tooltip is fading out on its own, so the words do not change on the way out. At the same time the button turns white and its icons crossfade (see the [icon button](icon-button.md)). The `copied` state clears after 1600ms and everything reverses. Keep this whole sequence when adapting the copy action.
 
 If the tooltip provides information beyond the button's accessible name, associate it with `aria-describedby`; the source's decorative duplicate hint is `aria-hidden`.
 

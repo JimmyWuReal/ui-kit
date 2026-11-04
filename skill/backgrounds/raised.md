@@ -6,6 +6,6 @@ Use for menus, popovers, tooltips, and dialogs. Its brighter gray separates it f
 .bg-raised { background: #1c1c1c; }
 ```
 
-The element reference specifies its radius, edge, and padding. A raised surface appears immediately when opened.
+The element reference specifies its radius, edge, and padding. It opens with the motion of the element using it, which is listed in [motion.md](../motion.md).
 
 Source: [styles.css](../../src/styles.css), `.bg-raised`.

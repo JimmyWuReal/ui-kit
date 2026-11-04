@@ -23,8 +23,12 @@ labels, and extra quote or principles sections are omitted by default.
 Charts use a title, the plot, necessary labels, and at most one primary value.
 Extra subtitles, activity statistics, percentage changes, and summary footers
 require an explicit request.
-Line-chart and sparkline hover dots still glide between inspected points;
-minimal copy does not remove this interaction.
+
+Motion is part of the kit. Pages are complete when they paint: only chart data
+marks animate on load, and everything else moves in response to the user or real
+state, such as a sliding thumb, an opening menu, or a stepped number. The skill
+carries every timing, keyframe, and the state logic behind them; see
+[`skill/motion.md`](skill/motion.md).
 
 ## Demo: personal introduction site
 
@@ -108,7 +112,7 @@ Restart an open session if the skill does not appear. Both apps can also select
 it automatically for UI and frontend work.
 
 The installer creates symlinks to this checkout. Keep the **whole repository**
-in place: the skill references the components and CSS in `src/`. You do not need
+in place: the skill links to the components and CSS in `src/`. You do not need
 to install npm dependencies to use the skill. It is safe to rerun and refuses to
 replace an existing skill.
 
@@ -151,7 +155,8 @@ The build is written to `dist/`.
 ## Use the kit in your project
 
 Start with the skill's [element references](skill/SKILL.md#elements), then copy
-the components and CSS you need. Controls and charts have named exports in
+the components and CSS you need. Each reference includes the element's complete
+CSS, motion, and React code. Controls and charts also have named exports in
 [`src/controls.jsx`](src/controls.jsx) and [`src/charts.jsx`](src/charts.jsx).
 The demo uses React and `lucide-react`; charts use SVG. Adapt the chart demo data
 to your own data and keep its accessible descriptions in sync.
