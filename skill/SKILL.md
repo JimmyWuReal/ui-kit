@@ -7,7 +7,7 @@ description: Design, implement, review, and refine user interfaces with Jimmy Wu
 
 Use this kit to compose a minimal site around the user's content and actions. Choose the content first, then read only the element, background, and text references needed for it. The tables below are a menu of available styles, not a checklist of things to include.
 
-This skill works in Claude Code and Codex. Resolve relative file links from this file's real directory, following the installed skill symlink, rather than from the project you are designing. The installation keeps this repository's `skill/` and `src/` together.
+This skill works in Claude Code and Codex. Resolve relative file links from this file's real directory, following the installed skill symlink, rather than from the project you are designing. A linked install keeps this repository's `skill/` and `src/` together; a copied install may have `skill/` alone, and the references are complete without `src/`.
 
 ## Design rules
 
