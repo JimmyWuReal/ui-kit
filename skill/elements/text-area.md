@@ -28,7 +28,7 @@ Exported from `controls.jsx`. Default limit is 140 and `onChange` receives text.
   transition: box-shadow 200ms ease;
 }
 .text-field :is(input, textarea)::placeholder,
-.search-field input::placeholder { color: #565656; }
+.search-field input::placeholder { color: var(--dim); }
 .text-field :is(input, textarea):hover,
 .search-field input:hover,
 .select-trigger:hover { box-shadow: inset 0 0 0 1px var(--line-hover); }

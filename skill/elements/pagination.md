@@ -20,7 +20,7 @@ Exported from `controls.jsx`. `value` is one-based; `total` is **page count**, n
   transform: translateX(calc(var(--index) * 100%));
   transition: transform 320ms cubic-bezier(.22, 1, .36, 1);
 }
-.segmented button,
+.segmented :is(button, a),
 .pages button {
   position: relative;
   z-index: 1;
@@ -36,9 +36,9 @@ Exported from `controls.jsx`. `value` is one-based; `total` is **page count**, n
   cursor: pointer;
   transition: color 260ms ease;
 }
-.segmented button:not(.is-active):hover,
+.segmented :is(button, a):not(.is-active):hover,
 .pages button:not(.is-active):hover { color: #e6e6e6; }
-.segmented button.is-active,
+.segmented :is(button, a).is-active,
 .pages button.is-active { color: #0a0a0a; }
 .pagination-field { display: flex; flex-direction: column; align-items: center; gap: 16px; }
 .pagination { display: flex; align-items: center; gap: 8px; }

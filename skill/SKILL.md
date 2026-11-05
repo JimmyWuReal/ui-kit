@@ -17,7 +17,9 @@ This skill works in Claude Code and Codex. Resolve relative file links from this
 - Use Inter for reading and controls, and DM Mono for useful labels and values. Load Inter 400/500/600 and DM Mono 400; keep system fallbacks. Georgia is an optional style for a quote when the content calls for one.
 - Compose an actual page for the task. Gallery cells, expand buttons, surface pickers, type specimens, and demo copy belong to the showcase; use them only when the task is itself a gallery, design system, or preview tool.
 - Adapt labels, content, widths, and heights to the task. Retain the component's material, hierarchy, state behavior, and proportions. Make the primary action clear through its label and placement.
-- Preserve keyboard operation, visible focus, accessible names, and disabled states. Critical instructions must be readable; brighten muted text when needed.
+- Preserve keyboard operation, visible focus, accessible names, and disabled states.
+- Keep text at 4.5:1 or better on the surface it lands on. `--dim` and `--sub` clear that on every kit surface, up to the raised `#1c1c1c`. Check any gray you add.
+- Give touch screens 44px targets, sharing the width only where a row cannot fit them, and hide nothing behind hover on them; see [touch.md](touch.md).
 
 ## Minimal composition
 
@@ -41,6 +43,7 @@ Use the referenced chart's visual construction, not an expanded analytics card. 
 - For a commits chart, `Commits`, an optional primary total such as `674`, and the dated plot are enough. Do not add `Weekly totals`, `78 active days out of 90`, `Latest week`, or `37 commits · 7 days` by default. A tooltip may show that bucket's date and value while inspected; do not repeat it in a permanent footer.
 - Preserve the requested data granularity. Do not replace daily observations with weekly totals to make a chart look simpler. Reduce tick-label density instead. If aggregation is requested, make it clear in the existing title or axis rather than adding another explanatory label.
 - Use a legend only to identify multiple series or otherwise unnamed categories. A single named series needs no legend. Show point details on hover and keyboard focus, then dismiss them when inspection ends; keep accessible chart descriptions without adding visible summary prose.
+- A number that is not the chart's own goes outside the chart. A lifetime total beside a 30-day plot belongs in a [stat row](patterns/stat-row.md) or the page heading above it, not in the chart's title block.
 - Put a shared date-range control or demo-data disclosure once near the chart group when needed. Do not repeat its range, day count, or explanation inside each chart. Add export controls or a visible data table only when requested or necessary to complete the user's task.
 
 Before finishing a chart, inspect every text node outside the plot: keep the title, any chosen primary value, and labels necessary to interpret the data. Remove the rest unless it was explicitly requested. Do not replace removed labels with new wording that communicates the same extra statistics.
@@ -58,6 +61,10 @@ Before finishing a chart, inspect every text node outside the plot: keep the tit
 - **Add motion only where the kit has it.** A new element takes the motion of its closest kit element, not a new effect.
 
 **Preserve smooth hover-dot movement on line charts and sparklines.** Keep the marker mounted and glide its `cx`/`cy` to the inspected point over 160ms using the chart reference's easing. This interaction is part of the kit, even on a minimal chart. Do not recreate the marker on each hover. Tooltip text and values update immediately; reduced-motion mode uses immediate marker movement.
+
+## Touch
+
+Read [touch.md](touch.md) for any page used on a phone or tablet. It holds one CSS block that gives controls a 44px target, stretching the target around small controls rather than redrawing them. That block goes **last** in the stylesheet: placed earlier, element rules of equal specificity override it, and nothing looks wrong until you measure.
 
 ## Shared foundation
 
@@ -79,8 +86,8 @@ Use plain CSS as the reference format. Tailwind or another styling system is fin
 
   --mono: 400 9px/1 'DM Mono', ui-monospace, monospace;
   --track: .14em;
-  --dim: #6f6f6f;
-  --sub: #7d7d7d;
+  --dim: #848484;
+  --sub: #8c8c8c;
 
   /* The flat controls are drawn with a hairline and nothing else. Three
      steps of the same line: at rest, under the cursor, and in use. */
@@ -142,7 +149,7 @@ The foundation's border tokens and mono classes support functional controls and 
 | --- | --- | --- | --- |
 | Outline button (default) | [button.md](elements/button.md) | Flat transparent hairline action | Regular actions, including create, submit, generate, export, cancel |
 | Gradient buttons (hero only) | [button.md](elements/button.md) | Light primary or dark depth variant | Requested homepage hero CTAs only; at most two per website combined |
-| Icon button | [icon-button.md](elements/icon-button.md) | Compact hairline action | Copy, previous/next, replay |
+| Icon button | [icon-button.md](elements/icon-button.md) | Compact hairline action, with a quiet variant | Copy, previous/next, replay, actions repeated down a list |
 | Card | [card.md](elements/card.md) | Solid gray content block | Project or resource summary |
 | Popup | [popup.md](elements/popup.md) | Raised confirmation dialog | Confirm a destructive action |
 | Checkbox | [checkbox.md](elements/checkbox.md) | Independent binary choice | Remember device, preferences |
@@ -169,6 +176,19 @@ The foundation's border tokens and mono classes support functional controls and 
 | Bar chart | [bar-chart.md](elements/bar-chart.md) | Baseline bars with a bright current bar | Counts by day or category |
 | Pie chart | [pie-chart.md](elements/pie-chart.md) | Gapped slices with a labeled key | A few parts of a whole |
 | Stacked bar | [stacked-bar.md](elements/stacked-bar.md) | Thin capacity meter with a key | Storage or allocation |
+
+## App patterns
+
+How the elements combine in a product. For an app page, start here and adapt these rather than inventing a row, board, or calendar. On the site they are the **Patterns** page.
+
+| Pattern | Place | Description | Use case |
+| --- | --- | --- | --- |
+| List row | [list-row.md](patterns/list-row.md) | Checkbox row with hover-revealed quiet actions | Tasks, files, members |
+| Toolbar | [toolbar.md](patterns/toolbar.md) | Tabs and an action on one hairline | An action for a whole list or board |
+| Empty state | [empty-state.md](patterns/empty-state.md) | What is missing and the action that fills it | First runs, no results, finished lists |
+| Stat row | [stat-row.md](patterns/stat-row.md) | Cards with one value each | Page-level figures, numbers that are not a chart's own |
+| Board | [board.md](patterns/board.md) | Snapping columns that show the next one | Items moving through stages |
+| Calendar | [calendar.md](patterns/calendar.md) | Month of day cells with an agenda | Things arranged by date |
 
 ## Showcase patterns
 
@@ -202,7 +222,7 @@ The site's own frame and tools. Reach for these when the task calls for them; a 
 
 ## Use the source
 
-Every reference is complete on its own. Its CSS blocks are the site's rules verbatim, including all motion, and its `Component` block is the site's React code. The shared foundation above is the only other CSS an element needs. Copy these into a project rather than rebuilding their state logic, because that logic is often what triggers the animation.
+Every reference is complete together with the references it links to. Its CSS blocks are the site's rules verbatim, including all motion, and its `Component` block is the site's React code. The shared foundation above and those links are the only other CSS an element needs. Copy these into a project rather than rebuilding their state logic, because that logic is often what triggers the animation.
 
 The components use React and `lucide-react`; add their imports when copying. Charts use SVG without a chart library. Charts contain sample data rather than data props: adapt the data and accessible summaries together, then apply the [minimal chart defaults](#minimal-charts) to the visible content. When combining references, drop repeated rules and keep the first copy, so a shared rule (one naming several elements, such as the field box) stays above each element's own rules. The cascade depends on that order. Usage snippets assume the state variable and setter exist in the destination component. Adapt demo labels, such as the search placeholder, to the task.
 
@@ -212,9 +232,23 @@ When `../src` exists beside this file, you are in the kit's repository or a link
 | --- | --- |
 | [src/controls.jsx](../src/controls.jsx) | Exported controls and their props / keyboard behavior |
 | [src/charts.jsx](../src/charts.jsx) | Exported charts, SVG helpers, and demo data |
-| [src/main.jsx](../src/main.jsx) | Button, card, checkbox, toggle, text-field markup; `App`, `ExpandedView`, `Cell`, `TypeTable`; `SURFACES`, `typeScale` |
+| [src/patterns.jsx](../src/patterns.jsx) | Exported app patterns |
+| [src/main.jsx](../src/main.jsx) | Button, card, checkbox, toggle, text-field markup; `App`, `ExpandedView`, `Cell`, `TypeTable`, `PatternsPage`; `SURFACES`, `typeScale` |
 | [src/styles.css](../src/styles.css) | The complete stylesheet |
 
-Inside this repository, reuse the named exports from `controls.jsx` and `charts.jsx`. In another project, copy only the chosen components and rules. Avoid importing the entire showcase stylesheet: it includes gallery layout and decoration unrelated to the new page. The demo functions in `main.jsx` cannot be imported; extract only the needed markup, without the gallery, its surrounding labels, or its `createRoot` call.
+Inside this repository, reuse the named exports from `controls.jsx`, `charts.jsx`, and `patterns.jsx`. In another project, copy only the chosen components and rules. Avoid importing the entire showcase stylesheet: it includes gallery layout and decoration unrelated to the new page. The demo functions in `main.jsx` cannot be imported; extract only the needed markup, without the gallery, its surrounding labels, or its `createRoot` call.
 
-Before finishing, make a subtraction pass over the whole page: remove redundant words, decorative lines, unnecessary wrappers and controls, and sections added only to showcase the kit. Then check it on a narrow screen, operate its controls with a keyboard, and check the motion: at first paint only chart marks and real status move, and every control still has its kit motion when used. Keep shared decisions here, motion rules in [motion.md](motion.md), and element-specific behavior in the references. When updating kit values or motion, update the matching reference and `motion.md` too.
+## Before finishing
+
+Make a subtraction pass over the whole page: remove redundant words, decorative lines, unnecessary wrappers and controls, and sections added only to showcase the kit.
+
+Then check it in a browser, because these failures look fine in the code:
+
+- **Overrides.** Read the computed style of anything you overrode. An equal-specificity rule later in the file wins silently.
+- **Motion.** At first paint only chart marks and real status move, and every control still has its kit motion when used. See [motion.md](motion.md#checking-your-work).
+- **Keyboard.** Operate every control, and reach anything shown on hover.
+- **Narrow screens.** Load it at 320px, with no sideways page scroll and nothing clipped.
+- **Touch.** With touch emulated, measure targets and capture phone screenshots as [touch.md](touch.md#measuring) describes. `fullPage` screenshots lose touch emulation.
+- **Contrast.** Measure small gray text against the surface it actually sits on.
+
+Keep shared decisions here, motion rules in [motion.md](motion.md), touch rules in [touch.md](touch.md), and element-specific behavior in the references. When updating kit values or motion, update the matching reference and `motion.md` too.

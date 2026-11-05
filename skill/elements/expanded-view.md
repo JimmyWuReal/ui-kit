@@ -131,7 +131,6 @@ Lifts one element out of its cell into a full-screen view, on a surface the read
 .swatch {
   position: relative;
   isolation: isolate;
-  overflow: hidden;
   width: 28px;
   height: 28px;
   padding: 0;

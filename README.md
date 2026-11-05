@@ -30,6 +30,10 @@ state, such as a sliding thumb, an opening menu, or a stepped number. The skill
 carries every timing, keyframe, and the state logic behind them; see
 [`skill/motion.md`](skill/motion.md).
 
+The kit is built for touch and small screens too: text stays readable on every
+surface, and [`skill/touch.md`](skill/touch.md) gives controls a 44px target
+without redrawing the small ones.
+
 ## Demo: personal introduction site
 
 A personal introduction site built with the skill, with profile details and
@@ -61,7 +65,9 @@ These are screenshots of the running demo.
 | ![Grayscale visitor trends](docs/screenshots/line-chart.jpg) | ![Traffic sources with a grayscale pie chart](docs/screenshots/pie-chart.jpg) |
 
 The demo also includes cards, popups, toggles, text fields, segmented controls,
-sliders, tabs, progress indicators, background patterns, and type specimens.
+sliders, tabs, progress indicators, background patterns, and type specimens. Its
+Patterns page shows how they combine in an app: list rows, toolbars, empty
+states, stat rows, boards, and calendars.
 
 ## 1. Set up your skill
 
@@ -140,7 +146,7 @@ npm run dev
 ```
 
 Open the local URL printed by Vite, usually `http://localhost:5173`. The demo has
-three views: **Elements**, **Background**, and **Text**. Use an element's expand
+four views: **Elements**, **Patterns**, **Background**, and **Text**. Use an element's expand
 button to inspect it, and try the background picker in the expanded view.
 
 To build and preview the production version:
@@ -156,8 +162,9 @@ The build is written to `dist/`.
 
 Start with the skill's [element references](skill/SKILL.md#elements), then copy
 the components and CSS you need. Each reference includes the element's complete
-CSS, motion, and React code. Controls and charts also have named exports in
-[`src/controls.jsx`](src/controls.jsx) and [`src/charts.jsx`](src/charts.jsx).
+CSS, motion, and React code. Controls, charts, and app patterns also have named
+exports in [`src/controls.jsx`](src/controls.jsx),
+[`src/charts.jsx`](src/charts.jsx), and [`src/patterns.jsx`](src/patterns.jsx).
 The demo uses React and `lucide-react`; charts use SVG. Adapt the chart demo data
 to your own data and keep its accessible descriptions in sync.
 

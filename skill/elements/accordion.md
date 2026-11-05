@@ -33,7 +33,7 @@ Exported from `controls.jsx`. `items` are `[key, title, body]` tuples; `value` i
 }
 .accordion-item button:hover,
 .accordion-item.is-open button { color: #fff; }
-.accordion-item button svg { flex: 0 0 auto; color: #7d7d7d; transition: transform 320ms cubic-bezier(.22, 1, .36, 1), color 200ms ease; }
+.accordion-item button svg { flex: 0 0 auto; color: var(--sub); transition: transform 320ms cubic-bezier(.22, 1, .36, 1), color 200ms ease; }
 .accordion-item.is-open button svg { color: #fff; transform: rotate(45deg); }
 .accordion-panel { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 320ms cubic-bezier(.22, 1, .36, 1); }
 .accordion-item.is-open .accordion-panel { grid-template-rows: 1fr; }
