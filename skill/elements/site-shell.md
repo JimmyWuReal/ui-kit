@@ -25,13 +25,15 @@ footer { display: flex; justify-content: space-between; gap: 20px; padding: 30px
 @media (max-width: 440px) { .site-nav .segmented a { padding: 0 6px; } }
 ```
 
-The column is `min(1120px, 100% - 64px)`, and side gutters become 16px at 680px and below, where the header stacks. The nav is `SegmentedNav`: the [segmented control](segmented.md)'s look and sliding thumb, built from real links, so each page is a Tab stop, carries `aria-current="page"`, and can open in a new tab. Radios are for choosing a mode, not for going somewhere, so do not use `Segmented` here. When the current page is not in the nav, such as a profile, pass a `value` that matches no link: the thumb disappears rather than marking the wrong page. Page content swaps instantly: `key={page}` on `<main>` remounts the page with no transition, which is also why charts draw again when you return to them. Keep the hash in the URL so a view can be linked and the browser's back button works.
+The column is `min(1120px, 100% - 64px)`, and side gutters become 16px at 680px and below, where the header stacks. The nav is `SegmentedNav`: the [segmented control](segmented.md)'s look and sliding thumb, built from real links, so each page is a Tab stop, carries `aria-current="page"`, and can open in a new tab. Radios are for choosing a mode, not for going somewhere, so do not use `Segmented` here. When the current page is not in the nav, such as a profile, pass a `value` that matches no link: the thumb disappears rather than marking the wrong page. `SegmentedNav` needs `useThumb` and the CSS from the [segmented control](segmented.md); copy both. Page content swaps instantly: `key={page}` on `<main>` remounts the page with no transition, which is also why charts draw again when you return to them. Keep the hash in the URL so a view can be linked and the browser's back button works.
 
 `.brand-icon` is this site's own mark. Use the project's mark, or the name alone. The footer's tagline is the site's own too: omit a tagline unless it says something useful. There are no header or footer borders.
 
 `.section-head` is the heading block on the Text page. The site numbers its sections because it is a catalog; omit the mono number on a normal page, and keep the note only when it adds something.
 
 ## Component
+
+`App` is the site's own assembly, shown for its structure. Replace `SurfaceContext` and the page components with your own.
 
 ```jsx
 /* The pages, by their names. The hash is the lowercase name. */

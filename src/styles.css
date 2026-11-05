@@ -1349,8 +1349,8 @@ button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 2px
    purpose: these rules tie on specificity with the elements' own, so anything
    placed after them would silently undo them. */
 @media (pointer: coarse) {
-  .brand, .outline-button, .chip, .tab-list button, .stepper button, .star, .expand-close { position: relative; }
-  :is(.brand, .outline-button, .icon-button, .toggle, .chip, .segmented :is(button, a), .pages button, .tab-list button, .stepper button, .star, .search-clear, .expand-button, .expand-close, .swatch)::after {
+  .brand, .outline-button, .chip, .stepper button, .star, .expand-close { position: relative; }
+  :is(.brand, .outline-button, .icon-button, .toggle, .chip, .segmented :is(button, a), .pages button, .stepper button, .star, .search-clear, .expand-button, .expand-close, .swatch)::after {
     content: '';
     position: absolute;
     top: 50%;
@@ -1368,7 +1368,7 @@ button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 2px
   .row-actions { gap: 16px; }
   .surface-picker { gap: 18px; }
   .checkbox-row, .radio-row { min-height: 44px; }
-  .select-menu button { height: 44px; }
+  .select-menu button, .tab-list button { height: 44px; }
   .slider-field input { height: 44px; margin-block: -13px; }
   /* iOS zooms the page when a field under 16px takes focus. */
   .text-field :is(input, textarea), .search-field input { font-size: 16px; }

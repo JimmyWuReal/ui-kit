@@ -6,8 +6,8 @@ The kit draws small, precise controls for a mouse. On a touch screen a finger ne
 
 ```css
 @media (pointer: coarse) {
-  .brand, .outline-button, .chip, .tab-list button, .stepper button, .star, .expand-close { position: relative; }
-  :is(.brand, .outline-button, .icon-button, .toggle, .chip, .segmented :is(button, a), .pages button, .tab-list button, .stepper button, .star, .search-clear, .expand-button, .expand-close, .swatch)::after {
+  .brand, .outline-button, .chip, .stepper button, .star, .expand-close { position: relative; }
+  :is(.brand, .outline-button, .icon-button, .toggle, .chip, .segmented :is(button, a), .pages button, .stepper button, .star, .search-clear, .expand-button, .expand-close, .swatch)::after {
     content: '';
     position: absolute;
     top: 50%;
@@ -22,7 +22,7 @@ The kit draws small, precise controls for a mouse. On a touch screen a finger ne
   .row-actions { gap: 16px; }
   .surface-picker { gap: 18px; }
   .checkbox-row, .radio-row { min-height: 44px; }
-  .select-menu button { height: 44px; }
+  .select-menu button, .tab-list button { height: 44px; }
   .slider-field input { height: 44px; margin-block: -13px; }
   .text-field :is(input, textarea), .search-field input { font-size: 16px; }
 }

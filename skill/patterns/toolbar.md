@@ -1,6 +1,6 @@
 # Toolbar
 
-Use when a page-level action belongs to the content under a set of [tabs](../elements/tabs.md): one row holds both, on one hairline. This is `Tabs` with its `action` prop.
+Use when a page-level action belongs to the content under a set of [tabs](../elements/tabs.md): one row holds both, on one hairline. This is `Tabs` with its `action` prop, so it needs the tabs reference and the [small outline button](../elements/button.md).
 
 ```jsx
 <Tabs label="Tasks" value={tab} onChange={setTab} tabs={tabs}

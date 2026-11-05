@@ -31,8 +31,8 @@ carries every timing, keyframe, and the state logic behind them; see
 [`skill/motion.md`](skill/motion.md).
 
 The kit is built for touch and small screens too: text stays readable on every
-surface, and [`skill/touch.md`](skill/touch.md) gives every control a 44px target
-without changing how it is drawn.
+surface, and [`skill/touch.md`](skill/touch.md) gives controls a 44px target
+without changing how they are drawn.
 
 ## Demo: personal introduction site
 

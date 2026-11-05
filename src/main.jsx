@@ -392,7 +392,7 @@ const style = (role, use, sample, font, size, weight, leading, tracking, color, 
 const typeScale = [
   ['Reading', [
     style('Display', 'Page openers', 'Better.', 'Inter', '64px', 500, '1.05', '-0.065em', '#FFFFFF'),
-    style('Title', 'Page and section titles, stat values', 'Make room.', 'Inter', '36px', 500, '1.15', '-0.045em', '#FFFFFF'),
+    style('Title', 'Page and section titles', 'Make room.', 'Inter', '36px', 500, '1.15', '-0.045em', '#FFFFFF'),
     style('Stat', 'Several values on one row', '128h', 'Inter', '28px', 500, '1', '-0.04em', '#FFFFFF'),
     style('Heading', 'The start of a section', 'Details matter.', 'Inter', '24px', 500, '1.3', '-0.035em', '#FFFFFF'),
     style('Quote', 'Pull quotes', '“Simply put.”', 'Georgia', '24px', 400, '1.5', '0', '#CCCCCC', { italic: true }),

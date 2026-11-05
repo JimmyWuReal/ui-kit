@@ -8,7 +8,7 @@ The kit's animation system, as the site actually behaves. Each element reference
 2. **Chart data marks are the one mount animation.** Lines draw, bars grow, slices fade, and the meter reveals. Their titles, axes, legends, keys, and surrounding cards appear immediately. Returning to a page with charts plays them again, because they remount.
 3. **Everything else answers something.** A pointer, a key, a value changing, or real work in progress. Status is the only motion that runs without input: the spinner while loading, and the progress bar as real progress arrives.
 4. **Controls mount at rest.** Render the actual value with no startup sweep. CSS-state controls (checkbox, radio, toggle, chips, slider, stars) get this for free, because a transition cannot fire on the first style. Three controls need a guard, and each is in its component:
-   - Segmented: the thumb is not rendered until it has been measured.
+   - Segmented and its nav: the thumb is not rendered until it has been measured.
    - Stepper: `direction` is null until the first step.
    - Tabs: the `moved` ref adds `.is-entering` only after the first selection.
 5. **Transition when a node persists; keyframe when a node is new.** A node that exists in both states stays mounted and transitions, so it eases both ways: select menus, tooltips, accordion panels, thumbs, chart hover dots, the search clear button. A node created by the change uses a keyframe: a rolled number, a typed digit, a changed tab panel, an opened popup. Those replay through a React `key`, or by mounting.

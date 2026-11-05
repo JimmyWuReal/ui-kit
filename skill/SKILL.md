@@ -19,7 +19,7 @@ This skill works in Claude Code and Codex. Resolve relative file links from this
 - Adapt labels, content, widths, and heights to the task. Retain the component's material, hierarchy, state behavior, and proportions. Make the primary action clear through its label and placement.
 - Preserve keyboard operation, visible focus, accessible names, and disabled states.
 - Keep text at 4.5:1 or better on the surface it lands on. `--dim` and `--sub` clear that on every kit surface, up to the raised `#1c1c1c`. Check any gray you add.
-- Give touch screens 44px targets and hide nothing behind hover on them; see [touch.md](touch.md).
+- Give touch screens 44px targets, sharing the width only where a row cannot fit them, and hide nothing behind hover on them; see [touch.md](touch.md).
 
 ## Minimal composition
 
@@ -64,7 +64,7 @@ Before finishing a chart, inspect every text node outside the plot: keep the tit
 
 ## Touch
 
-Read [touch.md](touch.md) for any page used on a phone or tablet. It holds one CSS block that gives every control a 44px target without changing how it is drawn. That block goes **last** in the stylesheet: placed earlier, element rules of equal specificity override it, and nothing looks wrong until you measure.
+Read [touch.md](touch.md) for any page used on a phone or tablet. It holds one CSS block that gives controls a 44px target without changing how they are drawn. That block goes **last** in the stylesheet: placed earlier, element rules of equal specificity override it, and nothing looks wrong until you measure.
 
 ## Shared foundation
 
@@ -222,7 +222,7 @@ The site's own frame and tools. Reach for these when the task calls for them; a 
 
 ## Use the source
 
-Every reference is complete on its own. Its CSS blocks are the site's rules verbatim, including all motion, and its `Component` block is the site's React code. The shared foundation above is the only other CSS an element needs. Copy these into a project rather than rebuilding their state logic, because that logic is often what triggers the animation.
+Every reference is complete together with the references it links to. Its CSS blocks are the site's rules verbatim, including all motion, and its `Component` block is the site's React code. The shared foundation above and those links are the only other CSS an element needs. Copy these into a project rather than rebuilding their state logic, because that logic is often what triggers the animation.
 
 The components use React and `lucide-react`; add their imports when copying. Charts use SVG without a chart library. Charts contain sample data rather than data props: adapt the data and accessible summaries together, then apply the [minimal chart defaults](#minimal-charts) to the visible content. When combining references, drop repeated rules and keep the first copy, so a shared rule (one naming several elements, such as the field box) stays above each element's own rules. The cascade depends on that order. Usage snippets assume the state variable and setter exist in the destination component. Adapt demo labels, such as the search placeholder, to the task.
 

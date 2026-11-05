@@ -7,7 +7,7 @@ Choose only the roles the content needs. A heading does not automatically need a
 | Role | Use | Size | Weight | Line height | Tracking | Color |
 | --- | --- | --- | --- | --- | --- | --- |
 | Display | Page opener | 64px | 500 | 1.05 | -.065em | #ffffff |
-| Title | Page / section title, one leading stat | 36px | 500 | 1.15 | -.045em | #ffffff |
+| Title | Page / section title | 36px | 500 | 1.15 | -.045em | #ffffff |
 | Stat | Several values on one row | 28px | 500 | 1 | -.04em | #ffffff |
 | Heading | Start a section | 24px | 500 | 1.3 | -.035em | #ffffff |
 | Quote | Pull quote, Georgia italic | 24px | 400 | 1.5 | 0 | #cccccc |
@@ -25,6 +25,6 @@ Choose only the roles the content needs. A heading does not automatically need a
 .caption { font-size: 12px; line-height: 1.5; color: #888; }
 ```
 
-Use `.stat-value.is-small` from the [stat row](../patterns/stat-row.md) for the Stat role; it adds tabular numerals. Scale the display down on narrow screens when the content needs it; preserve its tight tracking and hierarchy. All text renders immediately.
+Use `.stat-value.is-small` from the [stat row](../patterns/stat-row.md) for the Stat role; it adds tabular numerals. One value leading a block uses the 36px `.stat-value`, at line height 1, as in the [sparkline](../elements/sparkline.md). Scale the display down on narrow screens when the content needs it; preserve its tight tracking and hierarchy. All text renders immediately.
 
 Source: [main.jsx](../../src/main.jsx), `typeScale` → `Reading`. The gallery renders most roles with inline styles; the class names above are reusable recipes.
