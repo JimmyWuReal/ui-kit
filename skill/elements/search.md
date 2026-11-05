@@ -27,7 +27,7 @@ Exported from `controls.jsx`. `onChange` receives the text. The source has the f
   transition: box-shadow 200ms ease;
 }
 .text-field :is(input, textarea)::placeholder,
-.search-field input::placeholder { color: #565656; }
+.search-field input::placeholder { color: var(--dim); }
 .text-field :is(input, textarea):hover,
 .search-field input:hover,
 .select-trigger:hover { box-shadow: inset 0 0 0 1px var(--line-hover); }
@@ -37,7 +37,7 @@ Exported from `controls.jsx`. `onChange` receives the text. The source has the f
 .search-field { position: relative; }
 .search-field input { -webkit-appearance: none; appearance: none; padding: 0 44px 0 42px; }
 .search-field input::-webkit-search-cancel-button { display: none; }
-.search-icon { position: absolute; top: 50%; left: 16px; color: #6f6f6f; transform: translateY(-50%); pointer-events: none; transition: color 200ms ease; }
+.search-icon { position: absolute; top: 50%; left: 16px; color: var(--dim); transform: translateY(-50%); pointer-events: none; transition: color 200ms ease; }
 .search-field:focus-within .search-icon { color: #fff; }
 .search-clear {
   position: absolute;

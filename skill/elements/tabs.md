@@ -9,7 +9,7 @@ Use to switch among related panels within the same page. A thin moving underline
 ]} />
 ```
 
-Exported from `controls.jsx`. `tabs` are `[key, title, panelContent]` tuples; `value` is a valid key and `onChange` receives a key. Adapt the source's paragraph panel to a suitable container for richer content.
+Exported from `controls.jsx`. `tabs` are `[key, title, panelContent]` tuples; `value` is a valid key and `onChange` receives a key. The panel holds any content, such as a [list](../patterns/list-row.md). `action` puts a page-level action on the tab row, as a [toolbar](../patterns/toolbar.md).
 
 ```css
 .tab-list { position: relative; display: grid; grid-template-columns: repeat(var(--count), minmax(0, 1fr)); box-shadow: inset 0 -1px 0 var(--line); }
@@ -19,7 +19,7 @@ Exported from `controls.jsx`. `tabs` are `[key, title, panelContent]` tuples; `v
   border: 0;
   border-radius: 8px 8px 0 0;
   background: transparent;
-  color: #7d7d7d;
+  color: var(--sub);
   font-size: 12.5px;
   font-weight: 500;
   letter-spacing: -.01em;
@@ -36,6 +36,7 @@ Exported from `controls.jsx`. `tabs` are `[key, title, panelContent]` tuples; `v
   width: calc(100% / var(--count));
   height: 1px;
   background: #fff;
+  pointer-events: none;
   transform: translateX(calc(var(--index) * 100%));
   transition: transform 320ms cubic-bezier(.22, 1, .36, 1);
 }
@@ -60,28 +61,32 @@ function arrowStep(event, count, index, onStep) {
   onStep(next)
 }
 
-export function Tabs({ label, tabs, value, onChange }) {
+/* `action` shares the tab row, for the page-level action of a list or board. */
+export function Tabs({ label, tabs, value, onChange, action }) {
   const index = tabs.findIndex(([key]) => key === value)
   /* The panel fades in when the tab changes, not when the page loads. */
   const moved = useRef(false)
   const select = (key) => { moved.current = true; onChange(key) }
   const id = useId()
+  const list = (
+    <div className="tab-list" role="tablist" aria-label={label} style={{ '--count': tabs.length, '--index': index }}
+      onKeyDown={(event) => arrowStep(event, tabs.length, index, (next) => select(tabs[next][0]))}>
+      {tabs.map(([key, title]) => (
+        <button key={key} type="button" role="tab" data-step id={`${id}-${key}`} aria-selected={key === value}
+          aria-controls={`${id}-panel`} tabIndex={key === value ? 0 : -1} onClick={() => select(key)}>
+          {title}
+        </button>
+      ))}
+      <span className="tab-indicator" aria-hidden="true" />
+    </div>
+  )
   return (
     <div className="tabs">
-      <div className="tab-list" role="tablist" aria-label={label} style={{ '--count': tabs.length, '--index': index }}
-        onKeyDown={(event) => arrowStep(event, tabs.length, index, (next) => select(tabs[next][0]))}>
-        {tabs.map(([key, title]) => (
-          <button key={key} type="button" role="tab" data-step id={`${id}-${key}`} aria-selected={key === value}
-            aria-controls={`${id}-panel`} tabIndex={key === value ? 0 : -1} onClick={() => select(key)}>
-            {title}
-          </button>
-        ))}
-        <span className="tab-indicator" aria-hidden="true" />
-      </div>
-      <p className={`tab-panel ${moved.current ? 'is-entering' : ''}`} key={value} role="tabpanel"
+      {action ? <div className="toolbar">{list}<div className="toolbar-actions">{action}</div></div> : list}
+      <div className={`tab-panel ${moved.current ? 'is-entering' : ''}`} key={value} role="tabpanel"
         id={`${id}-panel`} aria-labelledby={`${id}-${value}`}>
         {tabs[index][2]}
-      </p>
+      </div>
     </div>
   )
 }

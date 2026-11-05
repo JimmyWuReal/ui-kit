@@ -1,11 +1,12 @@
 import React, { createContext, useContext, useEffect, useRef, useState } from 'react'
 import { createRoot } from 'react-dom/client'
-import { Download, Maximize2, Plus, Sparkles, X } from 'lucide-react'
+import { Download, Maximize2, Pencil, Plus, Sparkles, Trash2, X } from 'lucide-react'
 import {
   Accordion, CheckMark, Chips, CodeInput, CopyLink, Pagination, Popup, Progress,
-  RadioGroup, Rating, SearchField, Segmented, Select, Slider, Spinner, Stepper, Tabs, TextArea,
+  RadioGroup, Rating, SearchField, Segmented, SegmentedNav, Select, Slider, Spinner, Stepper, Tabs, TextArea,
 } from './controls.jsx'
 import { BarChart, LineChart, PieChart, Sparkline, StackedBar } from './charts.jsx'
+import { Board, Calendar, EmptyState, ListRow, StatRow } from './patterns.jsx'
 import './styles.css'
 
 /* Every surface an element can be tested against, as [key, name, use].
@@ -392,6 +393,7 @@ const typeScale = [
   ['Reading', [
     style('Display', 'Page openers', 'Better.', 'Inter', '64px', 500, '1.05', '-0.065em', '#FFFFFF'),
     style('Title', 'Page and section titles, stat values', 'Make room.', 'Inter', '36px', 500, '1.15', '-0.045em', '#FFFFFF'),
+    style('Stat', 'Several values on one row', '128h', 'Inter', '28px', 500, '1', '-0.04em', '#FFFFFF'),
     style('Heading', 'The start of a section', 'Details matter.', 'Inter', '24px', 500, '1.3', '-0.035em', '#FFFFFF'),
     style('Quote', 'Pull quotes', '“Simply put.”', 'Georgia', '24px', 400, '1.5', '0', '#CCCCCC', { italic: true }),
     style('Description', 'An intro under a title', 'Start with the essentials.', 'Inter', '18px', 400, '1.6', '-0.02em', '#AAAAAA'),
@@ -409,17 +411,17 @@ const typeScale = [
     style('Option', 'Select menu', 'Singapore', 'Inter', '13px', 400, 'normal', '-0.01em', '#A8A8A8'),
     style('Code digit', 'Code input', '4 8 1 5', 'Inter', '18px', 500, 'normal', '0', '#FFFFFF'),
     style('Segment', 'Segmented, pagination, site nav', 'Board', 'Inter', '12.5px', 500, 'normal', '-0.01em', '#8A8A8A'),
-    style('Tab', 'Tabs', 'Overview', 'Inter', '12.5px', 500, 'normal', '-0.01em', '#7D7D7D'),
+    style('Tab', 'Tabs', 'Overview', 'Inter', '12.5px', 500, 'normal', '-0.01em', '#8C8C8C'),
     style('Chip', 'Chips, chart keys', 'Motion', 'Inter', '12.5px', 500, 'normal', '-0.01em', '#A8A8A8'),
-    style('Panel text', 'Tab panel, accordion, card, popup', 'Three changes this week.', 'Inter', '12.5px', 400, '1.7', '0', '#7D7D7D'),
-    style('Control note', 'Under a control title, chart legends', 'Product updates', 'Inter', '11.5px', 400, 'normal', '0', '#7D7D7D'),
+    style('Panel text', 'Tab panel, accordion, card, popup', 'Three changes this week.', 'Inter', '12.5px', 400, '1.7', '0', '#8C8C8C'),
+    style('Control note', 'Under a control title, chart legends', 'Product updates', 'Inter', '11.5px', 400, 'normal', '0', '#8C8C8C'),
     style('Tooltip', 'Tooltip and chart tooltip, on raised', 'Copy link', 'Inter', '11px', 400, '1', '0', '#A8A8A8', { on: '#1C1C1C' }),
-    style('Footer', 'Site footer', 'A personal collection, made with care.', 'Inter', '11px', 400, 'normal', '0', '#666666'),
+    style('Footer', 'Site footer', 'A personal collection, made with care.', 'Inter', '11px', 400, 'normal', '0', '#848484'),
   ]],
   ['Mono', [
     style('Value', 'Slider, progress, counts, chart values', '24.8 MB', 'DM Mono', '11px', 400, '1', '0', '#D6D6D6'),
     style('Label', 'Eyebrows over content', 'THE SMALL DETAILS', 'DM Mono', '10px', 400, '1.5', '0.15em', '#FFFFFF'),
-    style('Field label', 'Over fields, card numbers, chart axes', 'EMAIL ADDRESS', 'DM Mono', '9px', 400, '1', '0.14em', '#6F6F6F'),
+    style('Field label', 'Over fields, card numbers, chart axes', 'EMAIL ADDRESS', 'DM Mono', '9px', 400, '1', '0.14em', '#848484'),
   ]],
 ]
 
@@ -508,8 +510,108 @@ function TextPage() {
   )
 }
 
+/* Demo data for the patterns. */
+const STARTER_TASKS = [
+  { id: 1, title: 'Write the launch post', note: 'Due Friday', done: false },
+  { id: 2, title: 'Review the pricing page copy', note: 'Due Monday', done: false },
+  { id: 3, title: 'Reply to the design partners', note: 'No due date', done: false },
+  { id: 4, title: 'Book the user interviews', note: 'Finished yesterday', done: true },
+]
+const STATS = [
+  ['This week', '12h'], ['All time', '128h'], ['Streak', '9 days'], ['Tasks done', '46'],
+]
+const BOARD = [
+  { title: 'To do', cards: [
+    { title: 'Write the launch post', note: 'Due Friday' },
+    { title: 'Review the pricing page copy', note: 'Due Monday' },
+    { title: 'Reply to the design partners' },
+  ] },
+  { title: 'Doing', cards: [{ title: 'Book the user interviews', note: 'Two of five booked' }] },
+  { title: 'Done', cards: [] },
+]
+const EVENTS = { 4: ['Design review'], 11: ['Team sync', 'Pricing call'], 18: ['Release'], 26: ['Team sync'] }
+
+function TaskList() {
+  const [tasks, setTasks] = useState(STARTER_TASKS)
+  const [tab, setTab] = useState('open')
+  const nextId = useRef(STARTER_TASKS.length + 1)
+  const update = (id, change) => setTasks((current) => current.map((task) => task.id === id ? { ...task, ...change } : task))
+  const remove = (id) => setTasks((current) => current.filter((task) => task.id !== id))
+  const add = () => {
+    setTasks((current) => [{ id: nextId.current++, title: 'A new task', note: 'No due date', done: false }, ...current])
+    setTab('open')
+  }
+
+  const rows = (done) => {
+    const shown = tasks.filter((task) => task.done === done)
+    if (!shown.length) return <EmptyState title={done ? 'Nothing finished yet' : 'All clear'} note={done ? 'Finished tasks land here.' : 'Add the next thing to do.'} />
+    return (
+      <ul className="list">
+        {shown.map((task) => (
+          <ListRow key={task.id} title={task.title} note={task.note} done={task.done}
+            onToggle={() => update(task.id, { done: !task.done })}
+            actions={<>
+              <button className="icon-button is-small is-quiet" type="button" aria-label={`Rename ${task.title}`}
+                onClick={() => update(task.id, { title: `${task.title} (renamed)` })}>
+                <Pencil size={13} strokeWidth={2} aria-hidden="true" />
+              </button>
+              <button className="icon-button is-small is-quiet" type="button" aria-label={`Delete ${task.title}`}
+                onClick={() => remove(task.id)}>
+                <Trash2 size={13} strokeWidth={2} aria-hidden="true" />
+              </button>
+            </>} />
+        ))}
+      </ul>
+    )
+  }
+
+  return (
+    <div className="pattern-measure">
+      <Tabs label="Tasks" value={tab} onChange={setTab}
+        tabs={[['open', 'Open', rows(false)], ['done', 'Done', rows(true)]]}
+        action={<button className="outline-button is-small" type="button" onClick={add}>Add task</button>} />
+    </div>
+  )
+}
+
+function PatternsPage() {
+  return (
+    <>
+      <section className="pattern-section" aria-labelledby="pattern-list">
+        <SectionHead id="pattern-list" index="01" title="Toolbar and list" note="Tabs and an action on one row, above rows that show their actions on hover." />
+        <TaskList />
+      </section>
+      <section className="pattern-section" aria-labelledby="pattern-empty">
+        <SectionHead id="pattern-empty" index="02" title="Empty state" note="What is missing, and the action that fills it." />
+        <div className="component-grid">
+          <div className="grid-cell cell-empty">
+            <EmptyState title="No projects yet" note="Projects keep related tasks together."
+              action={<button className="outline-button is-small" type="button">New project</button>} />
+          </div>
+          <div className="grid-cell cell-empty">
+            <EmptyState title="No results" note="Nothing matches these filters."
+              action={<button className="outline-button is-small" type="button">Clear filters</button>} />
+          </div>
+        </div>
+      </section>
+      <section className="pattern-section" aria-labelledby="pattern-stats">
+        <SectionHead id="pattern-stats" index="03" title="Stat row" note="Figures that belong to the page, above its charts rather than inside them." />
+        <StatRow stats={STATS} />
+      </section>
+      <section className="pattern-section" aria-labelledby="pattern-board">
+        <SectionHead id="pattern-board" index="04" title="Board" note="Columns that snap into place, with the next one showing on narrow screens." />
+        <Board label="Tasks by status" columns={BOARD} />
+      </section>
+      <section className="pattern-section" aria-labelledby="pattern-calendar">
+        <SectionHead id="pattern-calendar" index="05" title="Calendar" note="A month of flat day cells. Titles become dots on a phone, and the agenda keeps the words." />
+        <Calendar events={EVENTS} />
+      </section>
+    </>
+  )
+}
+
 /* The pages, by their names. The hash is the lowercase name. */
-const pages = ['Elements', 'Background', 'Text']
+const pages = ['Elements', 'Patterns', 'Background', 'Text']
 const currentPage = () => pages.find((name) => name.toLowerCase() === window.location.hash.slice(1)) ?? pages[0]
 
 function App() {
@@ -525,14 +627,13 @@ function App() {
     <div className="showcase-shell">
       <header className="site-header">
         <a className="brand" href="#elements"><span className="brand-icon" aria-hidden="true"><i /><i /><i /><i /></span>Jimmy Wu's UI Kit</a>
-        {/* The page chooser is the kit's own segmented control. Choosing sets
-            the hash, and the hashchange listener above follows it. */}
-        <nav className="site-nav" aria-label="Main navigation">
-          <Segmented label="Page" options={pages} value={page} onChange={(name) => { window.location.hash = name.toLowerCase() }} />
-        </nav>
+        {/* Real links, drawn as the segmented control. Following one changes
+            the hash, and the hashchange listener above follows that. */}
+        <SegmentedNav label="Main navigation" value={page}
+          links={pages.map((name) => [name, `#${name.toLowerCase()}`])} />
       </header>
       <main key={page}>
-        {page === 'Elements' ? <ElementsPage /> : page === 'Background' ? <BackgroundPage /> : <TextPage />}
+        {page === 'Elements' ? <ElementsPage /> : page === 'Patterns' ? <PatternsPage /> : page === 'Background' ? <BackgroundPage /> : <TextPage />}
       </main>
       <footer><span>A personal collection, made with care.</span><span>Jimmy Wu © {new Date().getFullYear()}</span></footer>
     </div>

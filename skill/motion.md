@@ -56,7 +56,7 @@ Settle and Draw are the curves above.
 | | Press | `scale(.97)`, 55ms Settle; release 140ms |
 | Gradient buttons | Hover | Fill and shadow 180ms `ease-out`; `translateY(-1px)` 140ms Settle |
 | | Press | `translateY(1px) scale(.97)`, all 55ms; release at base timing |
-| Icon button | Hover | Icon 180ms `ease-out`; hairline 200ms `ease` |
+| Icon button | Hover | Icon 180ms `ease-out`; hairline 200ms `ease`, from transparent on the quiet variant |
 | | Press | `scale(.94)`, 140ms Settle |
 | | `.is-on` | Icon 180ms; fill and hairline 200ms; icons crossfade (opacity 200ms `ease`, scale from .6 at 240ms Settle) |
 | | `.is-hidden` | Opacity 160ms `ease-out`; `scale(.8)` 140ms Settle |
@@ -70,7 +70,7 @@ Settle and Draw are the curves above.
 | Radio | Select | Fill and hairline 200ms `ease`; dot scales in 240ms Draw after 70ms; old dot scales out with no delay |
 | Toggle | Switch | Knob 320ms Settle; track and knob color 260ms `ease` |
 | Chips | Toggle | Fill, text, and hairline 200ms `ease`; space and padding 240ms Settle; tick 240ms Draw, after 70ms when turning on |
-| Segmented | Select | Thumb position and width 320ms Settle; text 260ms `ease` |
+| Segmented, segmented nav | Select | Thumb position and width 320ms Settle; text 260ms `ease` |
 | Pagination | Change | Thumb 320ms Settle; numbers 260ms `ease` |
 | Tabs | Select | Underline 320ms Settle; text 200ms `ease`; new panel `panel-enter` 260ms Settle |
 | Rating | Hover or click | Color and fill 200ms `ease` after `index * 30ms` |
@@ -105,7 +105,15 @@ Settle and Draw are the curves above.
 | Expanded view | Open | Overlay `overlay-enter` 220ms `ease-out`; content `expand-enter` 300ms Settle; picker `picker-enter` 320ms Settle after 60ms |
 | | Close | Unmounts immediately |
 | Expand button | Cell hover, focus | Opacity 160ms `ease-out`; `scale(.92)` to 1 at 160ms Settle |
+| List row actions | Row hover, keyboard focus | Opacity 160ms `ease-out`; shown at rest on touch |
 | Swatch | Hover, select | `scale(1.1)` 180ms Settle; ring 180ms `ease-out` |
+
+### Patterns
+
+| Element | Trigger | Motion |
+| --- | --- | --- |
+| Calendar day | Hover, select | Fill and hairline 200ms `ease` |
+| | Press | `scale(.97)`, 55ms Settle; release 140ms |
 
 ### Status and charts
 
@@ -123,7 +131,7 @@ Settle and Draw are the curves above.
 
 ## What does not animate
 
-Cards, page changes, text, chart titles and axes, the line chart's tooltip and crosshair, the slider fill, result counts, the danger button's hover fill, and anything at first paint outside rule 2.
+Cards, stat rows, board cards, empty states, month changes, page changes, text, chart titles and axes, the line chart's tooltip and crosshair, the slider fill, result counts, the danger button's hover fill, and anything at first paint outside rule 2.
 
 ## Keyframes
 
