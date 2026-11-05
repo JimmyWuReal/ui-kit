@@ -13,7 +13,7 @@ Use when a page-level action belongs to the content under a set of [tabs](../ele
 .toolbar-actions { flex: 0 0 auto; display: flex; align-items: center; gap: 8px; }
 ```
 
-Tabs keep equal widths, which the sliding indicator's arithmetic depends on, and shrink on narrow screens rather than wrapping. The action stays at the top of the 42px row, so a 36px button sits 6px clear of the hairline instead of crowding it. Keep this row to one or two controls. Filters that need more room go on their own row below it.
+Tabs keep equal widths, which the sliding indicator's arithmetic depends on, and shrink on narrow screens rather than wrapping. The action stays at the top of the row, so a 36px button sits clear of the hairline instead of crowding it: 6px in the 42px row, 8px in the 44px touch row. Keep this row to one or two controls. Filters that need more room go on their own row below it.
 
 Without tabs, a heading and an action on a plain row need no pattern: `.control-row` already does it.
 

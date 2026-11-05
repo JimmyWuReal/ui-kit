@@ -1,6 +1,6 @@
 # Touch
 
-The kit draws small, precise controls for a mouse. On a touch screen a finger needs about 44×44px, so the drawn size stays and the target stretches around it. Add this block to any page that may be used on a phone or tablet.
+The kit draws small, precise controls for a mouse. On a touch screen a finger needs about 44×44px, so small controls keep their drawn size and the target stretches around them. Tabs, select options, and rows of checkboxes and radios simply grow to 44px. Add this block to any page that may be used on a phone or tablet.
 
 **Put it last, after every element's CSS.** These rules tie on specificity with the elements' own, so anything placed after them silently wins and the fix does nothing. This is the easiest way to get touch wrong, and nothing looks broken when it happens. Measure, as below, rather than reading the CSS.
 

@@ -64,7 +64,7 @@ Before finishing a chart, inspect every text node outside the plot: keep the tit
 
 ## Touch
 
-Read [touch.md](touch.md) for any page used on a phone or tablet. It holds one CSS block that gives controls a 44px target without changing how they are drawn. That block goes **last** in the stylesheet: placed earlier, element rules of equal specificity override it, and nothing looks wrong until you measure.
+Read [touch.md](touch.md) for any page used on a phone or tablet. It holds one CSS block that gives controls a 44px target, stretching the target around small controls rather than redrawing them. That block goes **last** in the stylesheet: placed earlier, element rules of equal specificity override it, and nothing looks wrong until you measure.
 
 ## Shared foundation
 

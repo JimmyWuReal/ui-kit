@@ -32,7 +32,7 @@ carries every timing, keyframe, and the state logic behind them; see
 
 The kit is built for touch and small screens too: text stays readable on every
 surface, and [`skill/touch.md`](skill/touch.md) gives controls a 44px target
-without changing how they are drawn.
+without redrawing the small ones.
 
 ## Demo: personal introduction site
 
