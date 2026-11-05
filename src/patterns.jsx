@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useLayoutEffect, useRef, useState } from 'react'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { CheckMark } from './controls.jsx'
 
@@ -87,15 +87,17 @@ function monthDays(first) {
 
 /* `events` maps a day of the month to its titles, the same for every month
    since this is sample data; key yours by full date. Only the selected day is
-   a Tab stop, and arrow keys move between days, so a month is not 35 Tab stops. */
+   a Tab stop, and arrow keys move between days and across months, so a month is
+   not 35 Tab stops. */
 export function Calendar({ events }) {
   const today = new Date()
   const [shown, setShown] = useState(new Date(today.getFullYear(), today.getMonth(), 1))
   const [selected, setSelected] = useState(today)
   const grid = useRef(null)
+  const moved = useRef(false)
 
   const days = monthDays(shown)
-  const eventsOn = (date) => date.getMonth() === shown.getMonth() ? events[date.getDate()] ?? [] : []
+  const eventsOn = (date) => events[date.getDate()] ?? []
   const turn = (step) => setShown(new Date(shown.getFullYear(), shown.getMonth() + step, 1))
   const select = (date) => {
     setSelected(date)
@@ -106,14 +108,20 @@ export function Calendar({ events }) {
      of the month then holds the Tab stop. */
   const tabStop = days.some((date) => dayKey(date) === dayKey(selected)) ? dayKey(selected) : dayKey(shown)
 
-  const onKeyDown = (event, index) => {
+  const onKeyDown = (event, date) => {
     const delta = { ArrowRight: 1, ArrowLeft: -1, ArrowDown: 7, ArrowUp: -7 }[event.key]
-    const next = days[index + delta]
-    if (!delta || !next) return
+    if (!delta) return
     event.preventDefault()
-    grid.current.querySelectorAll('button')[index + delta].focus()
-    setSelected(next)
+    moved.current = true
+    select(new Date(date.getFullYear(), date.getMonth(), date.getDate() + delta))
   }
+
+  /* Focus follows the Tab stop once it has rendered, which may be in a new month. */
+  useLayoutEffect(() => {
+    if (!moved.current) return
+    moved.current = false
+    grid.current.querySelector('[tabindex="0"]').focus()
+  })
 
   const agenda = eventsOn(selected)
   const longDate = (date) => date.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })
@@ -131,7 +139,7 @@ export function Calendar({ events }) {
         {WEEKDAYS.map((day) => <span className="mono-label" key={day}>{day}</span>)}
       </div>
       <div className="calendar-grid" ref={grid}>
-        {days.map((date, index) => {
+        {days.map((date) => {
           const key = dayKey(date)
           const titles = eventsOn(date)
           const classes = [date.getMonth() !== shown.getMonth() && 'is-outside', key === dayKey(today) && 'is-today']
@@ -139,7 +147,7 @@ export function Calendar({ events }) {
             <button className={`calendar-day ${classes.filter(Boolean).join(' ')}`} key={key} type="button"
               aria-pressed={key === dayKey(selected)} tabIndex={key === tabStop ? 0 : -1}
               aria-label={`${longDate(date)}, ${titles.length} ${titles.length === 1 ? 'event' : 'events'}`}
-              onClick={() => select(date)} onKeyDown={(event) => onKeyDown(event, index)}>
+              onClick={() => select(date)} onKeyDown={(event) => onKeyDown(event, date)}>
               <span className="calendar-date">{date.getDate()}</span>
               <span className="calendar-events">{titles.map((title) => <span key={title}>{title}</span>)}</span>
               <span className="calendar-dots">{titles.map((title) => <i key={title} />)}</span>
