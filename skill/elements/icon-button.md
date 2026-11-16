@@ -35,6 +35,7 @@ Use for compact actions such as copy, paging, and replay. Give every icon-only b
 .icon-button:hover:not(:disabled) { color: #fff; box-shadow: inset 0 0 0 1px var(--line-hover); }
 .icon-button:active:not(:disabled) { transform: scale(.94); }
 .icon-button:disabled { color: #3d3d3d; cursor: default; }
+.icon-button.is-quiet { box-shadow: inset 0 0 0 1px transparent; }
 .icon-button.is-on,
 .icon-button.is-on:hover:not(:disabled) { color: #0a0a0a; background: #fff; box-shadow: inset 0 0 0 1px #fff; }
 .icon-button.is-small { width: 28px; height: 28px; border-radius: 8px; }
@@ -46,6 +47,10 @@ Use for compact actions such as copy, paging, and replay. Give every icon-only b
 ```
 
 Hover brightens the edge over 200ms and the icon over 180ms; pressing scales it to .94 over 140ms. A conditionally shown button stays mounted: `.is-hidden` fades it out and scales it to .8, and the same transition brings it back. Pair it with `tabIndex={-1}` while hidden, as `Progress` does.
+
+`.is-quiet` removes the hairline at rest, for icons repeated down a list, where every outline adds to the noise. The edge still eases in on hover, because the hover rule outranks it. Use it inside a repeated group such as a [list row](../patterns/list-row.md); a lone icon button keeps its hairline so it reads as a control.
+
+On touch, both sizes keep their drawn size and take a 44px target from [touch.md](../touch.md).
 
 For a state swap, stack both icons in the one grid cell as `.icon-out` and `.icon-in`, as `CopyLink` does in the [tooltip recipe](tooltip.md). `.is-on` crossfades them: opacity over 200ms, scaling from .6 over 240ms.
 

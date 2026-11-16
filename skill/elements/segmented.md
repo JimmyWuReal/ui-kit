@@ -1,6 +1,6 @@
 # Segmented control
 
-Use for a few mutually exclusive modes or compact navigation. It measures the selected label so unequal-length options get equal padding, rather than equal label widths.
+Use for a few mutually exclusive modes, such as a view switch. To move between pages, use `SegmentedNav` from the [site shell](site-shell.md): the same look, built from real links. It measures the selected label so unequal-length options get equal padding, rather than equal label widths.
 
 ```jsx
 <Segmented label="View" options={['List', 'Board', 'Calendar']}
@@ -35,7 +35,7 @@ Exported from `controls.jsx`. `value` must match an option; `onChange` receives 
   transform: translateX(var(--thumb-x));
   transition: transform 320ms cubic-bezier(.22, 1, .36, 1), width 320ms cubic-bezier(.22, 1, .36, 1);
 }
-.segmented button,
+.segmented :is(button, a),
 .pages button {
   position: relative;
   z-index: 1;
@@ -51,10 +51,11 @@ Exported from `controls.jsx`. `value` must match an option; `onChange` receives 
   cursor: pointer;
   transition: color 260ms ease;
 }
-.segmented button:not(.is-active):hover,
+.segmented :is(button, a):not(.is-active):hover,
 .pages button:not(.is-active):hover { color: #e6e6e6; }
-.segmented button.is-active,
+.segmented :is(button, a).is-active,
 .pages button.is-active { color: #0a0a0a; }
+.segmented a { display: grid; place-items: center; text-decoration: none; }
 ```
 
 Keep the layout measurement and ResizeObserver so the thumb stays aligned after fonts load or the control resizes. The thumb is not rendered until the first measurement, so it lands in place on load instead of sliding in from the left. Selection slides and resizes it over 320ms while the label colors cross-fade over 260ms. Hover text brightens to `#e6e6e6`. Arrow keys move focus and selection; only the selected option is tabbable.
@@ -73,29 +74,34 @@ function arrowStep(event, count, index, onStep) {
   onStep(next)
 }
 
-/* The white thumb is one element moved by index, so it slides between
-   segments instead of each segment fading its own fill. */
-/* Each segment is as wide as its label, so short and long words get the same
-   room around them. The thumb is measured off the active button and slides
-   and resizes to it. It is left out until the first measurement, so it lands
-   in place on load rather than sliding in from the left. */
-export function Segmented({ label, options, value, onChange }) {
-  const index = options.indexOf(value)
-  const ref = useRef(null)
+/* Measures the active item so one white thumb can slide and resize to it.
+   Each item is as wide as its label, so short and long words get the same room
+   around them. The result stays null until the first measurement, and whenever
+   nothing is active, so the thumb lands in place rather than sliding in from
+   the left. */
+function useThumb(ref, index, count) {
   const [thumb, setThumb] = useState(null)
-
   useLayoutEffect(() => {
-    const buttons = ref.current.querySelectorAll('button')
+    const items = ref.current.querySelectorAll('button, a')
     const measure = () => {
-      const active = buttons[index]
-      if (active) setThumb({ '--thumb-x': `${active.offsetLeft}px`, '--thumb-width': `${active.offsetWidth}px` })
+      const active = items[index]
+      setThumb(active ? { '--thumb-x': `${active.offsetLeft}px`, '--thumb-width': `${active.offsetWidth}px` } : null)
     }
     measure()
     /* Widths change when the web font arrives and when the control is resized. */
     const observer = new ResizeObserver(measure)
-    buttons.forEach((button) => observer.observe(button))
+    items.forEach((item) => observer.observe(item))
     return () => observer.disconnect()
-  }, [index, options.length])
+  }, [index, count])
+  return thumb
+}
+
+/* The white thumb is one element moved by index, so it slides between
+   segments instead of each segment fading its own fill. */
+export function Segmented({ label, options, value, onChange }) {
+  const index = options.indexOf(value)
+  const ref = useRef(null)
+  const thumb = useThumb(ref, index, options.length)
 
   return (
     <div className="segmented" role="radiogroup" aria-label={label} ref={ref}
@@ -114,4 +120,4 @@ export function Segmented({ label, options, value, onChange }) {
 }
 ```
 
-Source: [controls.jsx](../../src/controls.jsx), `Segmented`, `arrowStep`; [styles.css](../../src/styles.css), `.segmented*`.
+Source: [controls.jsx](../../src/controls.jsx), `Segmented`, `useThumb`, `arrowStep`; [styles.css](../../src/styles.css), `.segmented*`.

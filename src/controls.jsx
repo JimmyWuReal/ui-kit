@@ -42,29 +42,34 @@ export function RadioGroup({ label, options, value, onChange }) {
   )
 }
 
-/* The white thumb is one element moved by index, so it slides between
-   segments instead of each segment fading its own fill. */
-/* Each segment is as wide as its label, so short and long words get the same
-   room around them. The thumb is measured off the active button and slides
-   and resizes to it. It is left out until the first measurement, so it lands
-   in place on load rather than sliding in from the left. */
-export function Segmented({ label, options, value, onChange }) {
-  const index = options.indexOf(value)
-  const ref = useRef(null)
+/* Measures the active item so one white thumb can slide and resize to it.
+   Each item is as wide as its label, so short and long words get the same room
+   around them. The result stays null until the first measurement, and whenever
+   nothing is active, so the thumb lands in place rather than sliding in from
+   the left. */
+function useThumb(ref, index, count) {
   const [thumb, setThumb] = useState(null)
-
   useLayoutEffect(() => {
-    const buttons = ref.current.querySelectorAll('button')
+    const items = ref.current.querySelectorAll('button, a')
     const measure = () => {
-      const active = buttons[index]
-      if (active) setThumb({ '--thumb-x': `${active.offsetLeft}px`, '--thumb-width': `${active.offsetWidth}px` })
+      const active = items[index]
+      setThumb(active ? { '--thumb-x': `${active.offsetLeft}px`, '--thumb-width': `${active.offsetWidth}px` } : null)
     }
     measure()
     /* Widths change when the web font arrives and when the control is resized. */
     const observer = new ResizeObserver(measure)
-    buttons.forEach((button) => observer.observe(button))
+    items.forEach((item) => observer.observe(item))
     return () => observer.disconnect()
-  }, [index, options.length])
+  }, [index, count])
+  return thumb
+}
+
+/* The white thumb is one element moved by index, so it slides between
+   segments instead of each segment fading its own fill. */
+export function Segmented({ label, options, value, onChange }) {
+  const index = options.indexOf(value)
+  const ref = useRef(null)
+  const thumb = useThumb(ref, index, options.length)
 
   return (
     <div className="segmented" role="radiogroup" aria-label={label} ref={ref}
@@ -79,6 +84,30 @@ export function Segmented({ label, options, value, onChange }) {
         </button>
       ))}
     </div>
+  )
+}
+
+/* The segmented control's look for real navigation: links with aria-current
+   rather than radios, so each page is a Tab stop that can be opened in a new
+   tab. `links` are [name, href] pairs. A `value` matching none of them, such as
+   a profile page outside the nav, shows no thumb. */
+export function SegmentedNav({ label, links, value }) {
+  const index = links.findIndex(([name]) => name === value)
+  const ref = useRef(null)
+  const thumb = useThumb(ref, index, links.length)
+
+  return (
+    <nav className="site-nav" aria-label={label}>
+      <div className="segmented" ref={ref} style={{ '--count': links.length }}>
+        {thumb && <span className="segmented-thumb" style={thumb} aria-hidden="true" />}
+        {links.map(([name, href]) => (
+          <a key={name} href={href} className={name === value ? 'is-active' : ''}
+            aria-current={name === value ? 'page' : undefined}>
+            {name}
+          </a>
+        ))}
+      </div>
+    </nav>
   )
 }
 
@@ -248,28 +277,32 @@ export function Chips({ label, options, value, onChange }) {
   )
 }
 
-export function Tabs({ label, tabs, value, onChange }) {
+/* `action` shares the tab row, for the page-level action of a list or board. */
+export function Tabs({ label, tabs, value, onChange, action }) {
   const index = tabs.findIndex(([key]) => key === value)
   /* The panel fades in when the tab changes, not when the page loads. */
   const moved = useRef(false)
   const select = (key) => { moved.current = true; onChange(key) }
   const id = useId()
+  const list = (
+    <div className="tab-list" role="tablist" aria-label={label} style={{ '--count': tabs.length, '--index': index }}
+      onKeyDown={(event) => arrowStep(event, tabs.length, index, (next) => select(tabs[next][0]))}>
+      {tabs.map(([key, title]) => (
+        <button key={key} type="button" role="tab" data-step id={`${id}-${key}`} aria-selected={key === value}
+          aria-controls={`${id}-panel`} tabIndex={key === value ? 0 : -1} onClick={() => select(key)}>
+          {title}
+        </button>
+      ))}
+      <span className="tab-indicator" aria-hidden="true" />
+    </div>
+  )
   return (
     <div className="tabs">
-      <div className="tab-list" role="tablist" aria-label={label} style={{ '--count': tabs.length, '--index': index }}
-        onKeyDown={(event) => arrowStep(event, tabs.length, index, (next) => select(tabs[next][0]))}>
-        {tabs.map(([key, title]) => (
-          <button key={key} type="button" role="tab" data-step id={`${id}-${key}`} aria-selected={key === value}
-            aria-controls={`${id}-panel`} tabIndex={key === value ? 0 : -1} onClick={() => select(key)}>
-            {title}
-          </button>
-        ))}
-        <span className="tab-indicator" aria-hidden="true" />
-      </div>
-      <p className={`tab-panel ${moved.current ? 'is-entering' : ''}`} key={value} role="tabpanel"
+      {action ? <div className="toolbar">{list}<div className="toolbar-actions">{action}</div></div> : list}
+      <div className={`tab-panel ${moved.current ? 'is-entering' : ''}`} key={value} role="tabpanel"
         id={`${id}-panel`} aria-labelledby={`${id}-${value}`}>
         {tabs[index][2]}
-      </p>
+      </div>
     </div>
   )
 }

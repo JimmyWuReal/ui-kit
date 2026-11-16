@@ -13,6 +13,7 @@ Exported from `charts.jsx`. The demo uses hardcoded `REVENUE` and `DAYS`; adapt 
 ```css
 .chart-end { transition: cx 160ms cubic-bezier(.22, 1, .36, 1), cy 160ms cubic-bezier(.22, 1, .36, 1), opacity 160ms ease; }
 .stat-value { font-size: 36px; font-weight: 500; line-height: 1; letter-spacing: -.045em; font-variant-numeric: tabular-nums; }
+.stat-value.is-small { font-size: 28px; letter-spacing: -.04em; }
 ```
 
 Plot height is 56px with 5px insets. The line draws over 900ms on mount, using the [line chart](line-chart.md)'s `.chart-line` / `draw` recipe and SVG helpers. The headline and label render immediately. Avoid counting the headline up or fading it.
